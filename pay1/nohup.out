@@ -1,0 +1,397 @@
+2024/12/15 22:33:39 Starting server on :13888
+2024/12/17 05:17:28 Failed to decode request body: json: cannot unmarshal number into Go value of type struct { Appid string "json:\"appid\""; Mchid string "json:\"mchid\""; Description string "json:\"description\""; OutTradeNo string "json:\"outTradeNo\""; Attach string "json:\"attach\""; Total int64 "json:\"total\""; Openid string "json:\"openid\"" }
+2024/12/17 17:13:25 Callback Summary: 支付成功
+2024/12/17 17:13:25 Transaction Data: &map[amount:map[currency:CNY payer_currency:CNY payer_total:1500 total:1500] appid:wx2399a59856058e2f attach:附加数据 bank_type:OTHERS mchid:1663775705 out_trade_no:2024121717131720a011 payer:map[openid:obxqX62aegECbndLjaanRRTfCNrU] success_time:2024-12-17T17:13:25+08:00 trade_state:SUCCESS trade_state_desc:支付成功 trade_type:JSAPI transaction_id:4200002547202412177628523876]
+2024/12/17 17:13:25 Callback Response Sent: <xml><return_code>SUCCESS</return_code><return_msg>OK</return_msg></xml>
+2024/12/17 17:13:25 Response to frontend: {"return_code":"SUCCESS","return_msg":"OK","transaction_id":"4200002547202412177628523876"}
+2024/12/28 14:48:02 Callback Summary: 支付成功
+2024/12/28 14:48:02 Transaction Data: &map[amount:map[currency:CNY payer_currency:CNY payer_total:2000 total:2000] appid:wx2399a59856058e2f attach:附加数据 bank_type:OTHERS mchid:1663775705 out_trade_no:20241228144755c721f7 payer:map[openid:obxqX62aegECbndLjaanRRTfCNrU] success_time:2024-12-28T14:48:01+08:00 trade_state:SUCCESS trade_state_desc:支付成功 trade_type:JSAPI transaction_id:4200002532202412288537725917]
+2024/12/28 14:48:02 Callback Response Sent: <xml><return_code>SUCCESS</return_code><return_msg>OK</return_msg></xml>
+2024/12/28 14:48:02 Response to frontend: {"return_code":"SUCCESS","return_msg":"OK","transaction_id":"4200002532202412288537725917"}
+2024/12/28 20:00:59 Failed to parse callback request: invalid notification, err: validate verify fail serial=[6F5B076DEF39299E5E5EE098954CF10577CF7990] request-id=[] err=verify signature with public key err:crypto/rsa: verification error, request: &{Method:POST URL:/callback Proto:HTTP/1.1 ProtoMajor:1 ProtoMinor:1 Header:map[Accept:[*/*] Cache-Control:[no-cache] Connection:[upgrade] Content-Length:[931] Content-Type:[application/json] Pragma:[no-cache] User-Agent:[Mozilla/4.0] Wechatpay-Nonce:[lgTbb0X17kzb] Wechatpay-Serial:[6F5B076DEF39299E5E5EE098954CF10577CF7990] Wechatpay-Signature:[WECHATPAY/SIGNTEST/5i27Rs28KSyq2bn4ABa/seNWSMeiqhZkXCyt28bRgAhorY8Jm9gy19lngXQtxBPnxGM6VSbvhhykupeDWGRs1QhlvGsje/WK5mkSFsOyxYOYpLN9tO0IMRYLwZg486w/wBzqEYbiaWNVRu+hETixFHBDcpoUzbN+AB8q4UqORN/HhYKtdNDekiBVCOKuYkfRyb2fmM85B1+5OvjyYKrVFnWxHoBzqYEYSpmpbYC+KSbGqpjBt5/Ap/20Gpoc9elTPN837ILOiVZ8pRXU4LxI1PsWx/tMN14L/C37pxh9pi19OQUeqflAKMAF8zBQnGRBQBA==] Wechatpay-Signature-Type:[WECHATPAY2-SHA256-RSA2048] Wechatpay-Timestamp:[1735387259] X-Forwarded-For:[140.207.54.75] X-Forwarded-Proto:[https] X-Real-Ip:[140.207.54.75]] Body:{Reader:{"id":"70ef772a-a1a7-5e14-a95e-b72e4684a05d","create_time":"2024-12-28T14:48:01+08:00","resource_type":"encrypt-resource","event_type":"TRANSACTION.SUCCESS","summary":"支付成功","resource":{"original_type":"transaction","algorithm":"AEAD_AES_256_GCM","ciphertext":"k0gEDM7McAhraPIQbf8H+phkcCtfVj4icXpycIs39M8r2rZgNSV91nkWI88jUEaes6UPSSbVifAWgxUL5OoA5AuAcsGOr74+seqaPRcQ4p1YKHYs48vfBaogiE5ASjPwIXFT+BLg8dqfPN9Z952/2XRpqtqsqz8D5L6HnTizUJvUWNQj/39AJKpL/zywi8GQd0O3WH1FIpxdrGwDMQOIg9XrBp4pxDkxPsoaGAlgAhMyo7/qGfwQuX+NaCk2Btkle7rkUe8VAi/tNSlfw37i3v7heExeUmeX2JSAjJgfov72NLiG6rl4a/xoy3Rm3mPbZLPoBTzrFolf5bvsILzwGUuAOmQ2bv3qVKa+og9w7Gx7g1UkZ21SoJfid4neaqkAay1E0dXPJpVKv//pgj14anHiSDyJqBl1zlGPpil3+wNjk95HkerAguTNGqufCu2jCZ8s+J3NhIFNrG06Fw0IY1k7samfjsdX/tA6TO/7nb6GTzchc0QlWFnjyBebxxHD3+RQ+RF4LmrkEd3SdsfCPu0AM1+KojTadLDiBZCdqJBmX0eN5Zpe6Hzhr2WH/NxiigRQmdVzLT4RIolf1x21Z1O7cv4c","associated_data":"transaction","nonce":"4ubzY9b0GcQx"}}} GetBody:<nil> ContentLength:931 TransferEncoding:[] Close:false Host:2s.2nicep.com Form:map[] PostForm:map[] MultipartForm:<nil> Trailer:map[] RemoteAddr:127.0.0.1:38696 RequestURI:/callback TLS:0xc0000ea000 Cancel:<nil> Response:<nil> Pattern:/callback ctx:0xc0001b41e0 pat:0xc00048e7e0 matches:[] otherValues:map[]}
+2025/01/06 21:40:31 Payment request failed: error http response:[StatusCode: 400 Code: "PARAM_ERROR"
+Message: 输入源“/body/mchid”映射到值字段“直连商户号”字符串规则校验失败，字符串必须匹配正则表达式“^[1-9]\d*$”
+Detail:
+{
+  "location": "body",
+  "value": ""
+}
+Header:
+ - Request-Id=[08CFBAEFBB0610DD0718EDCAEEA30620FED00928E4A605-268435461]
+ - Date=[Mon, 06 Jan 2025 13:40:31 GMT]
+ - Content-Type=[application/json; charset=utf-8]
+ - Content-Length=[223]
+ - Connection=[keep-alive]
+ - Keep-Alive=[timeout=8]
+ - Cache-Control=[no-cache, must-revalidate]
+ - X-Content-Type-Options=[nosniff]
+ - Server=[nginx]
+ - Content-Language=[zh-CN]]
+2025/01/06 21:40:32 Payment request failed: error http response:[StatusCode: 400 Code: "PARAM_ERROR"
+Message: 输入源“/body/mchid”映射到值字段“直连商户号”字符串规则校验失败，字符串必须匹配正则表达式“^[1-9]\d*$”
+Detail:
+{
+  "location": "body",
+  "value": ""
+}
+Header:
+ - Server=[nginx]
+ - Content-Type=[application/json; charset=utf-8]
+ - Connection=[keep-alive]
+ - Keep-Alive=[timeout=8]
+ - Content-Language=[zh-CN]
+ - Date=[Mon, 06 Jan 2025 13:40:32 GMT]
+ - Content-Length=[223]
+ - Cache-Control=[no-cache, must-revalidate]
+ - X-Content-Type-Options=[nosniff]
+ - Request-Id=[08D0BAEFBB06102018C8BE8C5820D3CC0C28F9E701-268435461]]
+signal: killed
+2025/01/23 23:02:18 Starting server on :13888
+2025/01/25 11:31:05 Callback Summary: 支付成功
+2025/01/25 11:31:05 Transaction Data: &map[amount:map[currency:CNY payer_currency:CNY payer_total:1500 total:1500] appid:wx2399a59856058e2f attach:附加数据 bank_type:OTHERS mchid:1699276550 out_trade_no:20250125113050bc659d payer:map[openid:obxqX645Rpw6GEKhFJcCChRhH2Ls] success_time:2025-01-25T11:31:05+08:00 trade_state:SUCCESS trade_state_desc:支付成功 trade_type:JSAPI transaction_id:4200002492202501251644973754]
+2025/01/25 11:31:05 Callback Response Sent: <xml><return_code>SUCCESS</return_code><return_msg>OK</return_msg></xml>
+2025/01/25 11:31:05 Response to frontend: {"return_code":"SUCCESS","return_msg":"OK","transaction_id":"4200002492202501251644973754"}
+2025/01/25 12:04:52 Callback Summary: 支付成功
+2025/01/25 12:04:52 Transaction Data: &map[amount:map[currency:CNY payer_currency:CNY payer_total:1500 total:1500] appid:wx2399a59856058e2f attach:附加数据 bank_type:OTHERS mchid:1699276550 out_trade_no:202501251204385c6970 payer:map[openid:obxqX61_L0iRyk-ZRAl3xKFGvArU] success_time:2025-01-25T12:04:51+08:00 trade_state:SUCCESS trade_state_desc:支付成功 trade_type:JSAPI transaction_id:4200002503202501259140898259]
+2025/01/25 12:04:52 Callback Response Sent: <xml><return_code>SUCCESS</return_code><return_msg>OK</return_msg></xml>
+2025/01/25 12:04:52 Response to frontend: {"return_code":"SUCCESS","return_msg":"OK","transaction_id":"4200002503202501259140898259"}
+2025/01/25 12:21:48 Callback Summary: 支付成功
+2025/01/25 12:21:48 Transaction Data: &map[amount:map[currency:CNY payer_currency:CNY payer_total:1500 total:1500] appid:wx2399a59856058e2f attach:附加数据 bank_type:OTHERS mchid:1699276550 out_trade_no:20250125122137e6b4a9 payer:map[openid:obxqX668ch6z74dDIx4xh3oECbxQ] success_time:2025-01-25T12:21:48+08:00 trade_state:SUCCESS trade_state_desc:支付成功 trade_type:JSAPI transaction_id:4200002592202501257844828939]
+2025/01/25 12:21:48 Callback Response Sent: <xml><return_code>SUCCESS</return_code><return_msg>OK</return_msg></xml>
+2025/01/25 12:21:48 Response to frontend: {"return_code":"SUCCESS","return_msg":"OK","transaction_id":"4200002592202501257844828939"}
+2025/01/25 20:02:00 Failed to parse callback request: invalid notification, err: validate verify fail serial=[6B18D565C9DBA7BAD4DC7B33A628692B67F0F713] request-id=[] err=verify signature with public key err:crypto/rsa: verification error, request: &{Method:POST URL:/callback Proto:HTTP/1.1 ProtoMajor:1 ProtoMinor:1 Header:map[Accept:[*/*] Cache-Control:[no-cache] Connection:[upgrade] Content-Length:[931] Content-Type:[application/json] Pragma:[no-cache] User-Agent:[Mozilla/4.0] Wechatpay-Nonce:[dj52KAyPFDOm] Wechatpay-Serial:[6B18D565C9DBA7BAD4DC7B33A628692B67F0F713] Wechatpay-Signature:[WECHATPAY/SIGNTEST/0byNTVw+237yn8tB2FPdq5f2GTdfRrxggLCwrvLPf2ClJnsu+IvSvOdn1miy8x/2J3b05eAvqtVHSSuvChsTZMNS7wyZrfcb3Y3ykmMeKNo4zBUrGFNEulgSa4uRSjW0h22qsubiBk7OfjomPnmInlbgdUagdm0lHV6sxHHlldQPwJMJqvnN9jv+64F1XMAiOiJKPARJrVvQXCSASRUsvAMSnqMc7Q1te3mZn1z3B+5OwyYuG3iPVIJMrsaAAFLuRu2Zr3QY/lahuIYLUi5VHdUhF31XmCdHQtxOaA8lGj3PmKscaxQ1FIqQiYZciPob1JQ==] Wechatpay-Signature-Type:[WECHATPAY2-SHA256-RSA2048] Wechatpay-Timestamp:[1737806519] X-Forwarded-For:[101.226.103.15] X-Forwarded-Proto:[https] X-Real-Ip:[101.226.103.15]] Body:{Reader:{"id":"d7026bb2-7895-57aa-b608-1f9a10a849c4","create_time":"2025-01-25T11:31:05+08:00","resource_type":"encrypt-resource","event_type":"TRANSACTION.SUCCESS","summary":"支付成功","resource":{"original_type":"transaction","algorithm":"AEAD_AES_256_GCM","ciphertext":"wGY7efoee+9/EhIxW2tNYslVUZ3zagPhMmvc0VFRo6eFatS39gea1yv1p4/29G9GZ7hieBzX6phSjvKnXYEhSrLyDsaxSO0DIhS9XK4Mn/qu4U+2vv2XlhLDc2OaBnlAeDCSNd0P/MtW1u+A8Q98SN99RTcVOskrkCD5Zrs9FCjljOK9UMxXVh3Ccx6a7e4tO/xVyFo82G8X3Hb0GFi3uNenIKwxsqxkHsrKyeDMO26V3GbUFwG1CLc7c/ybkckqeLTsvS1ikv428ru3DSBYzltyLXAAs0LNIJt7uh+bPNG+FuBCGTrhNzhvvJVAFh38Cj4Nlrg7gOyGjzVYnc8WrIBV165hJgnj9aSBxe0Y5KrcEFHE99N2WibmMAamkk0mThDv94M5sBA7NZnoSAZmGyf9u+ve+RcRBqY720x7z2FqQ/h1J+SYxHEZs53Fo5+wjR2JI+dCp9IXcVvXca3DUQUIdHsd1hH6ObRml6dFJXXL0Drn6BVf9sGI5XN8AxCX8RiQGcp9R9mnO4VYD3Sqn8ni8PTmQR1KG9yLg0I9HKu7yAm73YxKJB74TgmSF4h3Z8gBuTAIP6ux7TcCDgOxqMoQ+rQL","associated_data":"transaction","nonce":"BkaFjWynLimZ"}}} GetBody:<nil> ContentLength:931 TransferEncoding:[] Close:false Host:2s.2nicep.com Form:map[] PostForm:map[] MultipartForm:<nil> Trailer:map[] RemoteAddr:127.0.0.1:34376 RequestURI:/callback TLS:0xc000110000 Cancel:<nil> Response:<nil> Pattern:/callback ctx:0xc0000fe1e0 pat:0xc0002b0000 matches:[] otherValues:map[]}
+2025/01/30 08:58:43 Failed to decode request body: json: cannot unmarshal number into Go value of type struct { Appid string "json:\"appid\""; Mchid string "json:\"mchid\""; Description string "json:\"description\""; OutTradeNo string "json:\"outTradeNo\""; Attach string "json:\"attach\""; Total int64 "json:\"total\""; Openid string "json:\"openid\"" }
+2025/02/11 21:42:45 Callback Summary: 支付成功
+2025/02/11 21:42:45 Transaction Data: &map[amount:map[currency:CNY payer_currency:CNY payer_total:1500 total:1500] appid:wx2399a59856058e2f attach:附加数据 bank_type:ICBC_DEBIT mchid:1699276550 out_trade_no:20250211214233143fd5 payer:map[openid:obxqX62aegECbndLjaanRRTfCNrU] success_time:2025-02-11T21:42:44+08:00 trade_state:SUCCESS trade_state_desc:支付成功 trade_type:JSAPI transaction_id:4200002511202502118315364488]
+2025/02/11 21:42:45 Callback Response Sent: <xml><return_code>SUCCESS</return_code><return_msg>OK</return_msg></xml>
+2025/02/11 21:42:45 Response to frontend: {"return_code":"SUCCESS","return_msg":"OK","transaction_id":"4200002511202502118315364488"}
+2025/02/11 21:46:43 Callback Summary: 支付成功
+2025/02/11 21:46:43 Transaction Data: &map[amount:map[currency:CNY payer_currency:CNY payer_total:1500 total:1500] appid:wx2399a59856058e2f attach:附加数据 bank_type:ICBC_DEBIT mchid:1699276550 out_trade_no:20250211214637bddfab payer:map[openid:obxqX62aegECbndLjaanRRTfCNrU] success_time:2025-02-11T21:46:42+08:00 trade_state:SUCCESS trade_state_desc:支付成功 trade_type:JSAPI transaction_id:4200002512202502119995641634]
+2025/02/11 21:46:43 Callback Response Sent: <xml><return_code>SUCCESS</return_code><return_msg>OK</return_msg></xml>
+2025/02/11 21:46:43 Response to frontend: {"return_code":"SUCCESS","return_msg":"OK","transaction_id":"4200002512202502119995641634"}
+2025/02/11 21:49:49 Callback Summary: 支付成功
+2025/02/11 21:49:49 Transaction Data: &map[amount:map[currency:CNY payer_currency:CNY payer_total:1 total:1] appid:wx2399a59856058e2f attach:附加数据 bank_type:ICBC_DEBIT mchid:1699276550 out_trade_no:20250211214943dbfdf9 payer:map[openid:obxqX62aegECbndLjaanRRTfCNrU] success_time:2025-02-11T21:49:48+08:00 trade_state:SUCCESS trade_state_desc:支付成功 trade_type:JSAPI transaction_id:4200002607202502118113546621]
+2025/02/11 21:49:49 Callback Response Sent: <xml><return_code>SUCCESS</return_code><return_msg>OK</return_msg></xml>
+2025/02/11 21:49:49 Response to frontend: {"return_code":"SUCCESS","return_msg":"OK","transaction_id":"4200002607202502118113546621"}
+2025/02/11 21:50:57 Callback Summary: 支付成功
+2025/02/11 21:50:57 Transaction Data: &map[amount:map[currency:CNY payer_currency:CNY payer_total:1500 total:1500] appid:wx2399a59856058e2f attach:附加数据 bank_type:NJCB_DEBIT mchid:1699276550 out_trade_no:2025021121504885089c payer:map[openid:obxqX62aegECbndLjaanRRTfCNrU] success_time:2025-02-11T21:50:57+08:00 trade_state:SUCCESS trade_state_desc:支付成功 trade_type:JSAPI transaction_id:4200002516202502113979572894]
+2025/02/11 21:50:57 Callback Response Sent: <xml><return_code>SUCCESS</return_code><return_msg>OK</return_msg></xml>
+2025/02/11 21:50:57 Response to frontend: {"return_code":"SUCCESS","return_msg":"OK","transaction_id":"4200002516202502113979572894"}
+2025/02/11 21:51:36 Callback Summary: 支付成功
+2025/02/11 21:51:36 Transaction Data: &map[amount:map[currency:CNY payer_currency:CNY payer_total:1500 total:1500] appid:wx2399a59856058e2f attach:附加数据 bank_type:NJCB_DEBIT mchid:1699276550 out_trade_no:20250211215128a6d389 payer:map[openid:obxqX62aegECbndLjaanRRTfCNrU] success_time:2025-02-11T21:51:36+08:00 trade_state:SUCCESS trade_state_desc:支付成功 trade_type:JSAPI transaction_id:4200002593202502115767210242]
+2025/02/11 21:51:36 Callback Response Sent: <xml><return_code>SUCCESS</return_code><return_msg>OK</return_msg></xml>
+2025/02/11 21:51:36 Response to frontend: {"return_code":"SUCCESS","return_msg":"OK","transaction_id":"4200002593202502115767210242"}
+2025/02/11 21:52:07 Callback Summary: 支付成功
+2025/02/11 21:52:07 Transaction Data: &map[amount:map[currency:CNY payer_currency:CNY payer_total:1500 total:1500] appid:wx2399a59856058e2f attach:附加数据 bank_type:NJCB_DEBIT mchid:1699276550 out_trade_no:20250211215157823782 payer:map[openid:obxqX62aegECbndLjaanRRTfCNrU] success_time:2025-02-11T21:52:07+08:00 trade_state:SUCCESS trade_state_desc:支付成功 trade_type:JSAPI transaction_id:4200002616202502118001778088]
+2025/02/11 21:52:07 Callback Response Sent: <xml><return_code>SUCCESS</return_code><return_msg>OK</return_msg></xml>
+2025/02/11 21:52:07 Response to frontend: {"return_code":"SUCCESS","return_msg":"OK","transaction_id":"4200002616202502118001778088"}
+2025/02/20 11:11:28 Failed to decode request body: json: cannot unmarshal number into Go value of type struct { Appid string "json:\"appid\""; Mchid string "json:\"mchid\""; Description string "json:\"description\""; OutTradeNo string "json:\"outTradeNo\""; Attach string "json:\"attach\""; Total int64 "json:\"total\""; Openid string "json:\"openid\"" }
+2025/02/21 15:49:22 Failed to decode request body: json: cannot unmarshal number into Go value of type struct { Appid string "json:\"appid\""; Mchid string "json:\"mchid\""; Description string "json:\"description\""; OutTradeNo string "json:\"outTradeNo\""; Attach string "json:\"attach\""; Total int64 "json:\"total\""; Openid string "json:\"openid\"" }
+2025/02/24 15:06:36 Starting server on :13888
+2025/02/24 15:06:36 Could not start server: listen tcp :13888: bind: address already in use
+exit status 1
+2025/02/24 17:07:47 Starting server on :13888
+2025/02/24 17:07:47 Could not start server: listen tcp :13888: bind: address already in use
+exit status 1
+signal: killed
+2025/02/24 17:11:37 Starting server on :13888
+signal: killed
+2025/02/24 17:17:26 Starting server on :13888
+2025/02/26 21:24:35 Callback Summary: 支付成功
+2025/02/26 21:24:35 Transaction Data: &map[amount:map[currency:CNY payer_currency:CNY payer_total:1500 total:1500] appid:wx2399a59856058e2f attach:附加数据 bank_type:OTHERS mchid:1699276550 out_trade_no:202502262124283fcfe8 payer:map[openid:obxqX645Rpw6GEKhFJcCChRhH2Ls] success_time:2025-02-26T21:24:35+08:00 trade_state:SUCCESS trade_state_desc:支付成功 trade_type:JSAPI transaction_id:4200002487202502263770456339]
+2025/02/26 21:24:35 Callback Response Sent: <xml><return_code>SUCCESS</return_code><return_msg>OK</return_msg></xml>
+2025/02/26 21:24:35 Response to frontend: {"return_code":"SUCCESS","return_msg":"OK","transaction_id":"4200002487202502263770456339"}
+2025/02/26 21:28:29 Callback Summary: 支付成功
+2025/02/26 21:28:29 Transaction Data: &map[amount:map[currency:CNY payer_currency:CNY payer_total:1500 total:1500] appid:wx2399a59856058e2f attach:附加数据 bank_type:OTHERS mchid:1699276550 out_trade_no:20250226212812660150 payer:map[openid:obxqX645Rpw6GEKhFJcCChRhH2Ls] success_time:2025-02-26T21:28:28+08:00 trade_state:SUCCESS trade_state_desc:支付成功 trade_type:JSAPI transaction_id:4200002509202502265952422950]
+2025/02/26 21:28:29 Callback Response Sent: <xml><return_code>SUCCESS</return_code><return_msg>OK</return_msg></xml>
+2025/02/26 21:28:29 Response to frontend: {"return_code":"SUCCESS","return_msg":"OK","transaction_id":"4200002509202502265952422950"}
+2025/02/26 22:25:54 Callback Summary: 支付成功
+2025/02/26 22:25:54 Transaction Data: &map[amount:map[currency:CNY payer_currency:CNY payer_total:2200 total:2200] appid:wx2399a59856058e2f attach:附加数据 bank_type:CCB_DEBIT mchid:1699276550 out_trade_no:202502262225216f6127 payer:map[openid:obxqX6zV_vgzMbNF4EYEazdrvoec] success_time:2025-02-26T22:25:53+08:00 trade_state:SUCCESS trade_state_desc:支付成功 trade_type:JSAPI transaction_id:4200002514202502267937674007]
+2025/02/26 22:25:54 Callback Response Sent: <xml><return_code>SUCCESS</return_code><return_msg>OK</return_msg></xml>
+2025/02/26 22:25:54 Response to frontend: {"return_code":"SUCCESS","return_msg":"OK","transaction_id":"4200002514202502267937674007"}
+2025/02/26 22:28:32 Callback Summary: 支付成功
+2025/02/26 22:28:32 Transaction Data: &map[amount:map[currency:CNY payer_currency:CNY payer_total:1500 total:1500] appid:wx2399a59856058e2f attach:附加数据 bank_type:CCB_DEBIT mchid:1699276550 out_trade_no:2025022622280278af40 payer:map[openid:obxqX6zV_vgzMbNF4EYEazdrvoec] success_time:2025-02-26T22:28:31+08:00 trade_state:SUCCESS trade_state_desc:支付成功 trade_type:JSAPI transaction_id:4200002496202502264575853533]
+2025/02/26 22:28:32 Callback Response Sent: <xml><return_code>SUCCESS</return_code><return_msg>OK</return_msg></xml>
+2025/02/26 22:28:32 Response to frontend: {"return_code":"SUCCESS","return_msg":"OK","transaction_id":"4200002496202502264575853533"}
+2025/02/26 22:33:51 Callback Summary: 支付成功
+2025/02/26 22:33:51 Transaction Data: &map[amount:map[currency:CNY payer_currency:CNY payer_total:1500 total:1500] appid:wx2399a59856058e2f attach:附加数据 bank_type:CCB_DEBIT mchid:1699276550 out_trade_no:202502262233464b460f payer:map[openid:obxqX6zV_vgzMbNF4EYEazdrvoec] success_time:2025-02-26T22:33:51+08:00 trade_state:SUCCESS trade_state_desc:支付成功 trade_type:JSAPI transaction_id:4200002497202502262037747653]
+2025/02/26 22:33:51 Callback Response Sent: <xml><return_code>SUCCESS</return_code><return_msg>OK</return_msg></xml>
+2025/02/26 22:33:51 Response to frontend: {"return_code":"SUCCESS","return_msg":"OK","transaction_id":"4200002497202502262037747653"}
+2025/02/26 22:38:55 Callback Summary: 支付成功
+2025/02/26 22:38:55 Transaction Data: &map[amount:map[currency:CNY payer_currency:CNY payer_total:1500 total:1500] appid:wx2399a59856058e2f attach:附加数据 bank_type:CCB_DEBIT mchid:1699276550 out_trade_no:20250226223848146322 payer:map[openid:obxqX6wnEQyLfwzY8s3IUZsTlUnY] success_time:2025-02-26T22:38:55+08:00 trade_state:SUCCESS trade_state_desc:支付成功 trade_type:JSAPI transaction_id:4200002612202502268425766625]
+2025/02/26 22:38:55 Callback Response Sent: <xml><return_code>SUCCESS</return_code><return_msg>OK</return_msg></xml>
+2025/02/26 22:38:55 Response to frontend: {"return_code":"SUCCESS","return_msg":"OK","transaction_id":"4200002612202502268425766625"}
+2025/02/26 22:44:57 Callback Summary: 支付成功
+2025/02/26 22:44:57 Transaction Data: &map[amount:map[currency:CNY payer_currency:CNY payer_total:1500 total:1500] appid:wx2399a59856058e2f attach:附加数据 bank_type:CCB_DEBIT mchid:1699276550 out_trade_no:202502262244503ad076 payer:map[openid:obxqX6zV_vgzMbNF4EYEazdrvoec] success_time:2025-02-26T22:44:56+08:00 trade_state:SUCCESS trade_state_desc:支付成功 trade_type:JSAPI transaction_id:4200002613202502266485871194]
+2025/02/26 22:44:57 Callback Response Sent: <xml><return_code>SUCCESS</return_code><return_msg>OK</return_msg></xml>
+2025/02/26 22:44:57 Response to frontend: {"return_code":"SUCCESS","return_msg":"OK","transaction_id":"4200002613202502266485871194"}
+2025/02/26 22:45:37 Callback Summary: 支付成功
+2025/02/26 22:45:37 Transaction Data: &map[amount:map[currency:CNY payer_currency:CNY payer_total:1500 total:1500] appid:wx2399a59856058e2f attach:附加数据 bank_type:CCB_DEBIT mchid:1699276550 out_trade_no:2025022622452920aa13 payer:map[openid:obxqX6zV_vgzMbNF4EYEazdrvoec] success_time:2025-02-26T22:45:37+08:00 trade_state:SUCCESS trade_state_desc:支付成功 trade_type:JSAPI transaction_id:4200002498202502268095201265]
+2025/02/26 22:45:37 Callback Response Sent: <xml><return_code>SUCCESS</return_code><return_msg>OK</return_msg></xml>
+2025/02/26 22:45:37 Response to frontend: {"return_code":"SUCCESS","return_msg":"OK","transaction_id":"4200002498202502268095201265"}
+2025/02/26 23:07:05 Callback Summary: 支付成功
+2025/02/26 23:07:05 Transaction Data: &map[amount:map[currency:CNY payer_currency:CNY payer_total:1500 total:1500] appid:wx2399a59856058e2f attach:附加数据 bank_type:OTHERS mchid:1699276550 out_trade_no:20250226230659ba8f1b payer:map[openid:obxqX645Rpw6GEKhFJcCChRhH2Ls] success_time:2025-02-26T23:07:05+08:00 trade_state:SUCCESS trade_state_desc:支付成功 trade_type:JSAPI transaction_id:4200002492202502264739303749]
+2025/02/26 23:07:05 Callback Response Sent: <xml><return_code>SUCCESS</return_code><return_msg>OK</return_msg></xml>
+2025/02/26 23:07:05 Response to frontend: {"return_code":"SUCCESS","return_msg":"OK","transaction_id":"4200002492202502264739303749"}
+2025/02/26 23:10:57 Callback Summary: 支付成功
+2025/02/26 23:10:57 Transaction Data: &map[amount:map[currency:CNY payer_currency:CNY payer_total:1500 total:1500] appid:wx2399a59856058e2f attach:附加数据 bank_type:OTHERS mchid:1699276550 out_trade_no:20250226231049d2ffe4 payer:map[openid:obxqX668ch6z74dDIx4xh3oECbxQ] success_time:2025-02-26T23:10:57+08:00 trade_state:SUCCESS trade_state_desc:支付成功 trade_type:JSAPI transaction_id:4200002509202502264468580797]
+2025/02/26 23:10:57 Callback Response Sent: <xml><return_code>SUCCESS</return_code><return_msg>OK</return_msg></xml>
+2025/02/26 23:10:57 Response to frontend: {"return_code":"SUCCESS","return_msg":"OK","transaction_id":"4200002509202502264468580797"}
+2025/02/26 23:11:53 Callback Summary: 支付成功
+2025/02/26 23:11:53 Transaction Data: &map[amount:map[currency:CNY payer_currency:CNY payer_total:1500 total:1500] appid:wx2399a59856058e2f attach:附加数据 bank_type:OTHERS mchid:1699276550 out_trade_no:20250226231142c68181 payer:map[openid:obxqX668ch6z74dDIx4xh3oECbxQ] success_time:2025-02-26T23:11:53+08:00 trade_state:SUCCESS trade_state_desc:支付成功 trade_type:JSAPI transaction_id:4200002612202502261340244002]
+2025/02/26 23:11:53 Callback Response Sent: <xml><return_code>SUCCESS</return_code><return_msg>OK</return_msg></xml>
+2025/02/26 23:11:53 Response to frontend: {"return_code":"SUCCESS","return_msg":"OK","transaction_id":"4200002612202502261340244002"}
+2025/02/28 23:05:36 Failed to decode request body: json: cannot unmarshal number into Go value of type struct { Appid string "json:\"appid\""; Mchid string "json:\"mchid\""; Description string "json:\"description\""; OutTradeNo string "json:\"outTradeNo\""; Attach string "json:\"attach\""; Total int64 "json:\"total\""; Openid string "json:\"openid\"" }
+2025/03/01 16:56:15 Callback Summary: 支付成功
+2025/03/01 16:56:15 Transaction Data: &map[amount:map[currency:CNY payer_currency:CNY payer_total:1 total:1] appid:wx2399a59856058e2f attach:附加数据 bank_type:OTHERS mchid:1699276550 out_trade_no:20250301165611778039 payer:map[openid:obxqX6_fk3bHjEcBPnmp1UAO6QTM] success_time:2025-03-01T16:56:15+08:00 trade_state:SUCCESS trade_state_desc:支付成功 trade_type:JSAPI transaction_id:4200002490202503015753762352]
+2025/03/01 16:56:15 Callback Response Sent: <xml><return_code>SUCCESS</return_code><return_msg>OK</return_msg></xml>
+2025/03/01 16:56:15 Response to frontend: {"return_code":"SUCCESS","return_msg":"OK","transaction_id":"4200002490202503015753762352"}
+2025/03/01 20:01:03 Failed to parse callback request: invalid notification, err: validate verify fail serial=[6B18D565C9DBA7BAD4DC7B33A628692B67F0F713] request-id=[] err=verify signature with public key err:crypto/rsa: verification error, request: &{Method:POST URL:/callback Proto:HTTP/1.1 ProtoMajor:1 ProtoMinor:1 Header:map[Accept:[*/*] Cache-Control:[no-cache] Connection:[upgrade] Content-Length:[923] Content-Type:[application/json] Pragma:[no-cache] User-Agent:[Mozilla/4.0] Wechatpay-Nonce:[q0rVbIWvBjNI] Wechatpay-Serial:[6B18D565C9DBA7BAD4DC7B33A628692B67F0F713] Wechatpay-Signature:[WECHATPAY/SIGNTEST/pBCoqQ7mtwZNIkaKS809UnSgdvIKBI42c779cufK+e3WFh8PFXcglVyyypH0Tsqz7nVkgRFy6l+K/7N0Urynn5TVxi10Q7GsqxhRwQEYxl3HjBa8Ax/zY5GL/xDw+UKYjeTxmF72tJIYzoC0Uc8aUsatSuKRD5kus0KfCJJTylsvt2KEOVfOwLzITdpVRiYKtJRyEIKwUFo4OC4pmZsmdwDyrAKSzZ+4DbOtG4ZWl2XnijdPtTt2nmP5zlR3iFC1YZ1PFB2rh/ep8T/rdM6wP6JYWmJEOFKbGIfLGPgF796CrL7/E7G4GLKx9lDOfH0g+gw==] Wechatpay-Signature-Type:[WECHATPAY2-SHA256-RSA2048] Wechatpay-Timestamp:[1740830463] X-Forwarded-For:[101.226.103.14] X-Forwarded-Proto:[https] X-Real-Ip:[101.226.103.14]] Body:{Reader:{"id":"b591ad5d-c371-51f0-8009-60f23ee83542","create_time":"2025-03-01T16:56:15+08:00","resource_type":"encrypt-resource","event_type":"TRANSACTION.SUCCESS","summary":"支付成功","resource":{"original_type":"transaction","algorithm":"AEAD_AES_256_GCM","ciphertext":"ldyAOLSWSOzajPSgw03/uKsC64vBa6G8uP2MolyOgC2JQmuR3YaWDrbp8S+728xLD0sGq2Q1r0xq5i1SbYYyCh7mGPc/tjvaseAE0Ja7m+OknbRnH2/YZbTN5mO51NHo2g8e0kzFUmYBMKDF+y8VmqnpPlqj26tkCT3k9Ewnc8Y5VJCP0p5L43gkLxVlX3MWiv8bViFa/bNCa/nNSLhGgaIlhGaPamJmi8ZvNldaEcNFiFi6uLdnxb35RON+RQpm9pFvyHoUzuXMp1MflZSAbOcKRO6AACChrwRr3xKswO334INpqDp5bkYVsYBPpQjgi//9QWLSYxdp+e/NTtnkV0uB8TDzxtBLPpxpXiT5S5FkPZLeNqUEkBMcvY5JupduyRkWY8ZkhDq5FYWTN7Jj1stWZ9YTdOgCevx6yp/vWvXJrAmgnR9a8b2jHW320///LKC3vcyC1AyEI20TaklRwattT7/pRP3/DMMzt16wrw9NKUQ3xNO38zIB8dCV1k09nVFJTr46hPOp3g5UnMQeqCoCLNWZvYXaiaqebwmiFeBK+ID5OkGReGc7kB6i8JxgMm/8icvK1LWFBZ3qFazw","associated_data":"transaction","nonce":"lH8oekcv64NY"}}} GetBody:<nil> ContentLength:923 TransferEncoding:[] Close:false Host:2s.2nicep.com Form:map[] PostForm:map[] MultipartForm:<nil> Trailer:map[] RemoteAddr:127.0.0.1:47522 RequestURI:/callback TLS:0xc000104000 Cancel:<nil> Response:<nil> Pattern:/callback ctx:0xc0000fe1e0 pat:0xc00031c240 matches:[] otherValues:map[]}
+2025/03/04 09:46:14 Failed to decode request body: json: cannot unmarshal number into Go value of type struct { Appid string "json:\"appid\""; Mchid string "json:\"mchid\""; Description string "json:\"description\""; OutTradeNo string "json:\"outTradeNo\""; Attach string "json:\"attach\""; Total int64 "json:\"total\""; Openid string "json:\"openid\"" }
+2025/03/07 14:41:44 Failed to decode request body: json: cannot unmarshal number into Go value of type struct { Appid string "json:\"appid\""; Mchid string "json:\"mchid\""; Description string "json:\"description\""; OutTradeNo string "json:\"outTradeNo\""; Attach string "json:\"attach\""; Total int64 "json:\"total\""; Openid string "json:\"openid\"" }
+2025/03/08 13:13:27 Failed to decode request body: invalid character 'a' looking for beginning of value
+2025/03/08 16:37:15 Failed to decode request body: invalid character 'a' looking for beginning of value
+2025/03/08 18:06:22 Failed to decode request body: invalid character 'a' looking for beginning of value
+2025/03/08 21:53:16 Failed to decode request body: invalid character 'a' looking for beginning of value
+2025/03/09 06:37:47 Failed to decode request body: json: cannot unmarshal number into Go value of type struct { Appid string "json:\"appid\""; Mchid string "json:\"mchid\""; Description string "json:\"description\""; OutTradeNo string "json:\"outTradeNo\""; Attach string "json:\"attach\""; Total int64 "json:\"total\""; Openid string "json:\"openid\"" }
+2025/03/14 12:29:30 Failed to decode request body: json: cannot unmarshal number into Go value of type struct { Appid string "json:\"appid\""; Mchid string "json:\"mchid\""; Description string "json:\"description\""; OutTradeNo string "json:\"outTradeNo\""; Attach string "json:\"attach\""; Total int64 "json:\"total\""; Openid string "json:\"openid\"" }
+2025/03/24 10:54:43 Failed to decode request body: invalid character '<' looking for beginning of value
+2025/03/24 10:54:44 Failed to decode request body: invalid character '-' in numeric literal
+2025/03/24 10:54:46 Failed to decode request body: invalid character 'u' looking for beginning of value
+2025/03/24 10:54:46 Failed to decode request body: invalid character 'd' looking for beginning of value
+2025/03/24 10:54:49 Failed to decode request body: invalid character '(' looking for beginning of value
+2025/03/24 10:54:51 Failed to decode request body: invalid character '-' in numeric literal
+2025/03/24 10:54:51 Failed to decode request body: invalid character 'd' looking for beginning of value
+2025/03/24 10:54:57 Failed to decode request body: invalid character 's' looking for beginning of value
+2025/03/24 10:54:58 Failed to decode request body: invalid character 'e' looking for beginning of value
+2025/03/24 10:54:58 Failed to decode request body: invalid character 'd' looking for beginning of value
+2025/03/24 10:54:59 Failed to decode request body: EOF
+2025/03/24 10:54:59 Payment request failed: error http response:[StatusCode: 400 Code: "PARAM_ERROR"
+Message: 输入源“/body/mchid”映射到值字段“直连商户号”字符串规则校验失败，字符串必须匹配正则表达式“^[1-9]\d*$”
+Detail:
+{
+  "location": "body",
+  "value": ""
+}
+Header:
+ - Content-Language=[zh-CN]
+ - Content-Length=[223]
+ - Keep-Alive=[timeout=8]
+ - Request-Id=[08839383BF0610F50218E2ADEEA30620BBA51728A8C703-268435461]
+ - Connection=[keep-alive]
+ - Cache-Control=[no-cache, must-revalidate]
+ - X-Content-Type-Options=[nosniff]
+ - Server=[nginx]
+ - Date=[Mon, 24 Mar 2025 02:54:59 GMT]
+ - Content-Type=[application/json; charset=utf-8]]
+2025/03/24 10:54:59 Failed to decode request body: invalid character '<' looking for beginning of value
+2025/03/24 10:54:59 Payment request failed: error http response:[StatusCode: 400 Code: "PARAM_ERROR"
+Message: 输入源“/body/mchid”映射到值字段“直连商户号”字符串规则校验失败，字符串必须匹配正则表达式“^[1-9]\d*$”
+Detail:
+{
+  "location": "body",
+  "value": ""
+}
+Header:
+ - Content-Type=[application/json; charset=utf-8]
+ - Keep-Alive=[timeout=8]
+ - Content-Language=[zh-CN]
+ - Server=[nginx]
+ - Content-Length=[223]
+ - Connection=[keep-alive]
+ - Cache-Control=[no-cache, must-revalidate]
+ - X-Content-Type-Options=[nosniff]
+ - Request-Id=[08839383BF0610BC0718C6CAC05520D6A40C288B9A04-268435461]
+ - Date=[Mon, 24 Mar 2025 02:54:59 GMT]]
+2025/03/24 10:55:00 Failed to decode request body: EOF
+2025/03/24 10:55:00 Failed to decode request body: invalid character 'e' looking for beginning of value
+2025/03/24 10:55:00 Failed to decode request body: EOF
+2025/03/24 10:55:01 Failed to decode request body: EOF
+2025/03/24 10:55:01 Failed to decode request body: invalid character 'u' looking for beginning of value
+2025/03/24 10:55:01 Failed to decode request body: invalid character 'u' looking for beginning of value
+2025/03/24 10:55:01 Failed to decode request body: invalid character 'd' looking for beginning of value
+2025/03/24 10:55:02 Failed to decode request body: invalid character 'm' looking for beginning of value
+2025/03/24 10:55:02 Failed to decode request body: invalid character 'u' looking for beginning of value
+2025/03/24 10:55:02 Failed to decode request body: invalid character 'r' looking for beginning of value
+2025/03/24 10:55:03 Failed to decode request body: invalid character 'u' looking for beginning of value
+2025/03/24 10:55:03 Failed to decode request body: invalid character 'u' looking for beginning of value
+2025/03/24 10:55:03 Payment request failed: error http response:[StatusCode: 400 Code: "PARAM_ERROR"
+Message: 输入源“/body/mchid”映射到值字段“直连商户号”字符串规则校验失败，字符串必须匹配正则表达式“^[1-9]\d*$”
+Detail:
+{
+  "location": "body",
+  "value": ""
+}
+Header:
+ - Server=[nginx]
+ - Keep-Alive=[timeout=8]
+ - Request-Id=[08879383BF0610A00718F9CD8C5820AD840E28CFD104-268435461]
+ - Content-Language=[zh-CN]
+ - Date=[Mon, 24 Mar 2025 02:55:03 GMT]
+ - Content-Type=[application/json; charset=utf-8]
+ - Content-Length=[223]
+ - Connection=[keep-alive]
+ - Cache-Control=[no-cache, must-revalidate]
+ - X-Content-Type-Options=[nosniff]]
+2025/03/24 10:55:04 Failed to decode request body: EOF
+2025/03/24 10:55:04 Failed to decode request body: EOF
+2025/03/24 10:55:04 Failed to decode request body: invalid character 'u' looking for beginning of value
+2025/03/24 10:55:05 Failed to decode request body: invalid character 'u' looking for beginning of value
+2025/03/24 10:55:06 Failed to decode request body: invalid character 'u' looking for beginning of value
+2025/03/24 10:55:06 Failed to decode request body: invalid character 'u' looking for beginning of value
+2025/03/24 10:55:07 Failed to decode request body: invalid character '_' looking for beginning of value
+2025/03/24 10:55:07 Failed to decode request body: invalid character 'u' looking for beginning of value
+2025/03/24 10:55:07 Failed to decode request body: invalid character 's' looking for beginning of value
+2025/03/24 10:55:07 Failed to decode request body: EOF
+2025/03/24 10:55:07 Failed to decode request body: invalid character '-' in numeric literal
+2025/03/24 10:55:08 Failed to decode request body: EOF
+2025/03/24 10:55:11 Failed to decode request body: invalid character 'e' looking for beginning of value
+2025/03/24 10:55:11 Failed to decode request body: invalid character '<' looking for beginning of value
+2025/03/24 10:55:15 Failed to decode request body: EOF
+2025/03/24 10:55:17 Failed to decode request body: invalid character '_' looking for beginning of value
+2025/03/24 10:55:17 Failed to decode request body: invalid character 'g' looking for beginning of value
+2025/03/24 10:55:32 Failed to decode request body: invalid character 'u' in literal false (expecting 'a')
+2025/03/24 10:55:50 Failed to decode request body: invalid character 'c' looking for beginning of value
+2025/03/24 10:55:54 Failed to decode request body: invalid character 'b' looking for beginning of value
+2025/03/24 10:55:54 Failed to decode request body: invalid character 'd' looking for beginning of value
+2025/03/24 10:55:54 Failed to decode request body: invalid character 'c' looking for beginning of value
+2025/04/11 15:32:33 http: TLS handshake error from 196.251.90.129:33338: EOF
+2025/04/12 18:42:19 http: TLS handshake error from 79.124.49.214:64915: tls: first record does not look like a TLS handshake
+2025/04/13 11:18:16 http: TLS handshake error from 79.124.49.214:65047: tls: first record does not look like a TLS handshake
+2025/04/14 06:17:06 http: TLS handshake error from 79.124.49.214:65298: tls: first record does not look like a TLS handshake
+2025/04/15 16:57:16 Payment request failed: error http response:[StatusCode: 400 Code: "PARAM_ERROR"
+Message: 输入源“/body/mchid”映射到值字段“直连商户号”字符串规则校验失败，字符串必须匹配正则表达式“^[1-9]\d*$”
+Detail:
+{
+  "location": "body",
+  "value": ""
+}
+Header:
+ - Content-Type=[application/json; charset=utf-8]
+ - Content-Length=[223]
+ - Connection=[keep-alive]
+ - Keep-Alive=[timeout=8]
+ - Content-Language=[zh-CN]
+ - Server=[nginx]
+ - Cache-Control=[no-cache, must-revalidate]
+ - X-Content-Type-Options=[nosniff]
+ - Request-Id=[08ECBEF8BF0610D50718BBC8C05520DEDB1B28F3E204-268435461]
+ - Date=[Tue, 15 Apr 2025 08:57:16 GMT]]
+2025/04/15 16:57:17 Payment request failed: error http response:[StatusCode: 400 Code: "PARAM_ERROR"
+Message: 输入源“/body/mchid”映射到值字段“直连商户号”字符串规则校验失败，字符串必须匹配正则表达式“^[1-9]\d*$”
+Detail:
+{
+  "location": "body",
+  "value": ""
+}
+Header:
+ - Content-Length=[223]
+ - Connection=[keep-alive]
+ - Request-Id=[08EDBEF8BF0610E20218F6C2EEA3062096B30F2895DE05-268435461]
+ - Server=[nginx]
+ - Date=[Tue, 15 Apr 2025 08:57:17 GMT]
+ - Content-Type=[application/json; charset=utf-8]
+ - Keep-Alive=[timeout=8]
+ - Cache-Control=[no-cache, must-revalidate]
+ - X-Content-Type-Options=[nosniff]
+ - Content-Language=[zh-CN]]
+2025/04/16 01:27:48 http: TLS handshake error from 196.251.116.49:48086: EOF
+2025/04/17 06:57:52 http: TLS handshake error from 79.124.49.214:64533: tls: first record does not look like a TLS handshake
+2025/04/17 10:27:41 Callback Summary: 支付成功
+2025/04/17 10:27:41 Transaction Data: &map[amount:map[currency:CNY payer_currency:CNY payer_total:1 total:1] appid:wx2399a59856058e2f attach:附加数据 bank_type:OTHERS mchid:1699276550 out_trade_no:20250417102726de37e7 payer:map[openid:obxqX6xPz4W2VtfGmpnSW-h68IUY] success_time:2025-04-17T10:27:41+08:00 trade_state:SUCCESS trade_state_desc:支付成功 trade_type:JSAPI transaction_id:4200002633202504172885380326]
+2025/04/17 10:27:41 Callback Response Sent: <xml><return_code>SUCCESS</return_code><return_msg>OK</return_msg></xml>
+2025/04/17 10:27:41 Response to frontend: {"return_code":"SUCCESS","return_msg":"OK","transaction_id":"4200002633202504172885380326"}
+2025/04/17 11:02:37 Callback Summary: 支付成功
+2025/04/17 11:02:37 Transaction Data: &map[amount:map[currency:CNY payer_currency:CNY payer_total:1 total:1] appid:wx2399a59856058e2f attach:附加数据 bank_type:OTHERS mchid:1699276550 out_trade_no:20250417110225b193d0 payer:map[openid:obxqX6xPz4W2VtfGmpnSW-h68IUY] success_time:2025-04-17T11:02:37+08:00 trade_state:SUCCESS trade_state_desc:支付成功 trade_type:JSAPI transaction_id:4200002641202504179100569569]
+2025/04/17 11:02:37 Callback Response Sent: <xml><return_code>SUCCESS</return_code><return_msg>OK</return_msg></xml>
+2025/04/17 11:02:37 Response to frontend: {"return_code":"SUCCESS","return_msg":"OK","transaction_id":"4200002641202504179100569569"}
+2025/04/17 20:03:51 http: TLS handshake error from 79.124.49.214:3023: tls: first record does not look like a TLS handshake
+2025/04/17 20:04:22 Failed to parse callback request: invalid notification, err: validate verify fail serial=[6B18D565C9DBA7BAD4DC7B33A628692B67F0F713] request-id=[] err=verify signature with public key err:crypto/rsa: verification error, request: &{Method:POST URL:/callback Proto:HTTP/1.1 ProtoMajor:1 ProtoMinor:1 Header:map[Accept:[*/*] Cache-Control:[no-cache] Connection:[upgrade] Content-Length:[923] Content-Type:[application/json] Pragma:[no-cache] User-Agent:[Mozilla/4.0] Wechatpay-Nonce:[0ui908096ZcN] Wechatpay-Serial:[6B18D565C9DBA7BAD4DC7B33A628692B67F0F713] Wechatpay-Signature:[WECHATPAY/SIGNTEST/ZWYS38hBrGnmDCTQRI4nv2QOVYMrEM4SGmqpmV04HjDVnY1pc4XIE4JSRLLruv+LKacwSdKfpLhIpqhgyHIolr8Zti7oOal6zZaauhPEEe61S7i8G/1mqMzaOXjNRJfNn6B9Sd4DPolkOl2YEY+tG0LEpSE50ccmUXaU6i6kWLJUGyowbexzQvMhXq/IisD/dMLFA/JCg6PNHQWfQfGOFUg1W3PIOTYPgr2PVZF6wkKWVEpRMXCQqNDuJTUIINbnaBf5/bdD5hVbypDqYUuXxj3H/q0U7VplbeY3UbKbcIiUyOWXJlbtYM3NJ5kFrsPtKdA==] Wechatpay-Signature-Type:[WECHATPAY2-SHA256-RSA2048] Wechatpay-Timestamp:[1744891462] X-Forwarded-For:[101.226.103.24] X-Forwarded-Proto:[https] X-Real-Ip:[101.226.103.24]] Body:{Reader:{"id":"c9fe8efb-8f08-5c05-8d68-42353d3c9e76","create_time":"2025-04-17T10:27:41+08:00","resource_type":"encrypt-resource","event_type":"TRANSACTION.SUCCESS","summary":"支付成功","resource":{"original_type":"transaction","algorithm":"AEAD_AES_256_GCM","ciphertext":"iuWI24NkAc9SkQpmLfPlVj92Gs2pNlslSntSw93oy5irm9nu74LHl8oX7DHYTNYjPbzdTRGhLOqzDSeeqw+KwqodKxFdHbiXg+gd5+PwWLaha0eo5tAkQrz4CF9qKaJ6rF3B0lsokhMDBQnrQ3ZMjpN+WlIF+ypm6Sd7gyMzvw0sUaih/rB/wWT/rwqXFY36CgUScow2axsVaAD5jCRgmz3uk8vz7Tu5xZfOalNqwya80fy9V6iLgFjIaLmAnzh1PZGeWaWBzKwFiEA6snqwMUWR82VhRw8jvJ+B9bcR2rs7C/3y8pTe5+P/iGsWEzSo7KyYFtapOatsNRCpxePR+7LEUYFBYc0i3WU5eKv2ytZAegEf0/1j5hsJRQgSm5EXmF4wOlK5Q1zbrClVkA4sfhJ4TgFeZe5vjY6Se2OKyOUhfKSSj8sbZjK4x48oDPTpPpSDXeJxqeFkEYZ909uYNIHZW3TS8BBL4GLSHIzLTH1+4vq2cHN6fnJeXIkPC3oaF+La8JARoGbUAK1VPbXLnQJKSpmJR8HKtonTSXOQXmgqyxNu/iXVbf4gb+SUDYowqcAKaXx2+65PZPuNvkrA","associated_data":"transaction","nonce":"2KhUsb2ULQU5"}}} GetBody:<nil> ContentLength:923 TransferEncoding:[] Close:false Host:2s.2nicep.com Form:map[] PostForm:map[] MultipartForm:<nil> Trailer:map[] RemoteAddr:127.0.0.1:51180 RequestURI:/callback TLS:0xc000070000 Cancel:<nil> Response:<nil> Pattern:/callback ctx:0xc00007c280 pat:0xc00031c240 matches:[] otherValues:map[]}
+2025/04/18 07:36:26 http: TLS handshake error from 45.135.193.101:61463: tls: first record does not look like a TLS handshake
+2025/04/18 13:33:34 http: TLS handshake error from 92.255.85.113:63230: tls: first record does not look like a TLS handshake
+2025/04/18 17:46:18 http: TLS handshake error from 79.124.49.214:64993: tls: first record does not look like a TLS handshake
+2025/04/18 22:10:00 http: TLS handshake error from 46.101.112.70:58606: EOF
+2025/04/19 15:42:43 http: TLS handshake error from 167.94.138.164:53124: read tcp 192.168.2.88:13888->167.94.138.164:53124: read: connection reset by peer
+2025/04/19 15:43:27 http: TLS handshake error from 167.94.138.164:53924: tls: client offered only unsupported versions: [302 301]
+2025/04/19 15:43:29 http: TLS handshake error from 167.94.138.164:53998: tls: client offered only unsupported versions: [301]
+2025/04/19 15:43:33 http: TLS handshake error from 167.94.138.164:54026: tls: client offered only unsupported versions: []
+2025/04/19 20:22:55 http: TLS handshake error from 199.45.155.72:42532: read tcp 192.168.2.88:13888->199.45.155.72:42532: read: connection reset by peer
+2025/04/19 20:22:58 http: TLS handshake error from 199.45.155.72:42594: tls: no cipher suite supported by both client and server
+2025/04/19 20:22:58 http: TLS handshake error from 199.45.155.72:38030: tls: client requested unsupported application protocols ([http/0.9 http/1.0 spdy/1 spdy/2 spdy/3 h2c hq])
+2025/04/19 20:22:58 http: TLS handshake error from 199.45.155.72:38034: tls: client requested unsupported application protocols ([hq h2c spdy/3 spdy/2 spdy/1 http/1.0 http/0.9])
+2025/04/19 20:22:59 http: TLS handshake error from 199.45.155.72:38056: tls: client offered only unsupported versions: [302 301]
+2025/04/19 20:23:01 http: TLS handshake error from 199.45.155.72:38060: read tcp 192.168.2.88:13888->199.45.155.72:38060: read: connection reset by peer
+2025/04/19 20:23:06 http: TLS handshake error from 199.45.155.72:38066: read tcp 192.168.2.88:13888->199.45.155.72:38066: read: connection reset by peer
+2025/04/19 20:23:21 http: TLS handshake error from 199.45.155.72:42514: read tcp 192.168.2.88:13888->199.45.155.72:42514: read: connection reset by peer
+2025/04/19 20:23:22 http: TLS handshake error from 199.45.155.72:38094: read tcp 192.168.2.88:13888->199.45.155.72:38094: read: connection reset by peer
+2025/04/19 20:23:35 http: TLS handshake error from 199.45.155.72:38082: read tcp 192.168.2.88:13888->199.45.155.72:38082: read: connection reset by peer
+2025/04/20 19:13:03 http: TLS handshake error from 196.251.116.100:34846: EOF
+2025/04/21 05:12:10 http: TLS handshake error from 167.94.138.177:59756: tls: client offered only unsupported versions: [302 301]
+2025/04/21 05:12:13 http: TLS handshake error from 167.94.138.177:59770: tls: client offered only unsupported versions: [301]
+2025/04/21 05:12:17 http: TLS handshake error from 167.94.138.177:40798: tls: client offered only unsupported versions: []
+2025/04/21 22:09:04 http: TLS handshake error from 79.124.49.214:64866: tls: first record does not look like a TLS handshake
+2025/04/22 19:11:07 http: TLS handshake error from 79.124.49.214:64710: tls: first record does not look like a TLS handshake
+2025/04/23 04:12:06 http: TLS handshake error from 167.94.138.198:52004: tls: client offered only unsupported versions: [302 301]
+2025/04/23 04:12:08 http: TLS handshake error from 167.94.138.198:45958: tls: client offered only unsupported versions: [301]
+2025/04/23 04:12:11 http: TLS handshake error from 167.94.138.198:45974: tls: client offered only unsupported versions: []
+2025/04/23 11:17:34 http: TLS handshake error from 45.135.193.67:64461: tls: first record does not look like a TLS handshake
+2025/04/23 19:30:45 http: TLS handshake error from 79.124.49.214:64668: tls: first record does not look like a TLS handshake
+2025/04/24 10:41:41 http: TLS handshake error from 206.168.34.116:38380: tls: client offered only unsupported versions: [302 301]
+2025/04/24 10:41:44 http: TLS handshake error from 206.168.34.116:38396: tls: client offered only unsupported versions: [301]
+2025/04/24 10:41:48 http: TLS handshake error from 206.168.34.116:45082: tls: client offered only unsupported versions: []
+2025/04/25 20:45:23 http: TLS handshake error from 167.94.138.197:47888: tls: client offered only unsupported versions: [302 301]
+2025/04/25 20:45:25 http: TLS handshake error from 167.94.138.197:58574: tls: client offered only unsupported versions: [301]
+2025/04/25 20:45:28 http: TLS handshake error from 167.94.138.197:58600: tls: client offered only unsupported versions: []
+2025/04/25 20:57:19 http: TLS handshake error from 87.121.84.187:48608: tls: first record does not look like a TLS handshake
+2025/04/27 08:45:53 http: TLS handshake error from 162.142.125.34:56612: tls: client offered only unsupported versions: [302 301]
+2025/04/27 08:45:55 http: TLS handshake error from 162.142.125.34:34270: tls: client offered only unsupported versions: [301]
+2025/04/27 08:45:59 http: TLS handshake error from 162.142.125.34:34286: tls: client offered only unsupported versions: []
+2025/04/28 18:01:28 http: TLS handshake error from 134.209.202.62:47918: tls: first record does not look like a TLS handshake
+2025/04/29 05:52:24 http: TLS handshake error from 206.168.34.202:50588: tls: client offered only unsupported versions: [302 301]
+2025/04/29 05:52:29 http: TLS handshake error from 206.168.34.202:55068: tls: client offered only unsupported versions: [301]
+2025/04/29 05:52:33 http: TLS handshake error from 206.168.34.202:55086: tls: client offered only unsupported versions: []
+2025/04/30 08:49:39 http: TLS handshake error from 162.142.125.125:59122: tls: client offered only unsupported versions: [302 301]
+2025/04/30 08:49:40 http: TLS handshake error from 162.142.125.125:59124: tls: client offered only unsupported versions: [301]
+2025/04/30 08:49:43 http: TLS handshake error from 162.142.125.125:59140: tls: client offered only unsupported versions: []
+2025/04/30 18:38:26 http: TLS handshake error from 185.147.124.63:64172: tls: first record does not look like a TLS handshake
+2025/04/30 19:23:56 http: TLS handshake error from 196.251.118.194:44884: EOF
+2025/05/01 01:04:51 http: TLS handshake error from 167.94.138.197:46652: read tcp 192.168.2.88:13888->167.94.138.197:46652: read: connection reset by peer
+2025/05/01 01:04:52 http: TLS handshake error from 167.94.138.197:46686: read tcp 192.168.2.88:13888->167.94.138.197:46686: read: connection reset by peer
+2025/05/01 01:04:52 http: TLS handshake error from 167.94.138.197:46720: tls: no cipher suite supported by both client and server
+2025/05/01 01:04:54 http: TLS handshake error from 167.94.138.197:37886: tls: client requested unsupported application protocols ([http/0.9 http/1.0 spdy/1 spdy/2 spdy/3 h2c hq])
+2025/05/01 01:04:54 http: TLS handshake error from 167.94.138.197:37914: tls: client requested unsupported application protocols ([hq h2c spdy/3 spdy/2 spdy/1 http/1.0 http/0.9])
+2025/05/01 01:04:56 http: TLS handshake error from 167.94.138.197:37916: tls: client offered only unsupported versions: [302 301]
+2025/05/01 01:05:02 http: TLS handshake error from 167.94.138.197:37926: read tcp 192.168.2.88:13888->167.94.138.197:37926: read: connection reset by peer
+2025/05/01 01:05:03 http: TLS handshake error from 167.94.138.197:37962: read tcp 192.168.2.88:13888->167.94.138.197:37962: read: connection reset by peer
+2025/05/01 01:05:04 http: TLS handshake error from 167.94.138.197:45832: read tcp 192.168.2.88:13888->167.94.138.197:45832: read: connection reset by peer
+2025/05/01 01:05:06 http: TLS handshake error from 167.94.138.197:45858: read tcp 192.168.2.88:13888->167.94.138.197:45858: read: connection reset by peer
+2025/05/02 01:25:07 http: TLS handshake error from 167.94.138.192:52722: read tcp 192.168.2.88:13888->167.94.138.192:52722: read: connection reset by peer
+2025/05/02 01:25:09 http: TLS handshake error from 167.94.138.192:52744: read tcp 192.168.2.88:13888->167.94.138.192:52744: read: connection reset by peer
+2025/05/02 01:25:09 http: TLS handshake error from 167.94.138.192:52822: tls: no cipher suite supported by both client and server
+2025/05/02 01:25:12 http: TLS handshake error from 167.94.138.192:52838: tls: client requested unsupported application protocols ([http/0.9 http/1.0 spdy/1 spdy/2 spdy/3 h2c hq])
+2025/05/02 01:25:14 http: TLS handshake error from 167.94.138.192:56290: tls: client requested unsupported application protocols ([hq h2c spdy/3 spdy/2 spdy/1 http/1.0 http/0.9])
+2025/05/02 01:25:16 http: TLS handshake error from 167.94.138.192:56302: tls: client offered only unsupported versions: [302 301]
+2025/05/02 01:25:18 http: TLS handshake error from 167.94.138.192:56322: read tcp 192.168.2.88:13888->167.94.138.192:56322: read: connection reset by peer
+2025/05/02 01:25:19 http: TLS handshake error from 167.94.138.192:56352: read tcp 192.168.2.88:13888->167.94.138.192:56352: read: connection reset by peer
+2025/05/02 01:25:21 http: TLS handshake error from 167.94.138.192:56374: read tcp 192.168.2.88:13888->167.94.138.192:56374: read: connection reset by peer
+2025/05/02 01:25:27 http: TLS handshake error from 167.94.138.192:56410: read tcp 192.168.2.88:13888->167.94.138.192:56410: read: connection reset by peer
+2025/05/02 08:26:48 http: TLS handshake error from 196.251.89.163:47284: EOF
+2025/05/02 09:42:19 http: TLS handshake error from 167.94.138.161:58638: tls: client offered only unsupported versions: [302 301]
+2025/05/02 09:42:24 http: TLS handshake error from 167.94.138.161:58688: tls: client offered only unsupported versions: [301]
+2025/05/02 09:42:30 http: TLS handshake error from 167.94.138.161:41678: tls: client offered only unsupported versions: []
+2025/05/02 13:56:21 http: TLS handshake error from 167.94.138.121:49958: tls: client offered only unsupported versions: [302 301]
+2025/05/02 13:56:26 http: TLS handshake error from 167.94.138.121:49966: tls: client offered only unsupported versions: [301]
+2025/05/02 13:56:34 http: TLS handshake error from 167.94.138.121:46390: tls: client offered only unsupported versions: []
+2025/05/03 01:25:21 http: TLS handshake error from 185.147.124.133:60709: tls: first record does not look like a TLS handshake
+2025/05/03 21:49:45 http: TLS handshake error from 206.168.34.56:58542: tls: client offered only unsupported versions: [302 301]
+2025/05/03 21:49:49 http: TLS handshake error from 206.168.34.56:51352: tls: client offered only unsupported versions: [301]
+2025/05/03 21:49:51 http: TLS handshake error from 206.168.34.56:51366: tls: client offered only unsupported versions: []
+2025/05/04 16:52:26 http: TLS handshake error from 45.135.193.68:65226: tls: first record does not look like a TLS handshake
+2025/05/04 18:05:23 http: TLS handshake error from 162.142.125.115:38150: read tcp 192.168.2.88:13888->162.142.125.115:38150: read: connection reset by peer
+2025/05/04 18:06:00 http: TLS handshake error from 162.142.125.115:48510: tls: client offered only unsupported versions: [302 301]
+2025/05/04 18:06:05 http: TLS handshake error from 162.142.125.115:48520: tls: client offered only unsupported versions: [301]
+2025/05/04 18:06:10 http: TLS handshake error from 162.142.125.115:44418: tls: client offered only unsupported versions: []
+2025/05/04 18:39:37 http: TLS handshake error from 45.135.193.68:64553: tls: first record does not look like a TLS handshake
+2025/05/05 11:09:58 http: TLS handshake error from 185.147.124.133:62170: tls: first record does not look like a TLS handshake
+2025/05/05 23:20:49 http: TLS handshake error from 206.168.34.116:36976: EOF
+2025/05/06 11:03:45 http: TLS handshake error from 185.147.124.133:61499: tls: first record does not look like a TLS handshake

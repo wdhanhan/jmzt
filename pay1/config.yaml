@@ -1,0 +1,15 @@
+# 配置文件: config.yaml
+
+server:
+  port: 9999                       # 服务器端口
+  tls:
+    cert_file: "cert/2s.crt"            # HTTPS 证书文件路径
+    key_file: "cert/2s.key"              # HTTPS 密钥文件路径
+
+wechatpay:
+  mch_id: "1663775705"                             # 商户号
+  mch_certificate_serial_number: "4754582F299BC75B23263C2B0FF2AA1C8180997F" # 商户证书序列号
+  mch_api_v3_key: "rh789899rh789899rh789899rh789899"    # 商户 APIv3 密钥
+  private_key_path: "cert/apiclient_key.pem" # 商户私钥文件路径
+
+

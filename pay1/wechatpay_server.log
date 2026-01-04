@@ -1,0 +1,15 @@
+2024/11/16 23:05:02 main.go:196: 日志初始化完成.
+2024/11/16 23:05:02 main.go:208: 初始化微信支付客户端...
+2024/11/16 23:05:02 main.go:211: 初始化微信支付客户端失败: init client setting err:error http response:[StatusCode: 401 Code: "SIGN_ERROR"
+Message:  签名信息错误，验签失败
+Header:
+ - Server=[nginx]
+ - Connection=[keep-alive]
+ - Content-Language=[zh-CN]
+ - Date=[Sat, 16 Nov 2024 15:05:02 GMT]
+ - Content-Type=[application/json; charset=utf-8]
+ - Content-Length=[68]
+ - Keep-Alive=[timeout=8]
+ - Cache-Control=[no-cache, must-revalidate]
+ - X-Content-Type-Options=[nosniff]
+ - Request-Id=[089EE9E2B906109E06189A88ECF50120C10528A9B702-270924360]]
