@@ -1,0 +1,188 @@
+.page{
+  background-color: $bg-color;
+}
+
+.tab-info{
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 100;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  width: 100%;
+  height: 100rpx;
+  background-color: $bg-back-color;
+  .item{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 50%;
+    height: 100%;
+    border-bottom: 2px solid transparent;
+    .text{
+      font-size: 28rpx;
+      color: $text-color;
+    }
+  }
+  .active{
+    border-bottom: 2px solid $base;
+    .text{
+      font-weight: bold;
+      color: $base;
+    }
+  }
+}
+
+.order-list{
+  width: 100%;
+  margin-top: 120rpx;
+  padding: 0 30rpx;
+  box-sizing: border-box;
+  .list{
+    width: 100%;
+    background-color: $bg-back-color;
+    border-radius: 20rpx;
+    margin-bottom: 20rpx;
+    .shop-status{
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+      height: 80rpx;
+      padding: 0 30rpx;
+      border-bottom: 1px solid $bg-color;
+      .shop{
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        .icon{
+          width: 38rpx;
+          height: 38rpx;
+          margin-right: 10rpx;
+        }
+        .text{
+          font-size: 26rpx;
+          color: $text-color;
+        }
+      }
+      .status{
+        display: flex;
+        align-items: center;
+        .text{
+          font-size: 26rpx;
+          color: $text-assist-color;
+        }
+        .success{
+          font-size: 26rpx;
+          color: $base;
+        }
+        .green-status{
+          font-size: 26rpx;
+          color: #158c15;
+        }
+        .red-status{
+          font-size: 26rpx;
+          color: red;
+        }
+      }
+    }
+    .goods-item{
+      width: 100%;
+      padding: 0 30rpx;
+      .item{
+        width: 100%;
+        .goods{
+          display: flex;
+          flex-direction: row;
+          align-items: center;
+          width: 100%;
+          height: 200rpx;
+          .pic{
+            display: flex;
+            align-items: center;
+            margin-right: 20rpx;
+            .image{
+              width: 140rpx;
+              height: 140rpx;
+            }
+          }
+          .name{
+            flex: 1;
+            .text{
+              width: 100%;
+              height: 80rpx;
+              line-height: 40rpx;
+              lines:2;
+              text-overflow: ellipsis;
+              font-size: 28rpx;
+              color: $text-color;
+            }
+          }
+          .price-number{
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin-left: 10rpx;
+            .price{
+              display: flex;
+              flex-direction: row;
+              align-items: flex-end;
+              margin-bottom: 10rpx;
+              .min{
+                font-size: 22rpx;
+                font-weight: bold;
+                color: $text-color;
+              }
+              .max{
+                font-weight: bold;
+                font-size: 34rpx;
+                color: $text-color;
+              }
+            }
+            .number{
+              display: flex;
+              flex-direction: row;
+              align-items: center;
+              .text{
+                font-size: 22rpx;
+                color: $text-color;
+              }
+            }
+          }
+        }
+        .btn-info{
+          display: flex;
+          flex-direction: row;
+          align-items: center;
+          justify-content: flex-end;
+          width: 100%;
+          height: 100rpx;
+          .btn{
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: center;
+            width: 160rpx;
+            height: 60rpx;
+            margin-left: 20rpx;
+            border: 1px solid $text-color;
+            border-radius: 60rpx;
+            .text{
+              font-size: 28rpx;
+              color: $text-color;
+            }
+          }
+          .active{
+            border: 1px solid $base;
+            .text{
+              color: $base;
+            }
+          }
+        }
+      }
+    }
+  }
+}

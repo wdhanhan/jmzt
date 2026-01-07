@@ -1,0 +1,70 @@
+<template>
+	<!-- #ifdef APP -->
+	<scroll-view style="flex:1" class="page">
+	<!-- #endif -->
+    <view class="setting-item">
+      <view class="item">
+        <view class="title">
+          <text class="text">账户安全</text>
+        </view>
+        <view class="content">
+          <text class="text">账户安全保证</text>
+          <image src="/static/images/icon/more_right.png" class="more"></image>
+        </view>
+      </view>
+      <view class="item">
+        <view class="title">
+          <text class="text">支付设置</text>
+        </view>
+        <view class="content">
+          <image src="/static/images/icon/more_right.png" class="more"></image>
+        </view>
+      </view>
+      <view class="item">
+        <view class="title">
+          <text class="text">关于</text>
+        </view>
+        <view class="content">
+          <image src="/static/images/icon/more_right.png" class="more"></image>
+        </view>
+      </view>
+      <view class="item">
+        <view class="title">
+          <text class="text">隐私设置</text>
+        </view>
+        <view class="content">
+          <image src="/static/images/icon/more_right.png" class="more"></image>
+        </view>
+      </view>
+    </view>
+<!--    退出登录-->
+    <view class="login-out" @click="onLoginOut">
+      <text class="text">退出登录</text>
+    </view>
+	<!-- #ifdef APP -->
+	</scroll-view>
+	<!-- #endif -->
+</template>
+
+<script>
+	export default {
+		data() {
+			return {
+
+			}
+		},
+		methods: {
+			/**
+			 * 退出登录点击
+			 */
+			onLoginOut(){
+				uni.setStorageSync('isLogin',false);
+				uni.navigateBack();
+			}
+		}
+	}
+</script>
+
+<style lang="scss">
+  @import "setting.scss";
+</style>

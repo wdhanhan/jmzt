@@ -1,0 +1,3 @@
+@import "../../../uvue.wxss";
+:host{display:flex;flex-direction:column}
+.page{background-color:#f8f8f8}

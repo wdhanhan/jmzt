@@ -1,0 +1,206 @@
+
+.list-item{
+  padding: 0 30rpx;
+  margin-bottom: 20rpx;
+  .item{
+    width: 100%;
+    height: 340rpx;
+    padding: 0 20rpx;
+    background-color: $bg-back-color;
+    border-radius: 20rpx;
+    .shop-status{
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+      height: 100rpx;
+      .shop{
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        .icon{
+          width: 38rpx;
+          height: 38rpx;
+          margin-right: 10rpx;
+        }
+        .text{
+          font-size: 26rpx;
+          font-weight: bold;
+          color: $text-color;
+        }
+        .more{
+          width: 34rpx;
+          height: 34rpx;
+        }
+      }
+      .status{
+        display: flex;
+        align-items: center;
+        .text{
+          font-size: 26rpx;
+          color: $text-assist-color;
+        }
+        .success{
+          font-size: 26rpx;
+          color: $base;
+        }
+        .green-status{
+          font-size: 26rpx;
+          color: #158c15;
+        }
+        .red-status{
+          font-size: 26rpx;
+          color: red;
+        }
+      }
+    }
+    .goods-info{
+      width: 100%;
+      height: 140rpx;
+      .goods{
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        width: 100%;
+        height: 100%;
+        .pic{
+          display: flex;
+          align-items: center;
+          margin-right: 20rpx;
+          .image{
+            width: 140rpx;
+            height: 140rpx;
+          }
+        }
+        .name{
+          flex: 1;
+          .text{
+            width: 100%;
+            height: 80rpx;
+            line-height: 40rpx;
+            lines:2;
+            text-overflow: ellipsis;
+            font-size: 28rpx;
+            color: $text-color;
+          }
+        }
+        .price-number{
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          margin-left: 10rpx;
+          .price{
+            display: flex;
+            flex-direction: row;
+            align-items: flex-end;
+            margin-bottom: 10rpx;
+            .min{
+              font-size: 22rpx;
+              font-weight: bold;
+              color: $text-color;
+            }
+            .max{
+              font-weight: bold;
+              font-size: 34rpx;
+              color: $text-color;
+            }
+          }
+          .number{
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            .text{
+              font-size: 22rpx;
+              color: $text-color;
+            }
+          }
+        }
+      }
+      .goods-many{
+        display: flex;
+        flex-direction: row;
+        width: 100%;
+        height: 100%;
+        .goods-pic{
+          display: flex;
+          flex-direction: row;
+          flex: 1;
+          .pic{
+            width: 140rpx;
+            height: 140rpx;
+            margin-right: 10rpx;
+            .image{
+              width: 140rpx;
+              height: 140rpx;
+              border-radius: 10rpx;
+            }
+          }
+        }
+        .price-number{
+          display: flex;
+          flex-direction: column;
+          align-items: flex-end;
+          justify-content: center;
+          width: 160rpx;
+          margin-left: 10rpx;
+          .price{
+            display: flex;
+            flex-direction: row;
+            align-items: flex-end;
+            margin-bottom: 10rpx;
+            .min{
+              font-size: 22rpx;
+              font-weight: bold;
+              color: $text-color;
+            }
+            .max{
+              font-weight: bold;
+              font-size: 34rpx;
+              color: $text-color;
+            }
+          }
+          .number{
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            .text{
+              font-size: 22rpx;
+              color: $text-color;
+            }
+          }
+        }
+      }
+    }
+    .order-btn{
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: flex-end;
+      width: 100%;
+      height: 100rpx;
+      .btn{
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
+        width: 160rpx;
+        height: 60rpx;
+        margin-left: 20rpx;
+        border: 1px solid $text-color;
+        border-radius: 60rpx;
+        .text{
+          font-size: 28rpx;
+          color: $text-color;
+        }
+      }
+      .active{
+        border: 1px solid $base;
+        .text{
+          color: $base;
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,1 @@
+"use strict";const e=require("../../common/vendor.js"),c=e.defineComponent({data:()=>({checked:!1})});const n=e._export_sfc(c,[["render",function(e,c,n,r,t,o){return{a:t.checked}}]]);wx.createPage(n);

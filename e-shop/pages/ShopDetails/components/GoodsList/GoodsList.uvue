@@ -1,0 +1,124 @@
+<template>
+  <view class="head-info" :style="{height: (statusBarHeight+50)+'px',paddingTop: statusBarHeight+'px'}" v-if="isSearch">
+    <view class="search-info">
+      <view class="back" @click="onBack">
+        <image src="/static/images/icon/back_icon.png" class="image"></image>
+      </view>
+      <view class="search">
+        <image src="/static/images/icon/fdj_icon.png" class="image"></image>
+        <input type="text" placeholder="请输入搜索内容" class="input"/>
+      </view>
+      <view class="btn">
+        <text class="text">搜索</text>
+      </view>
+    </view>
+  </view>
+  <!--    筛选-->
+  <view class="filtrate-info" :style="{top: isSearch ? (statusBarHeight+50)+'px' : 0}">
+    <view class="filtrate-item">
+      <view class="item active">
+        <view class="title">
+          <text class="text">推荐</text>
+        </view>
+      </view>
+      <view class="item">
+        <view class="title">
+          <text class="text">销量</text>
+        </view>
+      </view>
+      <view class="item">
+        <view class="title">
+          <text class="text">价格</text>
+        </view>
+        <view class="cut">
+          <image src="/static/images/icon/sort_icon.png" class="up"></image>
+        </view>
+      </view>
+    </view>
+  </view>
+  <view :style="{paddingBottom: (statusBarBottom + 50) + 'px',marginTop: isSearch ? (statusBarHeight+50)+'px' : 0}">
+    <!--    商品-->
+    <view class="goods-info">
+      <view class="goods-list">
+        <view class="list" v-for="(item,index) in goodsList"
+              @click="onGoodsItem(item)"
+              :key="index">
+          <view class="pic">
+            <image :src="item.pic" class="image"></image>
+          </view>
+          <view class="info">
+            <view class="title">
+              <text class="text">{{item.name}}</text>
+            </view>
+            <view class="sales-volume">
+              <text class="text">{{item.salesVolume}}件售出</text>
+            </view>
+            <view class="price-info">
+              <view class="price">
+                <text class="min">￥</text>
+                <text class="max">{{formatPrice(item.price as number,0)}}</text>
+                <text class="min" v-if="formatPrice(item.price as number,1)">.{{formatPrice(item.price as number,1)}}</text>
+              </view>
+              <view class="old-price">
+                <text class="text">￥{{item.originalPrice}}</text>
+              </view>
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+</template>
+
+<script>
+import {goodsData,goodsItems} from '@/mock/goodsData.uts'
+	export default {
+		data() {
+			return {
+        statusBarHeight: 0,
+        statusBarBottom: 0,
+        goodsList: goodsData as Array<goodsItems>,
+			};
+		},
+    props:{
+      isSearch: {
+        type: Boolean,
+        default: false,
+      }
+    },
+    mounted() {
+      let windowInfo = uni.getWindowInfo();
+      this.statusBarHeight = windowInfo.statusBarHeight;
+      this.statusBarBottom = windowInfo.safeAreaInsets.bottom;
+    },
+    methods: {
+      onBack(){
+        uni.navigateBack();
+      },
+      formatPrice(price: Number,type: Number): string{
+        let strPrice = price.toString();
+        let start:string = strPrice.split('.')[0];
+        let end:string = '';
+        try {
+          end = strPrice.split('.')[1]
+        }catch (e){
+          end = '';
+        }
+
+        return type === 0 ? start : end
+      },
+      /**
+       * 商品点击
+       */
+      onGoodsItem(item: goodsItems){
+        uni.navigateTo({
+          url: `/pages/GoodsDetail/GoodsDetail?goodsId=${item.id}`
+        })
+      },
+    },
+	}
+</script>
+
+<style lang="scss">
+  @import "GoodsList.scss";
+</style>

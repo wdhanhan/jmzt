@@ -1,0 +1,397 @@
+<template>
+  <cat-popup ref="CatPopup" mode="bottom">
+    <view class="attr-info" :style="{ paddingBottom: (statusBarBottom + 20) + 'px' }">
+      <!-- 关闭按钮 -->
+      <view class="close" @click="close">
+        <image src="/static/images/icon/close_icon.png" class="image"></image>
+      </view>
+
+      <!-- 顶部商品 + 当前选中的 SKU -->
+      <view class="goods-data">
+        <view class="pic">
+          <image :src="displayPic" class="image"></image>
+        </view>
+        <view class="data">
+          <view class="title">
+            <text class="text">{{ info.name }}</text>
+          </view>
+          <view class="attr">
+            <text class="text">已选：</text>
+            <text class="text">{{ selectedSkuText }}</text>
+          </view>
+          <view class="price">
+            <view class="selling-price">
+              <text class="min">￥</text>
+              <text class="max">{{ displayPrice }}</text>
+            </view>
+          </view>
+        </view>
+      </view>
+
+      <!-- 👇 这里改成：一条 SKU 一条记录（不拆分类） -->
+      <scroll-view class="attr-select">
+        <view
+          class="sku-item"
+          v-for="(sku, index) in info.skus"
+          :key="sku.sku_id || index"
+          :class="{ active: index === selectedSkuIndex }"
+          @click="selectSku(index)"
+        >
+          <view class="sku-left">
+            <image
+              v-if="sku.image || info.pic || (info.images && info.images.length)"
+              :src="sku.image || info.pic || info.images[0]"
+              class="sku-image"
+            ></image>
+          </view>
+
+          <view class="sku-right">
+            <view class="sku-name">
+<text class="text">
+  {{ formatSkuName(sku, index) }}
+</text>
+            </view>
+
+            <view class="sku-price-stock">
+              <text class="price">￥{{ sku.price || info.price || 0 }}</text>
+              <text class="stock" v-if="sku.stock !== undefined">
+                库存：{{ sku.stock }}
+              </text>
+            </view>
+          </view>
+        </view>
+
+        <!-- 没有 SKU 的兜底 -->
+        <view v-if="!info.skus || info.skus.length === 0" class="empty-sku">
+          <text class="text">暂无可选规格</text>
+        </view>
+      </scroll-view>
+
+      <!-- 数量 -->
+      <view class="goods-number">
+        <view class="title">
+          <text class="text">数量</text>
+        </view>
+        <view class="number">
+          <view class="sub" @click="changeQty(-1)">
+            <image src="/static/images/icon/sub_icon2.png" class="image"></image>
+          </view>
+          <view class="num">
+            <text class="text">{{ quantity }}</text>
+          </view>
+          <view class="add" @click="changeQty(1)">
+            <image src="/static/images/icon/add_icon2.png" class="image"></image>
+          </view>
+        </view>
+      </view>
+
+      <!-- 底部按钮 -->
+      <view class="attr-btn">
+        <view class="btn" v-if="btnType === 'cart'" @click="onAddCart">
+          <text class="text">加入购物车</text>
+        </view>
+        <view class="btn" v-if="btnType === 'buy'" @click="onBuy">
+          <text class="text">立即购买</text>
+        </view>
+      </view>
+    </view>
+  </cat-popup>
+</template>
+
+<script>
+import CatPopup from "@/components/CatPopup/CatPopup.uvue";
+
+const API_BASE = "https://wdxwhdglzx.jzzw-tech.cn";
+
+export default {
+  components: {
+    CatPopup,
+  },
+
+  props: {
+    // 直接用后端 /api/products/:id 返回的 data
+    info: {
+      type: Object,
+      default() {
+        return {
+          id: 0,
+          name: "",
+          price: 0,
+          pic: "",
+          images: [],
+          skus: [],
+        };
+      },
+    },
+  },
+
+  data() {
+    return {
+      statusBarBottom: 0,
+      btnType: "",           // 'cart' | 'buy'
+      selectedSkuIndex: 0,   // 当前选中的 SKU 下标
+      quantity: 1,           // 数量
+    };
+  },
+
+  mounted() {
+    const windowInfo = uni.getWindowInfo();
+    this.statusBarBottom = windowInfo.safeAreaInsets
+      ? windowInfo.safeAreaInsets.bottom
+      : 0;
+
+    // 默认选中第一个 sku
+    if (this.info && this.info.skus && this.info.skus.length > 0) {
+      this.selectedSkuIndex = 0;
+    }
+  },
+
+  computed: {
+    // 当前选中的 sku
+    currentSku() {
+      if (this.info && this.info.skus && this.info.skus.length > 0) {
+        return this.info.skus[this.selectedSkuIndex] || {};
+      }
+      return {};
+    },
+
+    // 顶部展示图片：优先 sku.image → info.images[0] → info.pic
+    displayPic() {
+      if (this.currentSku && this.currentSku.image) {
+        return this.currentSku.image;
+      }
+      if (this.info && this.info.images && this.info.images.length > 0) {
+        return this.info.images[0];
+      }
+      return this.info.pic || "";
+    },
+
+    // 顶部展示价格：优先 sku.price → info.price
+    displayPrice() {
+      if (this.currentSku && this.currentSku.price) {
+        return this.currentSku.price;
+      }
+      return this.info.price || 0;
+    },
+
+    // “已选：xxx”
+    selectedSkuText() {
+      if (!this.info.skus || this.info.skus.length === 0) {
+        return "默认规格";
+      }
+      const sku = this.currentSku;
+      if (!sku) return "默认规格";
+      return sku.sku_name || "默认规格";
+    },
+  },
+
+  methods: {
+    /**
+     * 外部调用：打开弹窗
+     * type: 'cart' | 'buy'
+     */
+    open(type) {
+      this.btnType = type || "buy";
+
+      if (!this.info.skus || this.info.skus.length === 0) {
+        this.selectedSkuIndex = 0;
+      } else if (this.selectedSkuIndex >= this.info.skus.length) {
+        this.selectedSkuIndex = 0;
+      }
+
+      this.quantity = 1;
+
+      if (this.$refs.CatPopup && this.$refs.CatPopup.$callMethod) {
+        this.$refs.CatPopup.$callMethod("open");
+      }
+    },
+
+    close() {
+      if (this.$refs.CatPopup && this.$refs.CatPopup.$callMethod) {
+        this.$refs.CatPopup.$callMethod("close");
+      }
+    },
+
+    // 选择 SKU
+    selectSku(index) {
+      this.selectedSkuIndex = index;
+    },
+
+    // 改数量
+    changeQty(delta) {
+      const next = this.quantity + delta;
+      if (next < 1) return;
+      this.quantity = next;
+    },
+
+    // ⭐⭐ 加入购物车：真正调用 /api/cart/add
+    onAddCart() {
+      if (!this.currentSku || !this.currentSku.sku_id) {
+        uni.showToast({ title: "请选择规格", icon: "none" });
+        return;
+      }
+
+      const openid = uni.getStorageSync("openid");
+      if (!openid) {
+        uni.showToast({ title: "请先登录", icon: "none" });
+        return;
+      }
+
+      const skuId = this.currentSku.sku_id;
+      const qty = this.quantity;
+
+      uni.showLoading({ title: "加入中..." });
+
+      uni.request({
+        url: `${API_BASE}/api/cart/add`,
+        method: "POST",
+        header: {
+          "content-type": "application/json",
+        },
+        data: {
+          openid: openid,
+          sku_id: skuId,
+          quantity: qty,
+        },
+        success: (res) => {
+          const body = res.data || {};
+          if (body.code === 200) {
+            uni.showToast({
+              title: body.msg || "已加入购物车",
+              icon: "success",
+            });
+            this.close();
+          } else {
+            uni.showToast({
+              title: body.msg || "加入购物车失败",
+              icon: "none",
+            });
+          }
+        },
+        fail: () => {
+          uni.showToast({
+            title: "网络错误，请稍后重试",
+            icon: "none",
+          });
+        },
+        complete: () => {
+          uni.hideLoading();
+        },
+      });
+    },
+
+    formatSkuName(sku, index) {
+      const name = sku.sku_name || "规格 " + (index + 1);
+      return name.replace(/\//g, "");
+    },
+
+    // 立即购买
+    onBuy() {
+      if (!this.currentSku || !this.currentSku.sku_id) {
+        uni.showToast({ title: "请选择规格", icon: "none" });
+        return;
+      }
+
+      const goodsId = this.info.id || 0;
+      const sku = this.currentSku;
+      const qty = this.quantity;
+
+      const orderItem = {
+        product_id: goodsId,
+        sku_id: sku.sku_id,
+        name: this.info.name,
+        sku_name: sku.sku_name || this.selectedSkuText,
+        price: sku.price || this.info.price || 0,
+        quantity: qty,
+        image: sku.image || this.displayPic,
+        attr1: sku.attr1,
+        attr2: sku.attr2,
+        attr3: sku.attr3,
+        attr4: sku.attr4,
+      };
+
+      uni.navigateTo({
+        url: "/pages/ConfirmOrder/ConfirmOrder",
+        success: (res) => {
+          const eventChannel = res.eventChannel;
+          eventChannel.emit("orderData", {
+            items: [orderItem],
+            from: "goodsDetail",
+          });
+        },
+      });
+    },
+  },
+};
+</script>
+
+
+<style lang="scss">
+  @import "AttrPopup.scss";
+
+  /* 你原来的样式里如果没有这几个，可以简单补一下 */
+
+  .sku-item {
+    padding: 20rpx 0;
+    border-bottom: 1px solid #f5f5f5;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+  }
+
+  .sku-item.active {
+    background-color: #fef5f0;
+  }
+
+  .sku-left {
+    width: 120rpx;
+    height: 120rpx;
+    margin-right: 20rpx;
+  }
+
+  .sku-image {
+    width: 100%;
+    height: 100%;
+    border-radius: 12rpx;
+  }
+
+  .sku-right {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .sku-name .text {
+    font-size: 28rpx;
+    color: #333;
+  }
+
+  .sku-price-stock {
+    margin-top: 10rpx;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .sku-price-stock .price {
+    font-size: 30rpx;
+    font-weight: 600;
+    color: #ff3b30;
+  }
+
+  .sku-price-stock .stock {
+    font-size: 24rpx;
+    color: #999;
+  }
+
+  .empty-sku {
+    padding: 40rpx 0;
+    text-align: center;
+  }
+
+  .empty-sku .text {
+    font-size: 26rpx;
+    color: #999;
+  }
+</style>

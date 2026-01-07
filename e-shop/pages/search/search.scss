@@ -1,0 +1,147 @@
+.head-info{
+  width: 100%;
+  height: 100rpx;
+  background-color: #ffffff;
+  .search-info{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    width: 100%;
+    height: 100rpx;
+    padding: 0 30rpx;
+    .back{
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      width: 100rpx;
+      height: 100%;
+      .image{
+        width: 58rpx;
+        height: 58rpx;
+      }
+    }
+    .search{
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      flex: 1;
+      height: 60rpx;
+      padding: 0 30rpx;
+      margin-right: 20rpx;
+      background-color: $bg-color;
+      border-radius: 30rpx;
+      .image{
+        width: 38rpx;
+        height: 38rpx;
+        margin-right: 10rpx;
+      }
+      .input{
+        flex: 1;
+        height: 100%;
+        font-size: 26rpx;
+        color: $text-color;
+      }
+    }
+    .btn{
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100rpx;
+      height: 50rpx;
+      background-image: linear-gradient(to right,$btn-color-01,$btn-color-02);
+      border-radius: 30rpx;
+      .text{
+        font-size: 26rpx;
+        color: #ffffff;
+      }
+    }
+  }
+}
+.title-info{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  width: 100%;
+  margin-bottom: 20rpx;
+  .text{
+    font-size: 32rpx;
+    color: $text-color;
+  }
+}
+/*搜索历史*/
+.search-history{
+  width: 100%;
+  padding: 20rpx 30rpx;
+  .keyword-item{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    width: 100%;
+    .item{
+      padding: 10rpx 20rpx;
+      margin-bottom: 20rpx;
+      margin-right: 20rpx;
+      background-color: $bg-back-color;
+      border-radius: 40rpx;
+      .text{
+        font-size: 24rpx;
+        color: $text-color;
+      }
+    }
+  }
+}
+/*搜索发现*/
+.search-find{
+  width: 100%;
+  margin-top: 20rpx;
+  padding: 20rpx 30rpx;
+  .search-hot{
+    width: 100%;
+    padding: 0 30rpx;
+    background-color: $bg-back-color;
+    border: 1px solid $bg-back-color;
+    border-radius: 20rpx;
+    .title{
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      width: 100%;
+      margin-top: 20rpx;
+      .text{
+        font-size: 32rpx;
+        font-weight: bold;
+        color: $base;
+      }
+    }
+    .hot-item{
+      width: 100%;
+      .item{
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        width: 100%;
+        height: 80rpx;
+        .key{
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          margin-right: 20rpx;
+          .text{
+            font-weight: bold;
+            font-size: 28rpx;
+            color: $text-color;
+          }
+        }
+        .keyword{
+          display: flex;
+          flex-direction: row;
+          align-items: center;
+          .text{
+            font-size: 28rpx;
+            color: $text-color;
+          }
+        }
+      }
+    }
+  }
+}

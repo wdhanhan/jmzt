@@ -1,0 +1,114 @@
+<template>
+	<!-- #ifdef APP -->
+	<scroll-view style="flex:1" class="page">
+	<!-- #endif -->
+    <view class="tab-info">
+      <view class="tab" @click="onTab(1)">
+        <text class="text" :class="{'active':status===1}">已使用</text>
+        <text class="line" :class="{'active-line':status===1}"></text>
+      </view>
+      <view class="tab" @click="onTab(2)">
+        <text class="text" :class="{'active':status===2}">已过期</text>
+        <text class="line" :class="{'active-line':status===2}"></text>
+      </view>
+      <view class="tab" @click="onTab(3)">
+        <text class="text" :class="{'active':status===3}">已失效</text>
+        <text class="line" :class="{'active-line':status===3}"></text>
+      </view>
+    </view>
+    <view class="coupon-info" style="margin-top: 120rpx">
+      <view class="coupon-list">
+        <view class="list" v-for="(item,index) in couponList" :key="index">
+          <image src="/static/images/yhq_sx_bg.png" class="bg" mode="aspectFit"></image>
+          <view class="status">
+            <image src="/static/images/icon/syysy_icon.png" class="image" v-show="status === 1"></image>
+            <image src="/static/images/icon/syygq_icon.png" class="image" v-show="status === 2"></image>
+            <image src="/static/images/icon/syysx_icon.png" class="image" v-show="status === 3"></image>
+          </view>
+          <view class="item">
+            <view class="info">
+              <view class="title">
+                <text class="text">{{item.title}}</text>
+              </view>
+              <view class="date">
+                <text class="text">{{item.startDate}}-{{item.endDate}}</text>
+              </view>
+              <view class="more" @click="onMore(index)">
+                <text class="tit">详细信息</text>
+                <image src="/static/images/icon/down_icon.png" class="more-icon" v-show="moreIndex!==index"></image>
+                <image src="/static/images/icon/up_icon.png" class="more-icon" v-show="moreIndex==index"></image>
+              </view>
+            </view>
+            <view class="price-info">
+              <view class="info">
+                <view class="price">
+                  <text class="min">￥</text>
+                  <text class="max">{{item.subPrice}}</text>
+                </view>
+                <view class="full-price">
+                  <text class="text">满{{item.fullPrice}}元可用</text>
+                </view>
+              </view>
+            </view>
+          </view>
+          <view class="more-info" v-show="moreIndex === index">
+            <view class="info">
+              <view class="title">
+                <text class="text">限品类：</text>
+              </view>
+              <view class="title">
+                <text class="text">仅购买部分商品可用</text>
+              </view>
+            </view>
+            <view class="info">
+              <view class="title">
+                <text class="text">券编号：</text>
+              </view>
+              <view class="title">
+                <text class="text">123123xx1231231</text>
+              </view>
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+	<!-- #ifdef APP -->
+	</scroll-view>
+	<!-- #endif -->
+</template>
+
+<script>
+import {CouponData,CouponItem} from '@/mock/couponData.uts'
+	export default {
+		data() {
+			return {
+        statusBarHeight: 0,
+        statusBarBottom: 0,
+        status: 1,
+        moreIndex: -1,
+        couponList: CouponData as Array<CouponItem>,
+			};
+		},
+    onLoad(){
+      let windowInfo = uni.getWindowInfo();
+      this.statusBarHeight = windowInfo.statusBarHeight;
+      this.statusBarBottom = windowInfo.safeAreaInsets.bottom;
+    },
+    methods: {
+      onMore(index:Number){
+        this.moreIndex = index;
+      },
+      /**
+       * tab点击
+       * @param status
+       */
+      onTab(status: Number){
+        this.status = status;
+      }
+    },
+	}
+</script>
+
+<style lang="scss">
+  @import "CouponUseRecord.scss";
+</style>

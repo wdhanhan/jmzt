@@ -1,0 +1,8 @@
+{
+  "navigationBarTitleText": "订单列表",
+  "enablePullDownRefresh": false,
+  "navigationStyle": "custom",
+  "usingComponents": {
+    "order-page": "./components/OrderPage/OrderPage"
+  }
+}

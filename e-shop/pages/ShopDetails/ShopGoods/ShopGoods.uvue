@@ -1,0 +1,33 @@
+<template>
+	<!-- #ifdef APP -->
+	<scroll-view style="flex:1" class="page">
+	<!-- #endif -->
+    <goods-list></goods-list>
+    <shop-tab-nar flagStr="goods"></shop-tab-nar>
+	<!-- #ifdef APP -->
+	</scroll-view>
+	<!-- #endif -->
+</template>
+
+<script>
+	import ShopTabNar from "../components/ShopTabNar/ShopTabNar.uvue";
+	import GoodsList from "../components/GoodsList/GoodsList.uvue";
+  export default {
+    components: {ShopTabNar,GoodsList},
+		data() {
+			return {
+        statusBarHeight: 0,
+        statusBarBottom: 0,
+			};
+		},
+    onLoad() {
+      let windowInfo = uni.getWindowInfo();
+      this.statusBarHeight = windowInfo.statusBarHeight;
+      this.statusBarBottom = windowInfo.safeAreaInsets.bottom;
+    },
+	}
+</script>
+
+<style lang="scss">
+  @import "ShopGoods.scss";
+</style>

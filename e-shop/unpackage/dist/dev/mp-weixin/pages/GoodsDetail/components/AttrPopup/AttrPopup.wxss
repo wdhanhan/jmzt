@@ -1,0 +1,299 @@
+:host{display:flex;flex-direction:column}
+/**
+ * 这里是uni-app内置的常用样式变量
+ *
+ * uni-app 官方扩展插件及插件市场（https://ext.dcloud.net.cn）上很多三方插件均使用了这些样式变量
+ * 如果你是插件开发者，建议你使用scss预处理，并在插件代码中直接使用这些变量（无需 import 这个文件），方便用户通过搭积木的方式开发整体风格一致的App
+ *
+ */
+/**
+ * 如果你是App开发者（插件使用者），你可以通过修改这些变量来定制自己的插件主题，实现自定义主题功能
+ *
+ * 如果你的项目同样使用了scss预处理，你也可以直接在你的 scss 代码中使用如下变量，同时无需 import 这个文件
+ */
+/* 颜色变量 */
+/* 文字颜色 */
+/* 主色渐变 */
+/* 按钮颜色 */
+/* 行为相关颜色 */
+/* 文字基本颜色 */
+/* 背景颜色 */
+/* 边框颜色 */
+/* 尺寸变量 */
+/* 文字尺寸 */
+/* 图片尺寸 */
+/* Border Radius */
+/* 水平间距 */
+/* 垂直间距 */
+/* 透明度 */
+/* 文章场景相关 */
+.attr-info {
+  width: 750rpx;
+  background-color: #ffffff;
+  border-radius: 20rpx 20rpx 0 0;
+  padding-bottom: 40rpx;
+}
+.attr-info .close {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-end;
+  width: 100%;
+  height: 80rpx;
+  padding: 0 30rpx;
+}
+.attr-info .close .image {
+  width: 32rpx;
+  height: 32rpx;
+}
+.attr-info .goods-data {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  width: 100%;
+  height: 200rpx;
+  padding: 0 30rpx;
+  margin-bottom: 20rpx;
+}
+.attr-info .goods-data .pic {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 20rpx;
+}
+.attr-info .goods-data .pic .image {
+  width: 200rpx;
+  height: 200rpx;
+  border-radius: 10rpx;
+}
+.attr-info .goods-data .data {
+  flex: 1;
+  height: 100%;
+}
+.attr-info .goods-data .data .title {
+  width: 100%;
+}
+.attr-info .goods-data .data .title .text {
+  width: 100%;
+  height: 80rpx;
+  lines: 2;
+  text-overflow: ellipsis;
+  font-size: 28rpx;
+  line-height: 40rpx;
+  color: #333333;
+}
+.attr-info .goods-data .data .attr {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  width: 100%;
+  margin-bottom: 30rpx;
+}
+.attr-info .goods-data .data .attr .text {
+  font-size: 26rpx;
+  color: #aaaaaa;
+}
+.attr-info .goods-data .data .price {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+.attr-info .goods-data .data .price .selling-price {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-end;
+}
+.attr-info .goods-data .data .price .selling-price .min {
+  font-weight: bold;
+  font-size: 24rpx;
+  color: #ff6e65;
+}
+.attr-info .goods-data .data .price .selling-price .max {
+  font-weight: bold;
+  font-size: 38rpx;
+  color: #ff6e65;
+}
+.attr-info .attr-select {
+  width: 100%;
+  height: 600rpx;
+  padding: 0 30rpx;
+}
+.attr-info .attr-select .attr-list {
+  width: 100%;
+  margin-bottom: 20rpx;
+}
+.attr-info .attr-select .attr-list .attr-key {
+  width: 100%;
+  margin-bottom: 20rpx;
+}
+.attr-info .attr-select .attr-list .attr-key .text {
+  font-weight: bold;
+  font-size: 28rpx;
+  color: #333333;
+}
+.attr-info .attr-select .attr-list .attr-value {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  width: 100%;
+}
+.attr-info .attr-select .attr-list .attr-value .item {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  padding: 12rpx 40rpx;
+  margin-right: 20rpx;
+  margin-bottom: 20rpx;
+  border: 1px solid transparent;
+  background-color: #f8f8f8;
+  border-radius: 80rpx;
+}
+.attr-info .attr-select .attr-list .attr-value .item .text {
+  font-size: 28rpx;
+  color: #777777;
+}
+.attr-info .attr-select .attr-list .attr-value .active {
+  background-color: rgba(254, 154, 92, 0.3);
+  border: 1px solid #fe9a5c;
+}
+.attr-info .attr-select .attr-list .attr-value .active .text {
+  color: #fe9a5c;
+}
+.attr-info .goods-number {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  height: 100rpx;
+  padding: 0 30rpx;
+}
+.attr-info .goods-number .title {
+  display: flex;
+  align-items: center;
+}
+.attr-info .goods-number .title .text {
+  font-size: 28rpx;
+  font-weight: bold;
+  color: #333333;
+}
+.attr-info .goods-number .number {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  width: 200rpx;
+  height: 50rpx;
+  border: 1px solid #aaaaaa;
+  border-radius: 60rpx;
+}
+.attr-info .goods-number .number .sub {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 60rpx;
+  height: 100%;
+  border-right: 1px solid #aaaaaa;
+}
+.attr-info .goods-number .number .sub .image {
+  width: 28rpx;
+  height: 28rpx;
+}
+.attr-info .goods-number .number .add {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 60rpx;
+  height: 100%;
+  border-left: 1px solid #aaaaaa;
+}
+.attr-info .goods-number .number .add .image {
+  width: 28rpx;
+  height: 28rpx;
+}
+.attr-info .goods-number .number .num {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  height: 100%;
+}
+.attr-info .goods-number .number .num .text {
+  font-size: 26rpx;
+  color: #333333;
+}
+.attr-info .attr-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: 0 30rpx;
+  margin-top: 20rpx;
+}
+.attr-info .attr-btn .btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 90rpx;
+  background-image: linear-gradient(to right, #fb9e6d, #ff6e37);
+  border-radius: 45rpx;
+}
+.attr-info .attr-btn .btn .text {
+  font-size: 28rpx;
+  color: #ffffff;
+}
+/* 你原来的样式里如果没有这几个，可以简单补一下 */
+.sku-item {
+  padding: 20rpx 0;
+  border-bottom: 1px solid #f5f5f5;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+.sku-item.active {
+  background-color: #fef5f0;
+}
+.sku-left {
+  width: 120rpx;
+  height: 120rpx;
+  margin-right: 20rpx;
+}
+.sku-image {
+  width: 100%;
+  height: 100%;
+  border-radius: 12rpx;
+}
+.sku-right {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+.sku-name .text {
+  font-size: 28rpx;
+  color: #333;
+}
+.sku-price-stock {
+  margin-top: 10rpx;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+}
+.sku-price-stock .price {
+  font-size: 30rpx;
+  font-weight: 600;
+  color: #ff3b30;
+}
+.sku-price-stock .stock {
+  font-size: 24rpx;
+  color: #999;
+}
+.empty-sku {
+  padding: 40rpx 0;
+  text-align: center;
+}
+.empty-sku .text {
+  font-size: 26rpx;
+  color: #999;
+}

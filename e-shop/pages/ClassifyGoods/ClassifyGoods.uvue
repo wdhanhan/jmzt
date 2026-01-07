@@ -1,0 +1,115 @@
+<template>
+	<!-- #ifdef APP -->
+	<scroll-view style="flex:1" class="page">
+	<!-- #endif -->
+    <view class="classify-info">
+      <view class="item" v-for="(item,index) in classifyList"
+            @click="onClassify"
+            :key="index">
+        <image :src="item.pic" class="image"></image>
+        <text class="text">{{item.name}}</text>
+      </view>
+    </view>
+    <view class="new-goods">
+      <view class="title-info">
+        <view class="title">
+          <text class="text">上新</text>
+        </view>
+      </view>
+      <view class="goods-item">
+        <view class="item" v-for="(item,index) in dayGoods"
+              @click="onGoodsItem(item)"
+              :key="index">
+          <view class="pic">
+            <image :src="item.pic" class="image"></image>
+          </view>
+          <view class="price">
+            <text class="text">￥{{item.price}}</text>
+          </view>
+        </view>
+      </view>
+    </view>
+    <view class="goods-info">
+      <view class="goods-list">
+        <view class="list" v-for="(item,index) in goodsList"
+              @click="onGoodsItem(item)"
+              :key="index">
+          <view class="pic">
+            <image :src="item.pic" class="image"></image>
+          </view>
+          <view class="title">
+            <text class="text">{{item.name}}</text>
+          </view>
+          <view class="price">
+            <text class="min">￥</text>
+            <text class="max">{{formatPrice(item.price as number,0)}}</text>
+            <text class="min" v-if="formatPrice(item.price as number,1)">.{{formatPrice(item.price as number,1)}}</text>
+          </view>
+        </view>
+      </view>
+    </view>
+	<!-- #ifdef APP -->
+	</scroll-view>
+	<!-- #endif -->
+</template>
+
+<script>
+import {ClassifyData,classifyItem} from '@/mock/classifyData.uts'
+import {dayData, goodsData, goodsItems} from '@/mock/goodsData.uts'
+	export default {
+		data() {
+			return {
+        classifyList: ClassifyData as Array<classifyItem>,
+        dayGoods: dayData as Array<goodsItems>,
+        goodsList: goodsData as Array<goodsItems>,
+			};
+		},
+    onLoad(options: OnLoadOptions) {
+      const title = options.get('title') as string;
+      uni.setNavigationBarTitle({
+        title: title
+      })
+      this.getData();
+    },
+    methods: {
+      formatPrice(price: Number,type: Number): string{
+        let strPrice = price.toString();
+        let start:string = strPrice.split('.')[0];
+        let end:string = '';
+        try {
+          end = strPrice.split('.')[1]
+        }catch (e){
+          end = '';
+        }
+
+        return type === 0 ? start : end
+      },
+      getData(){
+        this.classifyList = [];
+        this.classifyList = ClassifyData[0].children[0].children;
+        this.classifyList = [...this.classifyList,...ClassifyData[0].children[1].children];
+        this.classifyList = [...this.classifyList,...ClassifyData[1].children[0].children];
+      },
+      /**
+       * 商品点击
+       */
+      onGoodsItem(item: goodsItems){
+        uni.navigateTo({
+          url: `/pages/GoodsDetail/GoodsDetail?goodsId=${item.id}`
+        })
+      },
+      /**
+       * 分类点击
+       */
+      onClassify(){
+        uni.navigateTo({
+          url: `/pages/SearchGoods/SearchGoods`
+        })
+      }
+    },
+	}
+</script>
+
+<style lang="scss">
+  @import "ClassifyGoods.scss";
+</style>

@@ -1,0 +1,177 @@
+@import "../../uvue.wxss";
+:host{display:flex;flex-direction:column}
+/**
+ * 这里是uni-app内置的常用样式变量
+ *
+ * uni-app 官方扩展插件及插件市场（https://ext.dcloud.net.cn）上很多三方插件均使用了这些样式变量
+ * 如果你是插件开发者，建议你使用scss预处理，并在插件代码中直接使用这些变量（无需 import 这个文件），方便用户通过搭积木的方式开发整体风格一致的App
+ *
+ */
+/**
+ * 如果你是App开发者（插件使用者），你可以通过修改这些变量来定制自己的插件主题，实现自定义主题功能
+ *
+ * 如果你的项目同样使用了scss预处理，你也可以直接在你的 scss 代码中使用如下变量，同时无需 import 这个文件
+ */
+/* 颜色变量 */
+/* 文字颜色 */
+/* 主色渐变 */
+/* 按钮颜色 */
+/* 行为相关颜色 */
+/* 文字基本颜色 */
+/* 背景颜色 */
+/* 边框颜色 */
+/* 尺寸变量 */
+/* 文字尺寸 */
+/* 图片尺寸 */
+/* Border Radius */
+/* 水平间距 */
+/* 垂直间距 */
+/* 透明度 */
+/* 文章场景相关 */
+.head-info {
+  width: 100%;
+  height: 100rpx;
+  background-color: #ffffff;
+}
+.head-info .search-info {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  width: 100%;
+  height: 100rpx;
+  padding: 0 30rpx;
+}
+.head-info .search-info .back {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  width: 100rpx;
+  height: 100%;
+}
+.head-info .search-info .back .image {
+  width: 58rpx;
+  height: 58rpx;
+}
+.head-info .search-info .search {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  flex: 1;
+  height: 60rpx;
+  padding: 0 30rpx;
+  margin-right: 20rpx;
+  background-color: #f8f8f8;
+  border-radius: 30rpx;
+}
+.head-info .search-info .search .image {
+  width: 38rpx;
+  height: 38rpx;
+  margin-right: 10rpx;
+}
+.head-info .search-info .search .input {
+  flex: 1;
+  height: 100%;
+  font-size: 26rpx;
+  color: #333333;
+}
+.head-info .search-info .btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100rpx;
+  height: 50rpx;
+  background-image: linear-gradient(to right, #fb9e6d, #ff6e37);
+  border-radius: 30rpx;
+}
+.head-info .search-info .btn .text {
+  font-size: 26rpx;
+  color: #ffffff;
+}
+.title-info {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  width: 100%;
+  margin-bottom: 20rpx;
+}
+.title-info .text {
+  font-size: 32rpx;
+  color: #333333;
+}
+/*搜索历史*/
+.search-history {
+  width: 100%;
+  padding: 20rpx 30rpx;
+}
+.search-history .keyword-item {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  width: 100%;
+}
+.search-history .keyword-item .item {
+  padding: 10rpx 20rpx;
+  margin-bottom: 20rpx;
+  margin-right: 20rpx;
+  background-color: #ffffff;
+  border-radius: 40rpx;
+}
+.search-history .keyword-item .item .text {
+  font-size: 24rpx;
+  color: #333333;
+}
+/*搜索发现*/
+.search-find {
+  width: 100%;
+  margin-top: 20rpx;
+  padding: 20rpx 30rpx;
+}
+.search-find .search-hot {
+  width: 100%;
+  padding: 0 30rpx;
+  background-color: #ffffff;
+  border: 1px solid #ffffff;
+  border-radius: 20rpx;
+}
+.search-find .search-hot .title {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  width: 100%;
+  margin-top: 20rpx;
+}
+.search-find .search-hot .title .text {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #fe9a5c;
+}
+.search-find .search-hot .hot-item {
+  width: 100%;
+}
+.search-find .search-hot .hot-item .item {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  width: 100%;
+  height: 80rpx;
+}
+.search-find .search-hot .hot-item .item .key {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 20rpx;
+}
+.search-find .search-hot .hot-item .item .key .text {
+  font-weight: bold;
+  font-size: 28rpx;
+  color: #333333;
+}
+.search-find .search-hot .hot-item .item .keyword {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+.search-find .search-hot .hot-item .item .keyword .text {
+  font-size: 28rpx;
+  color: #333333;
+}

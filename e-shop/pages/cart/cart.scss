@@ -1,0 +1,395 @@
+
+
+.cart-info{
+  width: 100%;
+  padding-left: 30rpx;
+  padding-right: 30rpx;
+  padding-top: 30rpx;
+}
+
+.cart-list{
+  width: 100%;
+  padding: 0 20rpx;
+  margin-bottom: 20rpx;
+  background-color: $bg-back-color;
+  border-radius: 20rpx;
+  .shop-info{
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    height: 100rpx;
+    .check{
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      margin-right: 20rpx;
+      .image{
+        width: 38rpx;
+        height: 38rpx;
+      }
+    }
+    .shop-data{
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      .image{
+        width: 38rpx;
+        height: 38rpx;
+        margin-right: 10rpx;
+      }
+      .text{
+        font-size: 28rpx;
+        color: $text-color;
+      }
+    }
+  }
+  .cart-goods{
+    width: 100%;
+    .goods-item{
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      width: 100%;
+      height: 140rpx;
+      margin-bottom: 20rpx;
+      .check{
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        margin-right: 20rpx;
+        .image{
+          width: 38rpx;
+          height: 38rpx;
+        }
+      }
+      .goods{
+        display: flex;
+        flex-direction: row;
+        flex: 1;
+        height: 100%;
+        .pic{
+          display: flex;
+          align-items: center;
+          margin-right: 20rpx;
+          .image{
+            width: 140rpx;
+            height: 140rpx;
+            border-radius: 10rpx;
+          }
+        }
+        .info{
+          flex: 1;
+          height: 100%;
+          .title{
+            display: flex;
+            align-items: center;
+            .text{
+              width: 100%;
+              height: 50rpx;
+              white-space: nowrap;
+              text-overflow: ellipsis;
+              font-size: 28rpx;
+              color: $text-color;
+            }
+          }
+          .attr{
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            .text{
+              width: 100%;
+              height: 40rpx;
+              white-space: nowrap;
+              text-overflow: ellipsis;
+              font-size: 24rpx;
+              color: $text-assist-color;
+            }
+          }
+          .price-num{
+            display: flex;
+            flex-direction: row;
+            align-items: flex-end;
+            justify-content: space-between;
+            width: 100%;
+            height: 50rpx;
+            .price{
+              display: flex;
+              flex-direction: row;
+              align-items: flex-end;
+              .min{
+                font-size: 20rpx;
+                color: $base;
+              }
+              .max{
+                font-size: 30rpx;
+                font-weight: bold;
+                color: $base;
+              }
+            }
+            .goods-num{
+              display: flex;
+              flex-direction: row;
+              align-items: center;
+              .add-sub{
+                width: 38rpx;
+                height: 38rpx;
+              }
+              .nums{
+                width: 80rpx;
+                text-align: center;
+                font-size: 24rpx;
+                font-weight: bold;
+                color: $text-color;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+/*底部合计*/
+.footer-total{
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  height: 120rpx;
+  padding: 0 30rpx;
+  background-color: $bg-back-color;
+  .check-all{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    .image{
+      width: 38rpx;
+      height: 38rpx;
+      margin-right: 20rpx;
+    }
+    .text{
+      font-size: 28rpx;
+      color: $text-color;
+    }
+  }
+  .total-btn{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    .total{
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      .tit{
+        font-size: 28rpx;
+        color: $text-assist-color;
+      }
+      .price{
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        .min{
+          font-size: 24rpx;
+          color: $base;
+          margin-top: 10rpx;
+        }
+        .max{
+          font-size: 42rpx;
+          font-weight: bold;
+          color: $base;
+        }
+      }
+    }
+    .btn{
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: center;
+      width: 200rpx;
+      height: 70rpx;
+      margin-left: 20rpx;
+      background-image: linear-gradient(to right,$btn-color-01,$btn-color-02);
+      border-radius: 35rpx;
+      .text{
+        font-size: 28rpx;
+        color: $text-back-color;
+      }
+    }
+  }
+}
+
+.title-info{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  margin-bottom: 20rpx;
+  .title{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    .line{
+      width: 10rpx;
+      height: 40rpx;
+      background-color: $base;
+      border-radius: 10rpx;
+      margin: 0 20rpx;
+    }
+    .tit{
+      font-size: 28rpx;
+      font-weight: bold;
+      color: $text-color;
+    }
+  }
+}
+.lose-efficacy{
+  width: 100%;
+  padding: 0 30rpx;
+  box-sizing: border-box;
+  margin-top: 20rpx;
+  margin-bottom: 20rpx;
+  .cart-goods{
+    width: 100%;
+    background-color: $bg-back-color;
+    border-radius: 20rpx;
+    .title-infos{
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+      height: 100rpx;
+      padding: 0 30rpx;
+      .title{
+        .text{
+          font-size: 26rpx;
+          color: $text-color;
+        }
+      }
+      .del{
+        display: flex;
+        align-items: center;
+        .text{
+          font-size: 26rpx;
+          color: $text-assist-color;
+        }
+      }
+    }
+    .goods-lists{
+      width: 100%;
+      padding: 0 30rpx 20rpx;
+      .lists{
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        width: 100%;
+        margin-bottom: 20rpx;
+        .pic{
+          margin-right: 20rpx;
+          .image{
+            width: 140rpx;
+            height: 140rpx;
+          }
+        }
+        .info{
+          flex: 1;
+          height: 140rpx;
+          .name{
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            width: 100%;
+            .text{
+              width: 100%;
+              height: 60rpx;
+              lines:2;
+              text-overflow: ellipsis;
+              font-size: 28rpx;
+              color: $text-assist-color;
+            }
+          }
+          .tag{
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            height: 60rpx;
+            margin-top: 20rpx;
+            background-color: $base-rgba-03;
+            border-radius: 10rpx;
+            .text{
+              font-size: 26rpx;
+              color: $base;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+/*猜你喜欢*/
+.guess-like{
+  width: 100%;
+  padding: 0 30rpx;
+  .goods-list{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    width: 100%;
+    .list{
+      width: 334rpx;
+      margin-bottom: 20rpx;
+      padding-bottom: 20rpx;
+      background-color: $bg-back-color;
+      border-radius: 20rpx;
+      .pic{
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        height: 334rpx;
+        .image{
+          width: 334rpx;
+          height: 334rpx;
+          border-radius: 10rpx 10rpx 0 0;
+        }
+      }
+      .title{
+        display: flex;
+        margin-top: 10rpx;
+        padding: 0 20rpx;
+        .text{
+          lines:2;
+          text-overflow: ellipsis;
+          width: 334rpx;
+          height: 70rpx;
+          font-size: 28rpx;
+          color: $text-color;
+        }
+      }
+      .price{
+        display: flex;
+        flex-direction: row;
+        align-items: flex-end;
+        padding: 0 20rpx;
+        .min{
+          font-size: 22rpx;
+          font-weight: bold;
+          margin-bottom: 4rpx;
+          color: $base;
+        }
+        .max{
+          font-size: 36rpx;
+          font-weight: bold;
+          color: $base;
+        }
+      }
+    }
+  }
+}

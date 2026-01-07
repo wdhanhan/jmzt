@@ -1,0 +1,108 @@
+<template>
+	<!-- #ifdef APP -->
+	<scroll-view style="flex:1;">
+	<!-- #endif -->
+    <view class="head-info" :style="{height: (statusBarHeight+50)+'px',paddingTop: statusBarHeight+'px'}">
+      <view class="search-info">
+        <view class="back" @click="onBack">
+          <image src="/static/images/icon/back_icon.png" class="image"></image>
+        </view>
+        <view class="search">
+          <image src="/static/images/icon/fdj_icon.png" class="image"></image>
+          <input type="text" placeholder="请输入搜索内容" v-model="keyword" class="input"/>
+        </view>
+        <view class="btn" @click="onSearch">
+          <text class="text">搜索</text>
+        </view>
+      </view>
+    </view>
+<!--    搜索历史-->
+    <view class="search-history">
+      <view class="title-info">
+        <text class="text">搜索历史</text>
+      </view>
+      <view class="keyword-item">
+        <view class="item" v-for="(item,index) in historyList"
+              @click="onKeyword(item)"
+              :key="index">
+          <text class="text">{{item}}</text>
+        </view>
+      </view>
+    </view>
+<!--    搜索发现-->
+    <view class="search-find">
+      <view class="title-info">
+        <text class="text">搜索发现</text>
+      </view>
+      <view class="search-hot">
+        <view class="title">
+        </view>
+        <view class="hot-item">
+          <view class="item" v-for="(item,index) in hotKeywordList"
+                @click="onKeyword(item.keyword)"
+                :key="index">
+            <view class="key">
+              <text class="text">{{item.sort}}.</text>
+            </view>
+            <view class="keyword">
+              <text class="text">{{item.keyword}}</text>
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+	<!-- #ifdef APP -->
+	</scroll-view>
+	<!-- #endif -->
+</template>
+
+<script>
+import {toast} from '@/common/way.uts';
+  // 热搜数据实例
+  type hotKeywordItem = {
+    keyword : string,
+    sort : number,
+  }
+	export default {
+		data() {
+			return {}
+		},
+    onLoad(){
+      let windowInfo = uni.getWindowInfo();
+      this.statusBarHeight = windowInfo.statusBarHeight;
+    },
+    methods: {
+      /**
+       * 返回点击
+       */
+      onBack(){
+        uni.navigateBack();
+      },
+      /**
+       * 搜索点击
+       */
+      onSearch(){
+        if(this.keyword === ''){
+          toast('请输入搜索内容');
+          return;
+        }
+        uni.navigateTo({
+          url: `/pages/SearchGoods/SearchGoods?keyword=${this.keyword}`
+        })
+      },
+      /**
+       * 历史热词点击
+       * @param value
+       */
+      onKeyword(value: String){
+        uni.navigateTo({
+          url: `/pages/SearchGoods/SearchGoods?keyword=${value}`
+        })
+      }
+    }
+	}
+</script>
+
+<style lang="scss">
+  @import "search.scss";
+</style>

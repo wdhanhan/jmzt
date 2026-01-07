@@ -1,0 +1,133 @@
+import {goodsItems} from './goodsData.uts'
+
+
+/**
+ * 订单数据实例类
+ */
+export type OrderItem = {
+	id: number,
+	shopName: string,
+	status: number,		// 订单状态 0 未付款 1 待发货 2 待收货 3 已完成 4 已取消
+	goodsList: Array<goodsItems>,
+}
+
+
+export const OrderData = [
+	{
+		id: 1,
+		shopName: '华为官方自营旗舰店',
+		status: 0,
+		goodsList: [
+			{
+				id: 3,
+				name: '华为（HUAWEI）旗舰手机 Mate 60 Pro 12GB+512GB 雅川青',
+				pic: 'https://m.360buyimg.com/mobilecms/s1265x1265_jfs/t1/211556/35/38471/42993/64f1aa51F7ee8e4e5/5f8c4f9c149335ad.jpg!q70.dpg.webp',
+				price: 6999,
+				originalPrice: 7999,
+				salesVolume: 999,
+				shopName: '华为官方自营旗舰店',
+				inventory: 3000,
+			}
+		] as Array<goodsItems>,
+	},{
+		id: 2,
+		shopName: '荣耀官方自营旗舰店',
+		status: 1,
+		goodsList: [
+			{
+				id: 1,
+				name: '荣耀笔记本电脑MagicBook X 14 Pro 锐龙版 2023 R7-7840HS标压处理器 15h长续航 高色域护眼屏 高性能轻薄本',
+				pic: 'https://m.360buyimg.com/mobilecms/s1265x1265_jfs/t1/110990/16/38425/36858/64b90d71Fcf3e8f7d/598d2cbbbcfa5db9.jpg!q70.dpg.webp',
+				price: 3697.2,
+				originalPrice: 3999,
+				salesVolume: 5000,
+				shopName: '荣耀官方自营旗舰店',
+				inventory: 10000,
+			}
+		] as Array<goodsItems>,
+	},{
+		id: 3,
+		shopName: '小米官方自营旗舰店',
+		status: 2,
+		goodsList: [
+			{
+				id: 2,
+				name: '小米无线键鼠套装2 轻薄便携 全尺寸104键键盘鼠标套装 2.4G无线传输 电脑笔记本办公套装 键鼠套装',
+				pic: 'https://m.360buyimg.com/mobilecms/s750x750_jfs/t1/228249/6/9834/49378/65960c9fF8a394ce7/d5ee187f85c95aef.jpg!q80.dpg.webp',
+				price: 89.23,
+				originalPrice: 99.12,
+				salesVolume: 123,
+				shopName: '小米官方自营旗舰店',
+				inventory: 200,
+			}
+		] as Array<goodsItems>,
+	},{
+		id: 4,
+		shopName: '华为官方自营旗舰店',
+		status: 3,
+		goodsList: [
+			{
+				id: 1,
+				name: '荣耀笔记本电脑MagicBook X 14 Pro 锐龙版 2023 R7-7840HS标压处理器 15h长续航 高色域护眼屏 高性能轻薄本',
+				pic: 'https://m.360buyimg.com/mobilecms/s1265x1265_jfs/t1/110990/16/38425/36858/64b90d71Fcf3e8f7d/598d2cbbbcfa5db9.jpg!q70.dpg.webp',
+				price: 3697.2,
+				originalPrice: 3999,
+				salesVolume: 5000,
+				shopName: '荣耀官方自营旗舰店',
+				inventory: 10000,
+			},{
+				id: 2,
+				name: '小米无线键鼠套装2 轻薄便携 全尺寸104键键盘鼠标套装 2.4G无线传输 电脑笔记本办公套装 键鼠套装',
+				pic: 'https://m.360buyimg.com/mobilecms/s750x750_jfs/t1/228249/6/9834/49378/65960c9fF8a394ce7/d5ee187f85c95aef.jpg!q80.dpg.webp',
+				price: 89.23,
+				originalPrice: 99.12,
+				salesVolume: 123,
+				shopName: '小米官方自营旗舰店',
+				inventory: 200,
+			},{
+				id: 3,
+				name: '华为（HUAWEI）旗舰手机 Mate 60 Pro 12GB+512GB 雅川青',
+				pic: 'https://m.360buyimg.com/mobilecms/s1265x1265_jfs/t1/211556/35/38471/42993/64f1aa51F7ee8e4e5/5f8c4f9c149335ad.jpg!q70.dpg.webp',
+				price: 6999,
+				originalPrice: 7999,
+				salesVolume: 999,
+				shopName: '华为官方自营旗舰店',
+				inventory: 3000,
+			}
+		] as Array<goodsItems>,
+	},{
+		id: 5,
+		shopName: '华为官方自营旗舰店',
+		status: 4,
+		goodsList: [
+			{
+				id: 1,
+				name: '荣耀笔记本电脑MagicBook X 14 Pro 锐龙版 2023 R7-7840HS标压处理器 15h长续航 高色域护眼屏 高性能轻薄本',
+				pic: 'https://m.360buyimg.com/mobilecms/s1265x1265_jfs/t1/110990/16/38425/36858/64b90d71Fcf3e8f7d/598d2cbbbcfa5db9.jpg!q70.dpg.webp',
+				price: 3697.2,
+				originalPrice: 3999,
+				salesVolume: 5000,
+				shopName: '荣耀官方自营旗舰店',
+				inventory: 10000,
+			},{
+				id: 2,
+				name: '小米无线键鼠套装2 轻薄便携 全尺寸104键键盘鼠标套装 2.4G无线传输 电脑笔记本办公套装 键鼠套装',
+				pic: 'https://m.360buyimg.com/mobilecms/s750x750_jfs/t1/228249/6/9834/49378/65960c9fF8a394ce7/d5ee187f85c95aef.jpg!q80.dpg.webp',
+				price: 89.23,
+				originalPrice: 99.12,
+				salesVolume: 123,
+				shopName: '小米官方自营旗舰店',
+				inventory: 200,
+			},{
+				id: 3,
+				name: '华为（HUAWEI）旗舰手机 Mate 60 Pro 12GB+512GB 雅川青',
+				pic: 'https://m.360buyimg.com/mobilecms/s1265x1265_jfs/t1/211556/35/38471/42993/64f1aa51F7ee8e4e5/5f8c4f9c149335ad.jpg!q70.dpg.webp',
+				price: 6999,
+				originalPrice: 7999,
+				salesVolume: 999,
+				shopName: '华为官方自营旗舰店',
+				inventory: 3000,
+			}
+		] as Array<goodsItems>,
+	}
+] as Array<OrderItem>

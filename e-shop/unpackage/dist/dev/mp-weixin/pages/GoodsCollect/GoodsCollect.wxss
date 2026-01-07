@@ -1,0 +1,181 @@
+@import "../../uvue.wxss";
+:host{display:flex;flex-direction:column}
+/**
+ * 这里是uni-app内置的常用样式变量
+ *
+ * uni-app 官方扩展插件及插件市场（https://ext.dcloud.net.cn）上很多三方插件均使用了这些样式变量
+ * 如果你是插件开发者，建议你使用scss预处理，并在插件代码中直接使用这些变量（无需 import 这个文件），方便用户通过搭积木的方式开发整体风格一致的App
+ *
+ */
+/**
+ * 如果你是App开发者（插件使用者），你可以通过修改这些变量来定制自己的插件主题，实现自定义主题功能
+ *
+ * 如果你的项目同样使用了scss预处理，你也可以直接在你的 scss 代码中使用如下变量，同时无需 import 这个文件
+ */
+/* 颜色变量 */
+/* 文字颜色 */
+/* 主色渐变 */
+/* 按钮颜色 */
+/* 行为相关颜色 */
+/* 文字基本颜色 */
+/* 背景颜色 */
+/* 边框颜色 */
+/* 尺寸变量 */
+/* 文字尺寸 */
+/* 图片尺寸 */
+/* Border Radius */
+/* 水平间距 */
+/* 垂直间距 */
+/* 透明度 */
+/* 文章场景相关 */
+.page {
+  background-color: #f8f8f8;
+}
+.head-info {
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 100;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  height: 100rpx;
+  padding-left: 30rpx;
+  padding-right: 30rpx;
+  background-color: #ffffff;
+}
+.head-info .back {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.head-info .back .image {
+  width: 48rpx;
+  height: 48rpx;
+}
+.head-info .title {
+  display: flex;
+  align-items: center;
+}
+.head-info .title .text {
+  font-size: 32rpx;
+  color: #333333;
+}
+.head-info .edit {
+  display: flex;
+  align-items: center;
+}
+.head-info .edit .text {
+  font-size: 26rpx;
+  color: #333333;
+}
+.goods-info {
+  width: 100%;
+  padding: 0 30rpx;
+  margin-top: 20rpx;
+}
+.goods-info .goods-list {
+  width: 100%;
+}
+.goods-info .goods-list .list {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  height: 200rpx;
+  padding: 20rpx;
+  margin-bottom: 20rpx;
+  background-color: #ffffff;
+  border-radius: 20rpx;
+}
+.goods-info .goods-list .list .check {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 20rpx;
+}
+.goods-info .goods-list .list .check .image {
+  width: 38rpx;
+  height: 38rpx;
+}
+.goods-info .goods-list .list .pic {
+  display: flex;
+  align-items: center;
+  margin-right: 20rpx;
+}
+.goods-info .goods-list .list .pic .image {
+  width: 180rpx;
+  height: 180rpx;
+  border-radius: 10rpx;
+}
+.goods-info .goods-list .list .goods {
+  flex: 1;
+  height: 100%;
+}
+.goods-info .goods-list .list .goods .name {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin-bottom: 20rpx;
+  width: 100%;
+}
+.goods-info .goods-list .list .goods .name .text {
+  width: 100%;
+  height: 80rpx;
+  line-height: 40rpx;
+  lines: 2;
+  text-overflow: ellipsis;
+  font-size: 28rpx;
+  color: #333333;
+}
+.goods-info .goods-list .list .goods .price {
+  display: flex;
+}
+.goods-info .goods-list .list .goods .price .text {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #fe9a5c;
+}
+.footer-check {
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  z-index: 100;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  min-height: 100rpx;
+  padding: 0 30rpx;
+  background-color: #ffffff;
+}
+.footer-check .check {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+}
+.footer-check .check .image {
+  width: 38rpx;
+  height: 38rpx;
+  margin-right: 20rpx;
+}
+.footer-check .check .text {
+  font-size: 28rpx;
+  color: #333333;
+}
+.footer-check .btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 240rpx;
+  height: 70rpx;
+  background-image: linear-gradient(to right, #fb9e6d, #ff6e37);
+  border-radius: 40rpx;
+}
+.footer-check .btn .text {
+  font-size: 28rpx;
+  color: #ffffff;
+}

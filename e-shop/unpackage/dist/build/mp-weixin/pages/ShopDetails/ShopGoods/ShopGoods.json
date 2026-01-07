@@ -1,0 +1,8 @@
+{
+  "navigationBarTitleText": "店铺商品",
+  "enablePullDownRefresh": false,
+  "usingComponents": {
+    "shop-tab-nar": "../components/ShopTabNar/ShopTabNar",
+    "goods-list": "../components/GoodsList/GoodsList"
+  }
+}

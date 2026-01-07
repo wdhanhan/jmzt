@@ -1,0 +1,45 @@
+<template>
+	<view class="popup-info" :class="{'show':show}" @click="close">
+    <view class="cat-dialog" id="popup" :class="mode" @click.stop>
+      <slot></slot>
+    </view>
+	</view>
+</template>
+
+<script>
+	export default {
+		name:"CatPopup",
+		data() {
+			return {
+        show: false,
+        // 弹窗元素节点
+        popup: null as Element | null,
+			};
+		},
+    props: {
+      mode: {
+        type: String,
+        default: 'bottom'
+      },
+    },
+    mounted() {
+      this.popup = uni.getElementById("popup");
+    },
+    methods: {
+      open(){
+        this.show = true;
+        this.popup?.style?.setProperty(this.mode, '0px');
+      },
+      close(){
+        this.popup?.style?.setProperty(this.mode, '-1000px');
+        setTimeout(() =>{
+          this.show = false;
+        },200)
+      }
+    },
+	}
+</script>
+
+<style lang="scss">
+  @import "CatPopup.scss";
+</style>

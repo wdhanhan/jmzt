@@ -1,0 +1,259 @@
+.page{
+  background-color: $bg-color;
+}
+
+.shop-info{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  width: 100%;
+  height: 120rpx;
+  padding: 0 30rpx;
+  margin-top: 30rpx;
+  .shop{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    flex: 1;
+    .logo{
+      display: flex;
+      align-items: center;
+      margin-right: 20rpx;
+      .image{
+        width: 100rpx;
+        height: 100rpx;
+        border-radius: 10rpx;
+      }
+    }
+    .info{
+      .name{
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        margin-bottom: 10rpx;
+        .text{
+          font-size: 28rpx;
+          font-weight: bold;
+          color: $text-color;
+        }
+        .more{
+          width: 34rpx;
+          height: 34rpx;
+        }
+      }
+      .star-info{
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        width: 100%;
+        .star{
+          display: flex;
+          flex-direction: row;
+          align-items: center;
+          .image{
+            width: 28rpx;
+            height: 28rpx;
+            margin-right: 4rpx;
+          }
+          .text{
+            font-size: 24rpx;
+            font-weight: bold;
+            color: $base;
+          }
+        }
+        .tags{
+          display: flex;
+          flex-direction: row;
+          align-items: center;
+          margin-left: 20rpx;
+          .tag{
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 4rpx 10rpx;
+            background-color: $base;
+            border-radius: 4rpx;
+            .text{
+              font-size: 20rpx;
+              color: $text-back-color;
+            }
+          }
+        }
+      }
+    }
+  }
+  .collect{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: 20rpx;
+    .btn{
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 120rpx;
+      height: 50rpx;
+      background-color: $base;
+      border-radius: 40rpx;
+      .text{
+        font-size: 24rpx;
+        color: $text-back-color;
+      }
+    }
+  }
+}
+
+.hot-goods{
+  height: 420rpx;
+  margin: 30rpx 30rpx;
+  background-color: $bg-back-color;
+  border-radius: 20rpx;
+  .hot-title{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    width: 100%;
+    height: 80rpx;
+    padding: 0 30rpx;
+    .text{
+      font-size: 32rpx;
+      font-weight: bold;
+      color: $text-color;
+    }
+  }
+  .goods-list{
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    padding: 0 30rpx;
+    .list{
+      width: 200rpx;
+      border-radius: 10rpx;
+      margin-right: 20rpx;
+      .pic{
+        display: flex;
+        align-items: center;
+        .image{
+          width: 200rpx;
+          height: 200rpx;
+        }
+      }
+      .name{
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        margin-top: 10rpx;
+        .text{
+          width: 100%;
+          height: 60rpx;
+          lines:2;
+          text-overflow: ellipsis;
+          font-size: 26rpx;
+          color: $text-color;
+        }
+      }
+      .price{
+        display: flex;
+        flex-direction: row;
+        align-items: flex-end;
+        margin-top: 10rpx;
+        .min{
+          font-size: 24rpx;
+          font-weight: bold;
+          color: $base;
+        }
+        .max{
+          font-weight: bold;
+          font-size: 32rpx;
+          color: $base;
+        }
+      }
+    }
+  }
+}
+
+.goods-info{
+  width: 100%;
+  margin-bottom: 20rpx;
+  .goods-list{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    width: 100%;
+    padding: 0 30rpx;
+    .list{
+      width: 335rpx;
+      margin-bottom: 20rpx;
+      padding-bottom: 20rpx;
+      background-color: $bg-back-color;
+      border-radius: 20rpx;
+      .pic{
+        display: flex;
+        .image{
+          width: 335rpx;
+          height: 335rpx;
+          border-radius: 10rpx;
+        }
+      }
+      .info{
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        padding: 0 20rpx;
+        .title{
+          display: flex;
+          flex-direction: row;
+          align-items: center;
+          margin-top: 10rpx;
+          .text{
+            width: 100%;
+            height: 70rpx;
+            font-size: 28rpx;
+            color: $text-color;
+            lines:2;
+            text-overflow: ellipsis;
+          }
+        }
+        .sales-volume{
+          display: flex;
+          .text{
+            font-size: 26rpx;
+            color: $text-assist-color;
+          }
+        }
+        .price-info{
+          display: flex;
+          flex-direction: row;
+          align-items: center;
+          margin-top: 10rpx;
+          .price{
+            display: flex;
+            flex-direction: row;
+            align-items: flex-end;
+            .min{
+              font-size: 22rpx;
+              color: $base;
+              margin-bottom: 4rpx;
+            }
+            .max{
+              font-size: 34rpx;
+              font-weight: bold;
+              color: $base;
+            }
+          }
+          .old-price{
+            display: flex;
+            align-items: center;
+            margin-left: 10rpx;
+            .text{
+              font-size: 24rpx;
+              color: $text-assist-color;
+              text-decoration-line: line-through;
+            }
+          }
+        }
+      }
+    }
+  }
+}

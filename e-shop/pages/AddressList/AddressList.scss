@@ -1,0 +1,115 @@
+.page{
+  background-color: $bg-color;
+}
+
+.address-info{
+  margin: 30rpx 30rpx 0;
+  padding: 0 30rpx;
+  background-color: $bg-back-color;
+  border-radius: 20rpx;
+  .item{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    width: 100%;
+    padding: 30rpx 0;
+    border-bottom: 1px solid $bg-color;
+    .address-data{
+      flex: 1;
+      .address-city{
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        margin-bottom: 10rpx;
+        .text{
+          font-size: 28rpx;
+          color: $text-assist-color;
+        }
+      }
+      .address{
+        width: 100%;
+        margin-bottom: 10rpx;
+        .text{
+          font-size: 38rpx;
+          font-weight: bold;
+          color: $text-color;
+        }
+      }
+      .name-phone{
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        width: 100%;
+        .name{
+          display: flex;
+          margin-right: 10rpx;
+          .text{
+            font-size: 28rpx;
+            color: $text-color;
+          }
+        }
+        .tag-item{
+          display: flex;
+          flex-direction: row;
+          align-items: center;
+          .tag{
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rpx 10rpx;
+            margin-right: 10rpx;
+            background-color: $assist-color;
+            border-radius: 4rpx;
+            .text{
+              font-size: 20rpx;
+              color: $text-back-color;
+            }
+          }
+          .blue{
+            background-color: $accent-color-one;
+          }
+        }
+      }
+    }
+    .more{
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      .image{
+        width: 38rpx;
+        height: 38rpx;
+      }
+    }
+  }
+  .item:last-child{
+    border-bottom: none;
+  }
+}
+
+.footer-btn{
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 120rpx;
+  padding: 0 30rpx;
+  background-color: $bg-back-color;
+  .btn{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 80rpx;
+    background-color: $base;
+    border-radius: 40rpx;
+    .text{
+      font-size: 28rpx;
+      color: $text-back-color;
+    }
+  }
+
+}

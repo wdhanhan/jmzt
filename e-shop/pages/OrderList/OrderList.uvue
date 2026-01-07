@@ -1,0 +1,687 @@
+<template>
+  <scroll-view
+    class="page"
+    scroll-y="true"
+  >
+    <!-- 顶部搜索栏 -->
+    <view class="head-info" :style="{ paddingTop: statusBarHeight + 'px' }">
+      <view class="back" @click="onBack">
+        <image class="back-icon" src="/static/images/icon/back_icon.png"></image>
+      </view>
+      <view class="search">
+        <image class="search-icon" src="/static/images/icon/fdj_icon.png"></image>
+        <input
+          class="search-input"
+          type="text"
+          v-model="keyword"
+          placeholder="搜索我的订单（按订单号 / 姓名 / 手机）"
+          confirm-type="search"
+          @confirm="onSearch"
+        />
+      </view>
+      <view class="search-btn" @click="onSearch">
+        <text class="search-text">搜索</text>
+      </view>
+    </view>
+
+    <!-- Tab 切换 -->
+    <view class="tabs">
+      <view
+        v-for="(tab, index) in tabList"
+        :key="index"
+        class="tab-item"
+        @click="changeTab(index)"
+      >
+        <text :class="['tab-text', { 'tab-text-active': tabIndex === index }]">
+          {{ tab.title }}
+        </text>
+        <view
+          :class="['tab-line', { 'tab-line-active': tabIndex === index }]"
+        ></view>
+      </view>
+    </view>
+
+    <!-- 订单列表 -->
+    <view class="order-list">
+      <!-- 加载中 -->
+      <view v-if="loading" class="loading">
+        <text>加载中...</text>
+      </view>
+
+      <!-- 无数据 -->
+      <view
+        v-else-if="filteredOrders.length === 0"
+        class="empty"
+      >
+        <image class="empty-image" src="/static/images/empty.png"></image>
+        <text class="empty-text">暂无相关订单</text>
+      </view>
+
+      <!-- 有数据 -->
+      <view
+        v-else
+        v-for="(order, index) in filteredOrders"
+        :key="order.id || index"
+        class="order-card"
+        @click="goDetail(order.id)"
+      >
+        <!-- 订单头 -->
+        <view class="order-header">
+          <text class="order-no">订单号：{{ order.order_no }}</text>
+          <text :class="['order-status', 'status-' + order.status]">
+            {{ formatStatus(order.status) }}
+          </text>
+        </view>
+
+        <view class="divider"></view>
+
+        <!-- 商品信息（从 items_snapshot 解析） -->
+        <view class="goods-block" v-if="order.items && order.items.length > 0">
+          <view class="goods-thumb">
+            <image
+              v-if="order.items[0].image"
+              class="goods-image"
+              :src="order.items[0].image"
+              mode="aspectFill"
+            ></image>
+            <view v-else class="goods-noimg">
+              <text>无图</text>
+            </view>
+          </view>
+          <view class="goods-info">
+            <view class="goods-title">
+              <text class="goods-name">
+                {{ order.items[0].name || '商品' }}
+              </text>
+            </view>
+            <view class="goods-sku" v-if="order.items[0].sku_name">
+              <text class="sku-text">
+                {{ order.items[0].sku_name }}
+              </text>
+            </view>
+            <view class="goods-attrs">
+              <text
+                v-if="order.items[0].attr1"
+                class="attr-text"
+              >{{ order.items[0].attr1 }}</text>
+              <text
+                v-if="order.items[0].attr2"
+                class="attr-text"
+              >{{ order.items[0].attr2 }}</text>
+              <text
+                v-if="order.items[0].attr3"
+                class="attr-text"
+              >{{ order.items[0].attr3 }}</text>
+            </view>
+            <view class="goods-qty-line">
+              <text class="goods-qty">
+                数量：x{{ order.items[0].quantity || 1 }}
+              </text>
+              <text
+                v-if="order.items.length > 1"
+                class="more-goods"
+              >
+                等 {{ order.items.length }} 件商品
+              </text>
+            </view>
+          </view>
+        </view>
+
+        <!-- 如果没有解析出 items_snapshot，就简单展示一行 -->
+        <view class="user-info" v-else>
+          <text class="user-line">
+            姓名：{{ order.user_name || '—' }}
+          </text>
+          <text class="user-line">
+            手机：{{ order.mobile || '—' }}
+          </text>
+        </view>
+
+        <view class="divider"></view>
+
+        <!-- 底部金额、时间 -->
+        <view class="bottom-info">
+          <view class="amount-box">
+            <text class="amount-label">实付金额</text>
+            <text class="amount-value">
+              ￥{{ formatAmount(order.pay_amount) }}
+            </text>
+          </view>
+          <view class="time-box">
+            <text class="time-text">
+              下单时间：{{ formatTime(order.created_at) }}
+            </text>
+          </view>
+        </view>
+      </view>
+    </view>
+  </scroll-view>
+</template>
+
+<script>
+type SkuSnapshot = {
+  product_id : number
+  sku_id : number
+  name : string
+  sku_name : string
+  price : string
+  quantity : number
+  image : string | null
+  attr1 ?: string | null
+  attr2 ?: string | null
+  attr3 ?: string | null
+  attr4 ?: string | null
+}
+
+type OrderItem = {
+  id : number
+  order_no : string
+  user_id : string
+  user_name : string
+  id_card_no : string
+  student_school : string | null
+  student_grade : string | null
+  mobile : string | null
+  total_amount : string
+  pay_amount : string
+  status : number
+  refund_status : number
+  refund_amount : string
+  refund_time : string | null
+  audit_status : number
+  receiver_name : string | null
+  receiver_mobile : string | null
+  receiver_address : string | null
+  items_snapshot : string | null
+  created_at : string
+  pay_time : string | null
+
+  // 解析出的 SKU 列表
+  items ?: SkuSnapshot[]
+}
+
+export default {
+  data() {
+    return {
+      statusBarHeight: 0,
+      tabIndex: 4, // 默认“全部”
+      keyword: '',
+      loading: false,
+      allOrders: [] as OrderItem[],
+      tabList: [
+        { status: 0, title: '待付款' },
+        { status: 1, title: '已支付' },
+        { status: 2, title: '退款中' },
+        { status: 3, title: '已退款' },
+        { status: -1, title: '全部' },
+      ],
+    }
+  },
+
+  computed: {
+    // 根据 tab + 关键字 过滤后的订单列表
+    filteredOrders() : OrderItem[] {
+      let list = this.allOrders
+
+      // 按状态过滤
+      const currentTab = this.tabList[this.tabIndex]
+      if (currentTab && currentTab.status !== -1) {
+        const s = currentTab.status
+        list = list.filter((o) => o.status === s)
+      }
+
+      // 按关键字过滤（订单号 / 姓名 / 手机）
+      const k = this.keyword.trim()
+      if (k.length > 0) {
+        list = list.filter((o) => {
+          return (
+            (o.order_no && o.order_no.indexOf(k) !== -1) ||
+            (o.user_name && o.user_name.indexOf(k) !== -1) ||
+            (o.mobile && o.mobile.indexOf(k) !== -1)
+          )
+        })
+      }
+
+      return list
+    },
+  },
+
+  onLoad() {
+    const win = uni.getWindowInfo()
+    this.statusBarHeight = win.statusBarHeight
+    this.fetchOrders()
+  },
+
+  methods: {
+    onBack() {
+      uni.navigateBack()
+    },
+
+    onSearch() {
+      // 本地过滤，什么都不用做，filteredOrders 会自动刷新
+    },
+
+    changeTab(index : number) {
+      if (this.tabIndex === index) return
+      this.tabIndex = index
+    },
+
+    // 获取当前用户所有订单，并解析 items_snapshot
+    fetchOrders() {
+      const openid = uni.getStorageSync('openid') as string
+      if (!openid) {
+        uni.showToast({
+          title: '未获取到用户身份，请先登录',
+          icon: 'none',
+        })
+        return
+      }
+
+      this.loading = true
+
+      uni.request({
+        url: 'https://wdxwhdglzx.jzzw-tech.cn/api/order/list',
+        method: 'GET',
+        data: { openid },
+        success: (res) => {
+          const body = res.data as Any
+          if (body && body.code === 200 && Array.isArray(body.data)) {
+            const list = body.data as Any[]
+            // 解析 items_snapshot
+            this.allOrders = list.map((it) => {
+              let items: SkuSnapshot[] = []
+              if (it.items_snapshot) {
+                try {
+                  const tmp = JSON.parse(it.items_snapshot as string)
+                  if (Array.isArray(tmp)) {
+                    items = tmp as SkuSnapshot[]
+                  }
+                } catch (e) {
+                  console.log('解析 items_snapshot 失败', e, it.items_snapshot)
+                }
+              }
+              ;(it as Any).items = items
+              return it as OrderItem
+            })
+          } else {
+            this.allOrders = []
+            uni.showToast({
+              title: '订单加载失败',
+              icon: 'none',
+            })
+          }
+        },
+        fail: (err) => {
+          console.log('订单请求失败', err)
+          this.allOrders = []
+          uni.showToast({
+            title: '网络错误',
+            icon: 'none',
+          })
+        },
+        complete: () => {
+          this.loading = false
+        },
+      })
+    },
+
+    // 金额格式化：保留两位小数
+    formatAmount(v : string | number | null) : string {
+      const n = Number(v || 0)
+      return n.toFixed(2)
+    },
+
+    // 状态文案
+    formatStatus(s : number) : string {
+      switch (s) {
+        case 0:
+          return '待付款'
+        case 1:
+          return '已支付'
+        case 2:
+          return '退款中'
+        case 3:
+          return '已退款'
+        default:
+          return '未知'
+      }
+    },
+
+    // 时间格式化：展示时 +8 小时
+    formatTime(t : string | null) : string {
+      if (!t) return '-'
+      const d = new Date(t)
+      d.setHours(d.getHours())
+
+      const year = d.getFullYear()
+      const month = (d.getMonth() + 1).toString().padStart(2, '0')
+      const day = d.getDate().toString().padStart(2, '0')
+      const hour = d.getHours().toString().padStart(2, '0')
+      const minute = d.getMinutes().toString().padStart(2, '0')
+      const second = d.getSeconds().toString().padStart(2, '0')
+
+      return `${year}-${month}-${day} ${hour}:${minute}:${second}`
+    },
+
+    // 跳转订单详情
+    goDetail(id : number) {
+      uni.navigateTo({
+        url: `/pages/OrderDetails/OrderDetails?orderId=${id}`,
+      })
+    },
+  },
+}
+</script>
+
+<style lang="scss">
+.page {
+  background-color: $bg-color;
+  min-height: 100vh;
+}
+
+/* 顶部搜索栏 */
+.head-info {
+  width: 100%;
+  height: 100rpx;
+  padding: 0 20rpx;
+  box-sizing: border-box;
+  background-color: $bg-back-color;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+
+  .back {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-right: 10rpx;
+
+    .back-icon {
+      width: 40rpx;
+      height: 40rpx;
+    }
+  }
+
+  .search {
+    flex: 1;
+    height: 64rpx;
+    background-color: #f3f3f3;
+    border-radius: 32rpx;
+    padding: 0 20rpx;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+
+    .search-icon {
+      width: 32rpx;
+      height: 32rpx;
+      margin-right: 10rpx;
+    }
+
+    .search-input {
+      flex: 1;
+      height: 100%;
+      font-size: 26rpx;
+      color: $text-color;
+    }
+  }
+
+  .search-btn {
+    margin-left: 16rpx;
+
+    .search-text {
+      font-size: 28rpx;
+      color: $text-color;
+    }
+  }
+}
+
+/* Tabs */
+.tabs {
+	margin-top: 40rpx; 
+  width: 100%;
+  height: 88rpx;
+  background-color: $bg-back-color;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-around;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.04);
+
+  .tab-item {
+    flex: 1;
+    align-items: center;
+    justify-content: center;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .tab-text {
+    font-size: 28rpx;
+    color: $text-assist-color;
+  }
+
+  .tab-text-active {
+    color: $base;
+    font-weight: bold;
+  }
+
+  .tab-line {
+    margin-top: 8rpx;
+    width: 40rpx;
+    height: 6rpx;
+    border-radius: 3rpx;
+    background-color: transparent;
+  }
+
+  .tab-line-active {
+    background-color: $base;
+  }
+}
+
+/* 列表区域 */
+.order-list {
+  padding: 20rpx;
+  box-sizing: border-box;
+
+  .loading {
+    padding: 40rpx 0;
+    text-align: center;
+    font-size: 26rpx;
+    color: $text-assist-color;
+  }
+
+  .empty {
+    padding-top: 120rpx;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    .empty-image {
+      width: 260rpx;
+      height: 260rpx;
+      margin-bottom: 20rpx;
+    }
+
+    .empty-text {
+      font-size: 26rpx;
+      color: $text-assist-color;
+    }
+  }
+
+  .order-card {
+    margin-bottom: 24rpx;
+    padding: 24rpx;
+    border-radius: 20rpx;
+    background-color: #ffffff;
+    box-shadow: 0 6rpx 20rpx rgba(0, 0, 0, 0.04);
+  }
+
+  .order-header {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+
+    .order-no {
+      font-size: 26rpx;
+      color: $text-color;
+    }
+
+    .order-status {
+      padding: 4rpx 14rpx;
+      border-radius: 26rpx;
+      font-size: 24rpx;
+    }
+
+    .status-0 {
+      background-color: #fff7e6;
+      color: #ff9500;
+    }
+
+    .status-1 {
+      background-color: #e8fff2;
+      color: #2bb673;
+    }
+
+    .status-2 {
+      background-color: #e6f4ff;
+      color: #1b74e4;
+    }
+
+    .status-3 {
+      background-color: #ffecec;
+      color: #e64242;
+    }
+  }
+
+  .divider {
+    margin: 18rpx 0;
+    height: 2rpx;
+    background-color: #f1f1f1;
+  }
+
+  /* 商品块 */
+  .goods-block {
+    display: flex;
+    flex-direction: row;
+  }
+
+  .goods-thumb {
+    width: 150rpx;
+    height: 150rpx;
+    margin-right: 20rpx;
+
+    .goods-image {
+      width: 100%;
+      height: 100%;
+      border-radius: 16rpx;
+      background-color: #f5f5f5;
+    }
+
+    .goods-noimg {
+      width: 100%;
+      height: 100%;
+      border-radius: 16rpx;
+      background-color: #f5f5f5;
+      align-items: center;
+      justify-content: center;
+      display: flex;
+      font-size: 24rpx;
+      color: $text-assist-color;
+    }
+  }
+
+  .goods-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+
+    .goods-title {
+      margin-bottom: 6rpx;
+
+      .goods-name {
+        font-size: 26rpx;
+        color: $text-color;
+        font-weight: 500;
+      }
+    }
+
+    .goods-sku {
+      margin-bottom: 4rpx;
+
+      .sku-text {
+        font-size: 24rpx;
+        color: $text-assist-color;
+      }
+    }
+
+    .goods-attrs {
+      margin-bottom: 4rpx;
+
+      .attr-text {
+        font-size: 22rpx;
+        color: $text-assist-color;
+        margin-right: 12rpx;
+      }
+    }
+
+    .goods-qty-line {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+
+      .goods-qty {
+        font-size: 24rpx;
+        color: $text-color;
+      }
+
+      .more-goods {
+        font-size: 22rpx;
+        color: $text-assist-color;
+      }
+    }
+  }
+
+  .user-info {
+    .user-line {
+      display: block;
+      font-size: 26rpx;
+      color: $text-color;
+      margin-bottom: 6rpx;
+    }
+  }
+
+  .bottom-info {
+    margin-top: 10rpx;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: flex-end;
+
+    .amount-box {
+      .amount-label {
+        font-size: 24rpx;
+        color: $text-assist-color;
+      }
+
+      .amount-value {
+        margin-top: 4rpx;
+        font-size: 30rpx;
+        color: #ff3b30;
+        font-weight: bold;
+      }
+    }
+
+    .time-box {
+      .time-text {
+        font-size: 24rpx;
+        color: $text-assist-color;
+      }
+    }
+  }
+}
+</style>

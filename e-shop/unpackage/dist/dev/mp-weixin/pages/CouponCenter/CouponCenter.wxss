@@ -1,0 +1,172 @@
+@import "../../uvue.wxss";
+:host{display:flex;flex-direction:column}
+/**
+ * 这里是uni-app内置的常用样式变量
+ *
+ * uni-app 官方扩展插件及插件市场（https://ext.dcloud.net.cn）上很多三方插件均使用了这些样式变量
+ * 如果你是插件开发者，建议你使用scss预处理，并在插件代码中直接使用这些变量（无需 import 这个文件），方便用户通过搭积木的方式开发整体风格一致的App
+ *
+ */
+/**
+ * 如果你是App开发者（插件使用者），你可以通过修改这些变量来定制自己的插件主题，实现自定义主题功能
+ *
+ * 如果你的项目同样使用了scss预处理，你也可以直接在你的 scss 代码中使用如下变量，同时无需 import 这个文件
+ */
+/* 颜色变量 */
+/* 文字颜色 */
+/* 主色渐变 */
+/* 按钮颜色 */
+/* 行为相关颜色 */
+/* 文字基本颜色 */
+/* 背景颜色 */
+/* 边框颜色 */
+/* 尺寸变量 */
+/* 文字尺寸 */
+/* 图片尺寸 */
+/* Border Radius */
+/* 水平间距 */
+/* 垂直间距 */
+/* 透明度 */
+/* 文章场景相关 */
+.page {
+  background-color: #f8f8f8;
+}
+.tab-info {
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 100;
+  width: 100%;
+  height: 100rpx;
+  background-color: #ffffff;
+}
+.tab-info .tab-item {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  height: 100%;
+}
+.tab-info .tab-item .item {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 160rpx;
+  height: 100%;
+}
+.tab-info .tab-item .item .text {
+  font-size: 28rpx;
+  color: #333333;
+}
+.tab-info .tab-item .item .line {
+  position: absolute;
+  bottom: 16rpx;
+  width: 30%;
+  height: 8rpx;
+  background-color: transparent;
+  border-radius: 8rpx;
+}
+.tab-info .tab-item .item .active {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #fe9a5c;
+}
+.tab-info .tab-item .item .active-line {
+  background-color: #fe9a5c;
+}
+.coupon-info {
+  width: 100%;
+  margin-top: 120rpx;
+}
+.coupon-info .coupon-list {
+  width: 100%;
+  padding: 0 30rpx;
+}
+.coupon-info .coupon-list .list {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  width: 100%;
+  height: 230rpx;
+  margin-bottom: 20rpx;
+  background-color: #ffffff;
+  border-radius: 20rpx;
+}
+.coupon-info .coupon-list .list .goods-item {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  flex: 1;
+  height: 100%;
+  padding: 0 20rpx;
+}
+.coupon-info .coupon-list .list .goods-item .item {
+  width: 140rpx;
+  margin-right: 10rpx;
+}
+.coupon-info .coupon-list .list .goods-item .item .pic {
+  display: flex;
+  align-items: center;
+}
+.coupon-info .coupon-list .list .goods-item .item .pic .image {
+  width: 140rpx;
+  height: 140rpx;
+  border-radius: 10rpx;
+}
+.coupon-info .coupon-list .list .goods-item .item .price {
+  display: flex;
+  align-items: center;
+  margin-top: 10rpx;
+}
+.coupon-info .coupon-list .list .goods-item .item .price .text {
+  font-size: 24rpx;
+  font-weight: bold;
+  color: #333333;
+}
+.coupon-info .coupon-list .list .coupon-data {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 200rpx;
+  height: 180rpx;
+  border-left: 1px dashed #f8f8f8;
+}
+.coupon-info .coupon-list .list .coupon-data .full-price {
+  display: flex;
+  align-items: center;
+}
+.coupon-info .coupon-list .list .coupon-data .full-price .text {
+  font-size: 24rpx;
+  color: #aaaaaa;
+}
+.coupon-info .coupon-list .list .coupon-data .price {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-end;
+}
+.coupon-info .coupon-list .list .coupon-data .price .text {
+  font-size: 42rpx;
+  font-weight: bold;
+  color: #fe9a5c;
+}
+.coupon-info .coupon-list .list .coupon-data .price .min {
+  font-size: 28rpx;
+  font-weight: bold;
+  color: #fe9a5c;
+  margin-bottom: 6rpx;
+}
+.coupon-info .coupon-list .list .coupon-data .btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 140rpx;
+  height: 40rpx;
+  margin-top: 20rpx;
+  background-color: #fe9a5c;
+  border-radius: 40rpx;
+}
+.coupon-info .coupon-list .list .coupon-data .btn .text {
+  font-size: 24rpx;
+  color: #ffffff;
+}

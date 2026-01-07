@@ -1,0 +1,148 @@
+<template>
+	<!-- #ifdef APP -->
+	<scroll-view style="flex:1" class="page">
+	<!-- #endif -->
+    <view :style="{paddingBottom: (statusBarBottom + 50) + 'px'}">
+      <view class="shop-info">
+        <view class="shop">
+          <view class="logo">
+            <image src="/static/images/icon/shop_default.png" class="image"></image>
+          </view>
+          <view class="info">
+            <view class="name">
+              <text class="text">{{shopName}}</text>
+              <image src="/static/images/icon/more_right.png" class="more"></image>
+            </view>
+            <view class="star-info">
+              <view class="star">
+                <image src="/static/images/icon/star_on.png" class="image"></image>
+                <image src="/static/images/icon/star_on.png" class="image"></image>
+                <image src="/static/images/icon/star_on.png" class="image"></image>
+                <image src="/static/images/icon/star_on.png" class="image"></image>
+                <image src="/static/images/icon/star_off.png" class="image"></image>
+                <text class="text">4.0</text>
+              </view>
+              <view class="tags">
+                <view class="tag">
+                  <text class="text">自营</text>
+                </view>
+              </view>
+            </view>
+          </view>
+        </view>
+        <view class="collect">
+          <view class="btn">
+            <text class="text">关注</text>
+          </view>
+        </view>
+      </view>
+      <!--    热销榜单-->
+      <view class="hot-goods">
+        <view class="hot-title">
+          <text class="text">热销商品</text>
+        </view>
+        <scroll-view class="goods-list" :scroll-x="true">
+          <view class="list" v-for="(item,index) in dayGoods"
+                @click="onGoodsItem(item)"
+                :key="index">
+            <view class="pic">
+              <image :src="item.pic" class="image"></image>
+            </view>
+            <view class="name">
+              <text class="text">{{item.name}}</text>
+            </view>
+            <view class="price">
+              <text class="min">￥</text>
+              <text class="max">{{item.price}}</text>
+            </view>
+          </view>
+        </scroll-view>
+      </view>
+      <!--    商品-->
+      <view class="goods-info">
+        <view class="goods-list">
+          <view class="list" v-for="(item,index) in goodsList"
+                @click="onGoodsItem(item)"
+                :key="index">
+            <view class="pic">
+              <image :src="item.pic" class="image"></image>
+            </view>
+            <view class="info">
+              <view class="title">
+                <text class="text">{{item.name}}</text>
+              </view>
+              <view class="sales-volume">
+                <text class="text">{{item.salesVolume}}件售出</text>
+              </view>
+              <view class="price-info">
+                <view class="price">
+                  <text class="min">￥</text>
+                  <text class="max">{{formatPrice(item.price as number,0)}}</text>
+                  <text class="min" v-if="formatPrice(item.price as number,1)">.{{formatPrice(item.price as number,1)}}</text>
+                </view>
+                <view class="old-price">
+                  <text class="text">￥{{item.originalPrice}}</text>
+                </view>
+              </view>
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+    <shop-tab-nar flagStr="home"></shop-tab-nar>
+	<!-- #ifdef APP -->
+	</scroll-view>
+	<!-- #endif -->
+</template>
+
+<script>
+  import ShopTabNar from './components/ShopTabNar/ShopTabNar.uvue'
+  import {dayData, goodsData, goodsItems} from '@/mock/goodsData.uts'
+	export default {
+    components: {
+      ShopTabNar
+    },
+		data() {
+			return {
+        statusBarHeight: 0,
+        statusBarBottom: 0,
+        shopName: '',
+        dayGoods: dayData as Array<goodsItems>,
+        goodsList: goodsData as Array<goodsItems>,
+			};
+		},
+    onLoad(options: OnLoadOptions){
+      let windowInfo = uni.getWindowInfo();
+      this.statusBarHeight = windowInfo.statusBarHeight;
+      this.statusBarBottom = windowInfo.safeAreaInsets.bottom;
+      // 参数接收
+      this.shopName = options.get('name') as string | '';
+    },
+    methods: {
+      formatPrice(price: Number,type: Number): string{
+        let strPrice = price.toString();
+        let start:string = strPrice.split('.')[0];
+        let end:string = '';
+        try {
+          end = strPrice.split('.')[1]
+        }catch (e){
+          end = '';
+        }
+
+        return type === 0 ? start : end
+      },
+      /**
+       * 商品点击
+       */
+      onGoodsItem(item: goodsItems){
+        uni.navigateTo({
+          url: `/pages/GoodsDetail/GoodsDetail?goodsId=${item.id}`
+        })
+      },
+    },
+	}
+</script>
+
+<style lang="scss">
+  @import "ShopDetails.scss";
+</style>

@@ -1,0 +1,763 @@
+<template>
+  <!-- 只支持小程序就用 scroll-view 包起来 -->
+  <scroll-view
+    class="page"
+    scroll-y="true"
+    style="flex: 1;"
+  >
+    <!-- 顶部固定栏 -->
+    <!-- 内容整体，给头部留出空间 -->
+    <view>
+      <!-- 加载 / 错误提示 -->
+      <view class="tips-bar" v-if="loading || errorMsg">
+        <text v-if="loading" class="tips-text">正在加载退款相关订单...</text>
+        <text v-else class="tips-text error">{{ errorMsg }}</text>
+      </view>
+
+      <!-- 可申请退款 -->
+      <view class="block" v-if="refundableList.length">
+        <view class="block-header">
+          <view class="line"></view>
+          <text class="title">可申请退款的订单</text>
+        </view>
+
+        <view
+          class="order-card"
+          v-for="item in refundableList"
+          :key="item.id"
+        >
+          <!-- 上：课程+金额+状态 -->
+          <view class="order-top">
+            <view class="left">
+              <view class="course-name">
+                <text class="course">
+                  {{ getFirstItemName(item) }}
+                </text>
+              </view>
+              <view class="tags">
+                <text class="tag">订单号：{{ item.order_no }}</text>
+              </view>
+            </view>
+            <view class="right">
+              <view class="amount">
+                <text class="min">￥</text>
+                <text class="max">{{ formatAmount(item.pay_amount) }}</text>
+              </view>
+              <view class="status">
+                <text class="status-text">已支付 · 72 小时内可退</text>
+              </view>
+            </view>
+          </view>
+
+          <!-- 中：学生信息 -->
+          <view class="order-middle">
+            <view class="line-item">
+              <text class="label">姓名：</text>
+              <text class="value">{{ item.user_name || '—' }}</text>
+            </view>
+            <view class="line-item">
+              <text class="label">学校：</text>
+              <text class="value">{{ item.student_school || '—' }}</text>
+            </view>
+            <view class="line-item">
+              <text class="label">年级：</text>
+              <text class="value">{{ item.student_grade || '—' }}</text>
+            </view>
+          </view>
+
+          <!-- 下：时间 + 按钮 -->
+          <view class="order-bottom">
+            <view class="time-info">
+              <text class="time-text">
+                下单时间：{{ formatTimePlus8(item.created_at) }}
+              </text>
+              <text class="time-text">
+                支付时间：{{ formatTimePlus8(item.pay_time) }}
+              </text>
+            </view>
+            <view class="btn-area">
+              <view class="btn-refund" @click="openReasonPopup(item)">
+                <text class="text">申请退款</text>
+              </view>
+            </view>
+          </view>
+        </view>
+      </view>
+
+      <!-- 退款处理中 -->
+      <view class="block" v-if="processingList.length">
+        <view class="block-header">
+          <view class="line"></view>
+          <text class="title">退款处理中</text>
+        </view>
+
+        <view
+          class="order-card processing"
+          v-for="item in processingList"
+          :key="item.id"
+        >
+          <view class="order-top">
+            <view class="left">
+              <view class="course-name">
+                <text class="course">
+                  {{ getFirstItemName(item) }}
+                </text>
+              </view>
+              <view class="tags">
+                <text class="tag">订单号：{{ item.order_no }}</text>
+              </view>
+            </view>
+            <view class="right">
+              <view class="amount">
+                <text class="min">￥</text>
+                <text class="max">{{ formatAmount(item.pay_amount) }}</text>
+              </view>
+              <view class="status">
+                <text class="status-text processing">退款处理中</text>
+              </view>
+            </view>
+          </view>
+
+          <view class="order-middle">
+            <view class="line-item">
+              <text class="label">退款原因：</text>
+              <text class="value">
+                {{ item.refund_reason || '用户发起退款，等待处理' }}
+              </text>
+            </view>
+          </view>
+
+          <view class="order-bottom">
+            <view class="time-info">
+              <text class="time-text">
+                支付时间：{{ formatTimePlus8(item.pay_time) }}
+              </text>
+            </view>
+          </view>
+        </view>
+      </view>
+
+      <!-- 如果两个列表都为空，给个空状态 -->
+      <view
+        v-if="!loading && !errorMsg && !refundableList.length && !processingList.length"
+        class="empty"
+      >
+        <image src="/static/images/icon/null_icon.png" class="empty-img"></image>
+        <text class="empty-text">暂时没有可申请退款或退款中的订单</text>
+      </view>
+    </view>
+
+    <!-- 退款原因弹窗 -->
+    <view
+      v-if="showReasonPopup"
+      class="mask"
+    >
+      <!-- 不再绑定关闭事件，只有按钮能关 -->
+      <view class="popup">
+        <view class="popup-header">
+          <text class="title">申请退款</text>
+        </view>
+
+        <view class="popup-body">
+          <view class="row">
+            <text class="label">订单号：</text>
+            <text class="value">
+              {{ currentOrder ? currentOrder.order_no : '' }}
+            </text>
+          </view>
+          <view class="row">
+            <text class="label">实付金额：</text>
+            <text class="value amount">
+              ￥{{ currentOrder ? formatAmount(currentOrder.pay_amount) : '0.00' }}
+            </text>
+          </view>
+          <view class="row">
+            <text class="label">课程：</text>
+            <text class="value">
+              {{ currentOrder ? getFirstItemName(currentOrder) : '' }}
+            </text>
+          </view>
+
+          <view class="reason-box">
+            <text class="label">退款原因（必填）：</text>
+            <textarea
+              class="textarea"
+              v-model="refundReason"
+              placeholder="请填写退款原因，如时间冲突、孩子无法参加等"
+              maxlength="200"
+              auto-height
+            />
+            <view class="count">
+              <text class="text">{{ refundReason.length }}/200</text>
+            </view>
+          </view>
+        </view>
+
+        <view class="popup-footer">
+          <view class="btn cancel" @click="closeReasonPopup">
+            <text class="text">取消</text>
+          </view>
+          <view class="btn submit" @click="submitRefund">
+            <text class="text">提交申请</text>
+          </view>
+        </view>
+      </view>
+    </view>
+  </scroll-view>
+</template>
+
+<script>
+const API_BASE = 'https://wdxwhdglzx.jzzw-tech.cn';
+
+export default {
+  data() {
+    return {
+      statusBarHeight: 0,
+
+      loading: false,
+      errorMsg: '',
+
+      // 后端返回的两个核心列表
+      refundableList: [],   // 可申请退款的订单
+      processingList: [],   // 退款中的订单
+
+      // 弹窗相关
+      showReasonPopup: false,
+      currentOrder: null,
+      refundReason: '',
+    };
+  },
+
+  onLoad() {
+    const win = uni.getWindowInfo();
+    this.statusBarHeight = win.statusBarHeight;
+    this.loadRefundOrders();
+  },
+
+  methods: {
+    // 返回
+    onBack() {
+      uni.navigateBack();
+    },
+
+    // 加载可申请退款 & 退款中的订单
+    loadRefundOrders() {
+      const openid = uni.getStorageSync('openid');
+
+      if (!openid) {
+        this.errorMsg = '未找到 openid，请先登录后再试';
+        uni.showToast({
+          title: '请先登录',
+          icon: 'none',
+        });
+        return;
+      }
+
+      this.loading = true;
+      this.errorMsg = '';
+
+      uni.request({
+        url: `${API_BASE}/api/order/refund/list`,
+        method: 'GET',
+        data: { openid },
+        success: (res) => {
+          const body = res.data || {};
+          if (body.code !== 200) {
+            this.errorMsg = body.msg || '接口返回错误';
+            return;
+          }
+
+          const data = body.data || {};
+          this.refundableList = data.refundable_orders || [];
+          this.processingList = data.refund_processing_orders || [];
+        },
+        fail: () => {
+          this.errorMsg = '网络请求失败，请稍后重试';
+        },
+        complete: () => {
+          this.loading = false;
+        },
+      });
+    },
+
+    // 格式化金额
+    formatAmount(v) {
+      const n = Number(v || 0);
+      return n.toFixed(2);
+    },
+
+    // +8 小时的时间格式化
+    formatTimePlus8(t) {
+      if (!t) return '—';
+      const d = new Date(t);
+      if (isNaN(d.getTime())) return String(t);
+      const ts = d.getTime();
+      const dd = new Date(ts);
+      const y = dd.getFullYear();
+      const m = (dd.getMonth() + 1).toString().padStart(2, '0');
+      const day = dd.getDate().toString().padStart(2, '0');
+      const hh = dd.getHours().toString().padStart(2, '0');
+      const mm = dd.getMinutes().toString().padStart(2, '0');
+      const ss = dd.getSeconds().toString().padStart(2, '0');
+      return `${y}-${m}-${day} ${hh}:${mm}:${ss}`;
+    },
+
+    // 从 items_snapshot 里取出第一个课程名称
+    getFirstItemName(order) {
+      if (!order || !order.items_snapshot) return '课程';
+      try {
+        const arr = JSON.parse(order.items_snapshot);
+        if (Array.isArray(arr) && arr.length > 0) {
+          const it = arr[0];
+          return it.product_name || it.name || '课程';
+        }
+      } catch (e) {}
+      return '课程';
+    },
+
+    // 打开原因弹窗
+    openReasonPopup(order) {
+      this.currentOrder = order;
+      this.refundReason = '';
+      this.showReasonPopup = true;
+    },
+
+    // 关闭弹窗
+    closeReasonPopup() {
+      this.showReasonPopup = false;
+      this.currentOrder = null;
+      this.refundReason = '';
+    },
+
+    // 提交退款申请
+    submitRefund() {
+      if (!this.currentOrder) return;
+
+      const reason = this.refundReason.trim();
+      if (!reason || reason.length < 5) {
+        uni.showToast({
+          title: '请至少填写 5 个字的退款原因',
+          icon: 'none',
+        });
+        return;
+      }
+
+      const openid = uni.getStorageSync('openid');
+      if (!openid) {
+        uni.showToast({
+          title: '请先登录',
+          icon: 'none',
+        });
+        return;
+      }
+
+      uni.showLoading({ title: '提交中...' });
+
+      uni.request({
+        url: `${API_BASE}/api/order/refund/apply`,
+        method: 'POST',
+        header: {
+          'content-type': 'application/json',
+        },
+        data: {
+          openid,
+          order_id: this.currentOrder.id,
+          reason: reason,
+        },
+        success: (res) => {
+          const body = res.data || {};
+          if (body.code === 200) {
+            uni.showToast({
+              title: '申请已提交',
+              icon: 'success',
+            });
+            this.closeReasonPopup();
+            this.loadRefundOrders();
+          } else {
+            uni.showToast({
+              title: body.msg || '申请失败',
+              icon: 'none',
+            });
+          }
+        },
+        fail: () => {
+          uni.showToast({
+            title: '网络错误，请稍后再试',
+            icon: 'none',
+          });
+        },
+        complete: () => {
+          uni.hideLoading();
+        },
+      });
+    },
+  },
+};
+</script>
+
+<style lang="scss">
+.page {
+  background-color: #f5f5f5;
+  min-height: 100vh;
+}
+
+/* 顶部栏 */
+.head-info {
+  position: fixed;
+  z-index: 100;
+  left: 0;
+  top: 0;
+  width: 100%;
+  padding: 0 24rpx;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  background-color: #ffffff;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.06);
+
+  .back {
+    width: 80rpx;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+
+    .image {
+      width: 40rpx;
+      height: 40rpx;
+    }
+  }
+
+  .title {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+
+    .text {
+      font-size: 32rpx;
+      font-weight: 600;
+      color: #111827;
+    }
+  }
+}
+
+/* 提示条 */
+.tips-bar {
+  padding: 16rpx 28rpx 0 28rpx;
+
+  .tips-text {
+    font-size: 26rpx;
+    color: #6b7280;
+  }
+
+  .error {
+    color: #e11d48;
+  }
+}
+
+/* 块 */
+.block {
+  padding: 20rpx 24rpx 0 24rpx;
+
+  .block-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 8rpx;
+
+    .line {
+      width: 8rpx;
+      height: 28rpx;
+      border-radius: 4rpx;
+      background-color: #3b82f6;
+      margin-right: 10rpx;
+    }
+
+    .title {
+      font-size: 30rpx;
+      font-weight: 600;
+      color: #111827;
+    }
+  }
+}
+
+/* 订单卡片 */
+.order-card {
+  margin-top: 12rpx;
+  padding: 20rpx;
+  border-radius: 16rpx;
+  background-color: #ffffff;
+  box-shadow: 0 4rpx 10rpx rgba(15, 23, 42, 0.04);
+
+  &.processing {
+    border: 1rpx solid #bfdbfe;
+  }
+
+  .order-top {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+
+    .left {
+      flex: 1;
+      padding-right: 20rpx;
+
+      .course-name {
+        margin-bottom: 4rpx;
+
+        .course {
+          font-size: 30rpx;
+          color: #111827;
+          font-weight: 600;
+        }
+      }
+
+      .tags {
+        .tag {
+          font-size: 24rpx;
+          color: #6b7280;
+        }
+      }
+    }
+
+    .right {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      justify-content: flex-start;
+
+      .amount {
+        display: flex;
+        align-items: baseline;
+
+        .min {
+          font-size: 24rpx;
+          color: #ef4444;
+        }
+
+        .max {
+          font-size: 32rpx;
+          font-weight: 700;
+          color: #ef4444;
+          margin-left: 2rpx;
+        }
+      }
+
+      .status {
+        margin-top: 4rpx;
+
+        .status-text {
+          font-size: 22rpx;
+          color: #059669;
+        }
+
+        .processing {
+          color: #1d4ed8;
+        }
+      }
+    }
+  }
+
+  .order-middle {
+    margin-top: 12rpx;
+    padding-top: 12rpx;
+    border-top: 1rpx dashed #e5e7eb;
+
+    .line-item {
+      display: flex;
+      margin-bottom: 4rpx;
+
+      .label {
+        font-size: 24rpx;
+        color: #6b7280;
+        width: 120rpx;
+      }
+
+      .value {
+        font-size: 24rpx;
+        color: #111827;
+        flex: 1;
+      }
+    }
+  }
+
+  .order-bottom {
+    margin-top: 12rpx;
+    padding-top: 12rpx;
+    border-top: 1rpx solid #f3f4f6;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+
+    .time-info {
+      flex: 1;
+      padding-right: 20rpx;
+
+      .time-text {
+        font-size: 22rpx;
+        color: #6b7280;
+        display: block;
+      }
+    }
+
+    .btn-area {
+      .btn-refund {
+        padding: 10rpx 26rpx;
+        border-radius: 999rpx;
+        border: 1rpx solid #ef4444;
+
+        .text {
+          font-size: 24rpx;
+          color: #ef4444;
+        }
+      }
+    }
+  }
+}
+
+/* 空状态 */
+.empty {
+  padding: 80rpx 24rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  .empty-img {
+    width: 160rpx;
+    height: 160rpx;
+    margin-bottom: 20rpx;
+  }
+
+  .empty-text {
+    font-size: 26rpx;
+    color: #9ca3af;
+  }
+}
+
+/* 弹窗蒙层 */
+.mask {
+  position: fixed;
+  z-index: 999;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(15, 23, 42, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* 弹窗 */
+.popup {
+  width: 86%;
+  max-width: 680rpx;
+  background-color: #ffffff;
+  border-radius: 20rpx;
+  padding: 20rpx 22rpx 16rpx 22rpx;
+  box-shadow: 0 16rpx 40rpx rgba(15, 23, 42, 0.35);
+  display: flex;
+  flex-direction: column;
+
+  .popup-header {
+    margin-bottom: 10rpx;
+
+    .title {
+      font-size: 30rpx;
+      font-weight: 600;
+      color: #111827;
+    }
+  }
+
+  .popup-body {
+    .row {
+      display: flex;
+      margin-bottom: 4rpx;
+
+      .label {
+        font-size: 24rpx;
+        color: #6b7280;
+        width: 150rpx;
+      }
+
+      .value {
+        font-size: 24rpx;
+        color: #111827;
+        flex: 1;
+      }
+
+      .amount {
+        color: #ef4444;
+        font-weight: 600;
+      }
+    }
+
+    .reason-box {
+      margin-top: 12rpx;
+
+      .label {
+        font-size: 24rpx;
+        color: #6b7280;
+      }
+
+      .textarea {
+        margin-top: 8rpx;
+        min-height: 120rpx;
+        max-height: 260rpx;
+        padding: 12rpx;
+        border-radius: 12rpx;
+        border: 1rpx solid #e5e7eb;
+        background-color: #f9fafb;
+        font-size: 24rpx;
+        color: #111827;
+      }
+
+      .count {
+        margin-top: 4rpx;
+        display: flex;
+        justify-content: flex-end;
+
+        .text {
+          font-size: 22rpx;
+          color: #9ca3af;
+        }
+      }
+    }
+  }
+
+  .popup-footer {
+    margin-top: 16rpx;
+    display: flex;
+    justify-content: flex-end;
+
+    .btn {
+      min-width: 140rpx;
+      padding: 12rpx 0;
+      border-radius: 999rpx;
+      margin-left: 10rpx;
+      justify-content: center;
+      align-items: center;
+      display: flex;
+
+      .text {
+        font-size: 26rpx;
+      }
+    }
+
+    .cancel {
+      background-color: #f3f4f6;
+
+      .text {
+        color: #6b7280;
+      }
+    }
+
+    .submit {
+      background-color: #ef4444;
+
+      .text {
+        color: #ffffff;
+      }
+    }
+  }
+}
+</style>

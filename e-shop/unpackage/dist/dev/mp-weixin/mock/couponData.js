@@ -1,0 +1,374 @@
+"use strict";
+require("./goodsData.js");
+class CouponItem extends UTS.UTSType {
+  static get$UTSMetadata$() {
+    return {
+      kind: 2,
+      get fields() {
+        return {
+          title: { type: String, optional: false },
+          fullPrice: { type: Number, optional: false },
+          subPrice: { type: Number, optional: false },
+          startDate: { type: String, optional: false },
+          endDate: { type: String, optional: false },
+          goodsList: { type: "Unknown", optional: false }
+        };
+      },
+      name: "CouponItem"
+    };
+  }
+  constructor(options, metadata = CouponItem.get$UTSMetadata$(), isJSONParse = false) {
+    super();
+    this.__props__ = UTS.UTSType.initProps(options, metadata, isJSONParse);
+    this.title = this.__props__.title;
+    this.fullPrice = this.__props__.fullPrice;
+    this.subPrice = this.__props__.subPrice;
+    this.startDate = this.__props__.startDate;
+    this.endDate = this.__props__.endDate;
+    this.goodsList = this.__props__.goodsList;
+    delete this.__props__;
+  }
+}
+const CouponData = [
+  new CouponItem({
+    title: "手机3C满减优惠券",
+    fullPrice: 100,
+    subPrice: 10,
+    startDate: "2024.01.02",
+    endDate: "2024.12.12",
+    goodsList: [
+      new UTSJSONObject({
+        id: 1,
+        name: "荣耀笔记本电脑MagicBook X 14 Pro 锐龙版 2023 R7-7840HS标压处理器 15h长续航 高色域护眼屏 高性能轻薄本",
+        pic: "https://m.360buyimg.com/mobilecms/s1265x1265_jfs/t1/110990/16/38425/36858/64b90d71Fcf3e8f7d/598d2cbbbcfa5db9.jpg!q70.dpg.webp",
+        price: 3697.2,
+        originalPrice: 3999,
+        salesVolume: 5e3,
+        shopName: "荣耀官方自营旗舰店"
+      }),
+      new UTSJSONObject({
+        id: 2,
+        name: "小米无线键鼠套装2 轻薄便携 全尺寸104键键盘鼠标套装 2.4G无线传输 电脑笔记本办公套装 键鼠套装",
+        pic: "https://m.360buyimg.com/mobilecms/s750x750_jfs/t1/228249/6/9834/49378/65960c9fF8a394ce7/d5ee187f85c95aef.jpg!q80.dpg.webp",
+        price: 89.23,
+        originalPrice: 99.12,
+        salesVolume: 123,
+        shopName: "小米官方自营旗舰店"
+      }),
+      new UTSJSONObject({
+        id: 3,
+        name: "华为（HUAWEI）旗舰手机 Mate 60 Pro 12GB+512GB 雅川青",
+        pic: "https://m.360buyimg.com/mobilecms/s1265x1265_jfs/t1/211556/35/38471/42993/64f1aa51F7ee8e4e5/5f8c4f9c149335ad.jpg!q70.dpg.webp",
+        price: 6999,
+        originalPrice: 7999,
+        salesVolume: 999
+      })
+    ]
+  }),
+  new CouponItem({
+    title: "美妆满减优惠券",
+    fullPrice: 80,
+    subPrice: 5,
+    startDate: "2024.01.02",
+    endDate: "2024.12.12",
+    goodsList: [
+      new UTSJSONObject({
+        id: 6,
+        name: "资生堂（Shiseido）悦薇水乳小样护肤品化妆品旅行套装 滋润滋养 新款中样4件：洁面+水+乳液+精华",
+        pic: "https://m.360buyimg.com/mobilecms/s750x750_jfs/t1/121610/13/41125/70882/64ffdc37F4afe4517/775a22b274bddbc8.jpg!q80.dpg.webp",
+        price: 276,
+        originalPrice: 299.67,
+        salesVolume: 235,
+        shopName: "慕雪倾城美妆专营店",
+        inventory: 300
+      }),
+      new UTSJSONObject({
+        id: 7,
+        name: "olayks电压力锅 高压锅 家用多功能高压电饭锅快煮智能预约小压力锅 3升适用3-5人用",
+        pic: "https://m.360buyimg.com/mobilecms/s1265x1265_jfs/t1/218941/9/35528/25457/65755e41F35e7888c/fef994d37d44ecca.jpg!q70.dpg.webp",
+        price: 299,
+        originalPrice: 329,
+        salesVolume: 97,
+        shopName: "olayks自营旗舰店",
+        inventory: 100
+      }),
+      new UTSJSONObject({
+        id: 2,
+        name: "小米无线键鼠套装2 轻薄便携 全尺寸104键键盘鼠标套装 2.4G无线传输 电脑笔记本办公套装 键鼠套装",
+        pic: "https://m.360buyimg.com/mobilecms/s750x750_jfs/t1/228249/6/9834/49378/65960c9fF8a394ce7/d5ee187f85c95aef.jpg!q80.dpg.webp",
+        price: 89.23,
+        originalPrice: 99.12,
+        salesVolume: 123,
+        shopName: "小米官方自营旗舰店",
+        inventory: 200
+      })
+    ]
+  }),
+  new CouponItem({
+    title: "服装满减优惠券",
+    fullPrice: 600,
+    subPrice: 120,
+    startDate: "2024.01.02",
+    endDate: "2024.12.12",
+    goodsList: [
+      new UTSJSONObject({
+        id: 8,
+        name: "乐芬兰（LeFenLan）短外套女2023秋冬新款宽松气质羊羔毛小个子复古皮毛一体夹克上衣 卡其色 S",
+        pic: "https://m.360buyimg.com/mobilecms/s750x750_jfs/t1/104119/12/39372/58031/6523addaF4a77719f/8b7fa71598a9e566.jpg!q80.dpg.webp",
+        price: 158,
+        originalPrice: 199,
+        salesVolume: 999,
+        shopName: "乐芬兰女装旗舰店",
+        inventory: 10002
+      }),
+      new UTSJSONObject({
+        id: 5,
+        name: "尚都比拉秋季复古气质女神范针织连衣裙中长款显瘦a字裙 黑色 L ",
+        pic: "https://m.360buyimg.com/mobilecms/s750x750_jfs/t1/228639/27/5562/25890/6569ab29Ff3a9d0fe/91d6428be15da41c.jpg!q80.dpg.webp",
+        price: 169,
+        originalPrice: 199,
+        salesVolume: 235,
+        shopName: "尚都比拉自营旗舰店",
+        inventory: 6e3
+      }),
+      new UTSJSONObject({
+        id: 4,
+        name: "罗蒙羊毛双面呢大衣男士秋冬中长款风衣外套休闲保暖呢子大衣上衣男装",
+        pic: "https://m.360buyimg.com/mobilecms/s1265x1265_jfs/t1/220910/16/35955/54305/64e8bec4F86f0f1e7/8d78e685620a0712.jpg!q70.dpg.webp",
+        price: 272.34,
+        originalPrice: 299,
+        salesVolume: 235,
+        shopName: "罗蒙（ROMON）自营专区",
+        inventory: 500
+      })
+    ]
+  }),
+  new CouponItem({
+    title: "手机3C满减优惠券",
+    fullPrice: 100,
+    subPrice: 10,
+    startDate: "2024.01.02",
+    endDate: "2024.12.12",
+    goodsList: [
+      new UTSJSONObject({
+        id: 1,
+        name: "荣耀笔记本电脑MagicBook X 14 Pro 锐龙版 2023 R7-7840HS标压处理器 15h长续航 高色域护眼屏 高性能轻薄本",
+        pic: "https://m.360buyimg.com/mobilecms/s1265x1265_jfs/t1/110990/16/38425/36858/64b90d71Fcf3e8f7d/598d2cbbbcfa5db9.jpg!q70.dpg.webp",
+        price: 3697.2,
+        originalPrice: 3999,
+        salesVolume: 5e3,
+        shopName: "荣耀官方自营旗舰店"
+      }),
+      new UTSJSONObject({
+        id: 2,
+        name: "小米无线键鼠套装2 轻薄便携 全尺寸104键键盘鼠标套装 2.4G无线传输 电脑笔记本办公套装 键鼠套装",
+        pic: "https://m.360buyimg.com/mobilecms/s750x750_jfs/t1/228249/6/9834/49378/65960c9fF8a394ce7/d5ee187f85c95aef.jpg!q80.dpg.webp",
+        price: 89.23,
+        originalPrice: 99.12,
+        salesVolume: 123,
+        shopName: "小米官方自营旗舰店"
+      }),
+      new UTSJSONObject({
+        id: 3,
+        name: "华为（HUAWEI）旗舰手机 Mate 60 Pro 12GB+512GB 雅川青",
+        pic: "https://m.360buyimg.com/mobilecms/s1265x1265_jfs/t1/211556/35/38471/42993/64f1aa51F7ee8e4e5/5f8c4f9c149335ad.jpg!q70.dpg.webp",
+        price: 6999,
+        originalPrice: 7999,
+        salesVolume: 999
+      })
+    ]
+  }),
+  new CouponItem({
+    title: "美妆满减优惠券",
+    fullPrice: 80,
+    subPrice: 5,
+    startDate: "2024.01.02",
+    endDate: "2024.12.12",
+    goodsList: [
+      new UTSJSONObject({
+        id: 6,
+        name: "资生堂（Shiseido）悦薇水乳小样护肤品化妆品旅行套装 滋润滋养 新款中样4件：洁面+水+乳液+精华",
+        pic: "https://m.360buyimg.com/mobilecms/s750x750_jfs/t1/121610/13/41125/70882/64ffdc37F4afe4517/775a22b274bddbc8.jpg!q80.dpg.webp",
+        price: 276,
+        originalPrice: 299.67,
+        salesVolume: 235,
+        shopName: "慕雪倾城美妆专营店",
+        inventory: 300
+      }),
+      new UTSJSONObject({
+        id: 7,
+        name: "olayks电压力锅 高压锅 家用多功能高压电饭锅快煮智能预约小压力锅 3升适用3-5人用",
+        pic: "https://m.360buyimg.com/mobilecms/s1265x1265_jfs/t1/218941/9/35528/25457/65755e41F35e7888c/fef994d37d44ecca.jpg!q70.dpg.webp",
+        price: 299,
+        originalPrice: 329,
+        salesVolume: 97,
+        shopName: "olayks自营旗舰店",
+        inventory: 100
+      }),
+      new UTSJSONObject({
+        id: 2,
+        name: "小米无线键鼠套装2 轻薄便携 全尺寸104键键盘鼠标套装 2.4G无线传输 电脑笔记本办公套装 键鼠套装",
+        pic: "https://m.360buyimg.com/mobilecms/s750x750_jfs/t1/228249/6/9834/49378/65960c9fF8a394ce7/d5ee187f85c95aef.jpg!q80.dpg.webp",
+        price: 89.23,
+        originalPrice: 99.12,
+        salesVolume: 123,
+        shopName: "小米官方自营旗舰店",
+        inventory: 200
+      })
+    ]
+  }),
+  new CouponItem({
+    title: "服装满减优惠券",
+    fullPrice: 600,
+    subPrice: 120,
+    startDate: "2024.01.02",
+    endDate: "2024.12.12",
+    goodsList: [
+      new UTSJSONObject({
+        id: 8,
+        name: "乐芬兰（LeFenLan）短外套女2023秋冬新款宽松气质羊羔毛小个子复古皮毛一体夹克上衣 卡其色 S",
+        pic: "https://m.360buyimg.com/mobilecms/s750x750_jfs/t1/104119/12/39372/58031/6523addaF4a77719f/8b7fa71598a9e566.jpg!q80.dpg.webp",
+        price: 158,
+        originalPrice: 199,
+        salesVolume: 999,
+        shopName: "乐芬兰女装旗舰店",
+        inventory: 10002
+      }),
+      new UTSJSONObject({
+        id: 5,
+        name: "尚都比拉秋季复古气质女神范针织连衣裙中长款显瘦a字裙 黑色 L ",
+        pic: "https://m.360buyimg.com/mobilecms/s750x750_jfs/t1/228639/27/5562/25890/6569ab29Ff3a9d0fe/91d6428be15da41c.jpg!q80.dpg.webp",
+        price: 169,
+        originalPrice: 199,
+        salesVolume: 235,
+        shopName: "尚都比拉自营旗舰店",
+        inventory: 6e3
+      }),
+      new UTSJSONObject({
+        id: 4,
+        name: "罗蒙羊毛双面呢大衣男士秋冬中长款风衣外套休闲保暖呢子大衣上衣男装",
+        pic: "https://m.360buyimg.com/mobilecms/s1265x1265_jfs/t1/220910/16/35955/54305/64e8bec4F86f0f1e7/8d78e685620a0712.jpg!q70.dpg.webp",
+        price: 272.34,
+        originalPrice: 299,
+        salesVolume: 235,
+        shopName: "罗蒙（ROMON）自营专区",
+        inventory: 500
+      })
+    ]
+  }),
+  new CouponItem({
+    title: "手机3C满减优惠券",
+    fullPrice: 100,
+    subPrice: 10,
+    startDate: "2024.01.02",
+    endDate: "2024.12.12",
+    goodsList: [
+      new UTSJSONObject({
+        id: 1,
+        name: "荣耀笔记本电脑MagicBook X 14 Pro 锐龙版 2023 R7-7840HS标压处理器 15h长续航 高色域护眼屏 高性能轻薄本",
+        pic: "https://m.360buyimg.com/mobilecms/s1265x1265_jfs/t1/110990/16/38425/36858/64b90d71Fcf3e8f7d/598d2cbbbcfa5db9.jpg!q70.dpg.webp",
+        price: 3697.2,
+        originalPrice: 3999,
+        salesVolume: 5e3,
+        shopName: "荣耀官方自营旗舰店"
+      }),
+      new UTSJSONObject({
+        id: 2,
+        name: "小米无线键鼠套装2 轻薄便携 全尺寸104键键盘鼠标套装 2.4G无线传输 电脑笔记本办公套装 键鼠套装",
+        pic: "https://m.360buyimg.com/mobilecms/s750x750_jfs/t1/228249/6/9834/49378/65960c9fF8a394ce7/d5ee187f85c95aef.jpg!q80.dpg.webp",
+        price: 89.23,
+        originalPrice: 99.12,
+        salesVolume: 123,
+        shopName: "小米官方自营旗舰店"
+      }),
+      new UTSJSONObject({
+        id: 3,
+        name: "华为（HUAWEI）旗舰手机 Mate 60 Pro 12GB+512GB 雅川青",
+        pic: "https://m.360buyimg.com/mobilecms/s1265x1265_jfs/t1/211556/35/38471/42993/64f1aa51F7ee8e4e5/5f8c4f9c149335ad.jpg!q70.dpg.webp",
+        price: 6999,
+        originalPrice: 7999,
+        salesVolume: 999
+      })
+    ]
+  }),
+  new CouponItem({
+    title: "美妆满减优惠券",
+    fullPrice: 80,
+    subPrice: 5,
+    startDate: "2024.01.02",
+    endDate: "2024.12.12",
+    goodsList: [
+      new UTSJSONObject({
+        id: 6,
+        name: "资生堂（Shiseido）悦薇水乳小样护肤品化妆品旅行套装 滋润滋养 新款中样4件：洁面+水+乳液+精华",
+        pic: "https://m.360buyimg.com/mobilecms/s750x750_jfs/t1/121610/13/41125/70882/64ffdc37F4afe4517/775a22b274bddbc8.jpg!q80.dpg.webp",
+        price: 276,
+        originalPrice: 299.67,
+        salesVolume: 235,
+        shopName: "慕雪倾城美妆专营店",
+        inventory: 300
+      }),
+      new UTSJSONObject({
+        id: 7,
+        name: "olayks电压力锅 高压锅 家用多功能高压电饭锅快煮智能预约小压力锅 3升适用3-5人用",
+        pic: "https://m.360buyimg.com/mobilecms/s1265x1265_jfs/t1/218941/9/35528/25457/65755e41F35e7888c/fef994d37d44ecca.jpg!q70.dpg.webp",
+        price: 299,
+        originalPrice: 329,
+        salesVolume: 97,
+        shopName: "olayks自营旗舰店",
+        inventory: 100
+      }),
+      new UTSJSONObject({
+        id: 2,
+        name: "小米无线键鼠套装2 轻薄便携 全尺寸104键键盘鼠标套装 2.4G无线传输 电脑笔记本办公套装 键鼠套装",
+        pic: "https://m.360buyimg.com/mobilecms/s750x750_jfs/t1/228249/6/9834/49378/65960c9fF8a394ce7/d5ee187f85c95aef.jpg!q80.dpg.webp",
+        price: 89.23,
+        originalPrice: 99.12,
+        salesVolume: 123,
+        shopName: "小米官方自营旗舰店",
+        inventory: 200
+      })
+    ]
+  }),
+  new CouponItem({
+    title: "服装满减优惠券",
+    fullPrice: 600,
+    subPrice: 120,
+    startDate: "2024.01.02",
+    endDate: "2024.12.12",
+    goodsList: [
+      new UTSJSONObject({
+        id: 8,
+        name: "乐芬兰（LeFenLan）短外套女2023秋冬新款宽松气质羊羔毛小个子复古皮毛一体夹克上衣 卡其色 S",
+        pic: "https://m.360buyimg.com/mobilecms/s750x750_jfs/t1/104119/12/39372/58031/6523addaF4a77719f/8b7fa71598a9e566.jpg!q80.dpg.webp",
+        price: 158,
+        originalPrice: 199,
+        salesVolume: 999,
+        shopName: "乐芬兰女装旗舰店",
+        inventory: 10002
+      }),
+      new UTSJSONObject({
+        id: 5,
+        name: "尚都比拉秋季复古气质女神范针织连衣裙中长款显瘦a字裙 黑色 L ",
+        pic: "https://m.360buyimg.com/mobilecms/s750x750_jfs/t1/228639/27/5562/25890/6569ab29Ff3a9d0fe/91d6428be15da41c.jpg!q80.dpg.webp",
+        price: 169,
+        originalPrice: 199,
+        salesVolume: 235,
+        shopName: "尚都比拉自营旗舰店",
+        inventory: 6e3
+      }),
+      new UTSJSONObject({
+        id: 4,
+        name: "罗蒙羊毛双面呢大衣男士秋冬中长款风衣外套休闲保暖呢子大衣上衣男装",
+        pic: "https://m.360buyimg.com/mobilecms/s1265x1265_jfs/t1/220910/16/35955/54305/64e8bec4F86f0f1e7/8d78e685620a0712.jpg!q70.dpg.webp",
+        price: 272.34,
+        originalPrice: 299,
+        salesVolume: 235,
+        shopName: "罗蒙（ROMON）自营专区",
+        inventory: 500
+      })
+    ]
+  })
+];
+exports.CouponData = CouponData;
+//# sourceMappingURL=../../.sourcemap/mp-weixin/mock/couponData.js.map

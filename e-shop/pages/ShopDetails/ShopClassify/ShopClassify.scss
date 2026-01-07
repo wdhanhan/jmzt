@@ -1,0 +1,91 @@
+.page{
+  background-color: $bg-back-color;
+}
+
+.classify-main{
+  position: fixed;
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  height: 100%;
+  background-color: $bg-back-color;
+  .classify-left{
+    width: 25%;
+    height: 100%;
+    background-color: #f8f8f8;
+    .item{
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      height: 120rpx;
+      .line{
+        display: none;
+      }
+      .text{
+        font-size: 28rpx;
+        color: $text-color;
+      }
+      .line-active{
+        position: absolute;
+        left: 0;
+        display: flex;
+        width: 8rpx;
+        height: 40rpx;
+        background-color: $base;
+        border-radius: 8rpx;
+      }
+      .text-active{
+        color: $base;
+      }
+    }
+    .active{
+      position: relative;
+      background-color: $bg-back-color;
+    }
+  }
+  .classify-right{
+    width: 85%;
+    height: 100%;
+    background-color: $bg-back-color;
+    .classify-list{
+      width: 100%;
+      padding: 0 20rpx;
+      .two-classify{
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        width: 100%;
+        height: 100rpx;
+        .text{
+          font-size: 32rpx;
+          color: $text-color;
+        }
+      }
+      .three-list{
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        .list{
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          width: 30%;
+          height: 150rpx;
+          margin-bottom: 20rpx;
+          .image{
+            width: 100rpx;
+            height: 100rpx;
+            margin-bottom: 10rpx;
+          }
+          .text{
+            font-size: 26rpx;
+            color: $text-assist-color;
+          }
+        }
+      }
+    }
+  }
+}

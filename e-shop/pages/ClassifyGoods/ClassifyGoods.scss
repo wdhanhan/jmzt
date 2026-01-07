@@ -1,0 +1,149 @@
+.page{
+  background-color: $bg-color;
+}
+
+.classify-info{
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  width: 100%;
+  padding: 20rpx 0;
+  .item{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 20%;
+    height: 140rpx;
+    margin-bottom: 20rpx;
+    .image{
+      width: 80rpx;
+      height: 80rpx;
+      margin-bottom: 10rpx;
+      border-radius: 20rpx;
+    }
+    .text{
+      font-size: 28rpx;
+      color: $text-color;
+    }
+  }
+}
+
+.new-goods{
+  margin: 0 30rpx;
+  height: 300rpx;
+  background-color: $bg-back-color;
+  border-radius: 20rpx;
+  .title-info{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    width: 100%;
+    height: 80rpx;
+    padding: 0 30rpx;
+    .title{
+      display: flex;
+      align-items: center;
+      .text{
+        font-size: 32rpx;
+        font-weight: bold;
+        color: $text-color;
+      }
+    }
+  }
+  .goods-item{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    width: 100%;
+    padding: 0 30rpx;
+    margin-top: 10rpx;
+    .item{
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      margin-right: 20rpx;
+      .pic{
+        display: flex;
+        align-items: center;
+        .image{
+          width: 142rpx;
+          height: 142rpx;
+        }
+      }
+      .price{
+        display: flex;
+        align-items: center;
+        margin-top: 10rpx;
+        .text{
+          font-weight: bold;
+          font-size: 28rpx;
+          color: $assist-color;
+        }
+      }
+    }
+  }
+}
+
+.goods-info{
+  width: 100%;
+  margin-top: 20rpx;
+  .goods-list{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    width: 100%;
+    padding: 0 30rpx;
+    .list{
+      width: 334rpx;
+      margin-bottom: 20rpx;
+      padding-bottom: 20rpx;
+      background-color: $bg-back-color;
+      border-radius: 10rpx;
+      .pic{
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        height: 334rpx;
+        .image{
+          width: 334rpx;
+          height: 334rpx;
+          border-radius: 10rpx;
+        }
+      }
+      .title{
+        display: flex;
+        margin-top: 10rpx;
+        .text{
+          lines:2;
+          text-overflow: ellipsis;
+          padding: 0 20rpx;
+          width: 334rpx;
+          height: 70rpx;
+          font-size: 28rpx;
+          color: $text-color;
+        }
+      }
+      .price{
+        display: flex;
+        flex-direction: row;
+        align-items: flex-end;
+        padding: 0 20rpx;
+        .min{
+          font-size: 22rpx;
+          font-weight: bold;
+          color: $assist-color;
+					margin-bottom: 4rpx;
+        }
+        .max{
+          font-size: 36rpx;
+          font-weight: bold;
+          color: $assist-color;
+        }
+      }
+    }
+  }
+}

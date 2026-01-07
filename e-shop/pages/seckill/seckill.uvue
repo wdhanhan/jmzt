@@ -1,0 +1,214 @@
+<template>
+	<!-- #ifdef APP -->
+	<scroll-view style="flex:1"
+               @scroll="onPageScroll"
+               class="page">
+	<!-- #endif -->
+    <view class="head-info">
+      <view class="head-back" :style="{height: (statusBarHeight+50)+'px',paddingTop:statusBarHeight+'px',backgroundColor: 'rgba(231,45,30,'+pageScrollTop+')'}">
+        <view class="back" @click="onBack">
+          <image src="/static/images/icon/back_icon2.png" class="image"></image>
+        </view>
+        <view class="title">
+          <image src="/static/images/xsms_tit.png" class="image"></image>
+        </view>
+        <view class="more">
+          <image src="/static/images/icon/more_icon2.png" class="image"></image>
+        </view>
+      </view>
+      <view class="head-banner" :style="{marginTop: (statusBarHeight+60)+'px'}">
+        <view class="banner">
+          <swiper class="swiper"
+                  :autoplay="false"
+                  :circular="true"
+                  :indicator-dots="true"
+                  indicator-active-color="#ffffff" indicator-color="rgba(255,255,255,0.5)">
+            <swiper-item v-for="(item,index) in bannerList" :key="index">
+              <image :src="item.pic" mode="aspectFit" class="image"></image>
+            </swiper-item>
+          </swiper>
+        </view>
+        <view class="brand-item">
+          <view class="item">
+            <view class="pic">
+              <image src="https://m.360buyimg.com/mobilecms/s1265x1265_jfs/t1/211556/35/38471/42993/64f1aa51F7ee8e4e5/5f8c4f9c149335ad.jpg!q70.dpg.webp" class="image"></image>
+            </view>
+            <view class="title">
+              <text class="text">华为专区</text>
+            </view>
+          </view>
+          <view class="item">
+            <view class="pic">
+              <image src="https://m.360buyimg.com/mobilecms/s1265x1265_jfs/t1/110990/16/38425/36858/64b90d71Fcf3e8f7d/598d2cbbbcfa5db9.jpg!q70.dpg.webp" class="image"></image>
+            </view>
+            <view class="title">
+              <text class="text">荣耀专区</text>
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+<!--    场次-->
+    <view class="session-info">
+      <view class="session-item">
+        <view class="item" :class="{'active':sessionCut===0}" @click="onSessionCut(0)">
+          <view class="time">
+            <text class="text" :class="{'text-active':sessionCut===0}">18:00</text>
+          </view>
+          <view class="title">
+            <text class="text" :class="{'text-active':sessionCut===0}">已开抢</text>
+          </view>
+        </view>
+        <view class="item" :class="{'active':sessionCut===1}" @click="onSessionCut(1)">
+          <view class="time">
+            <text class="text" :class="{'text-active':sessionCut===1}">20:00</text>
+          </view>
+          <view class="title">
+            <text class="text" :class="{'text-active':sessionCut===1}">抢购中</text>
+          </view>
+        </view>
+        <view class="item" :class="{'active':sessionCut===2}" @click="onSessionCut(2)">
+          <view class="time">
+            <text class="text" :class="{'text-active':sessionCut===2}">22:00</text>
+          </view>
+          <view class="title">
+            <text class="text" :class="{'text-active':sessionCut===2}">即将开抢</text>
+          </view>
+        </view>
+        <view class="item" :class="{'active':sessionCut===3}" @click="onSessionCut(3)">
+          <view class="time">
+            <text class="text" :class="{'text-active':sessionCut===3}">00:00</text>
+          </view>
+          <view class="title">
+            <text class="text" :class="{'text-active':sessionCut===3}">即将开抢</text>
+          </view>
+        </view>
+      </view>
+    </view>
+<!--    商品列表-->
+    <view class="seckill-goods">
+      <view class="goods-item">
+        <view class="item" v-for="(item,index) in seckillList"
+              @click="onGoodsItem(item)"
+              :key="index">
+            <view class="pic">
+              <image :src="item.pic" class="image"></image>
+            </view>
+          <view class="info">
+            <view class="goods-name">
+              <text class="text">{{item.name}}</text>
+            </view>
+            <view class="progress">
+              <view class="bar" :style="{width: calculateNumber(item.inventory as number,item.salesVolume as number,1)+'%'}">
+                <text class="text" v-if="calculateNumber(item.inventory as number,item.salesVolume as number,1) >= 40">剩余{{calculateNumber(item.inventory as number,item.salesVolume as number,0)}}件商品</text>
+              </view>
+            </view>
+            <view class="price-btn">
+              <view class="price-info">
+                <view class="price">
+                  <text class="min">￥</text>
+                  <text class="max">{{formatPrice(item.price as number,0)}}</text>
+                  <text class="min" v-if="formatPrice(item.price as number,1)">.{{formatPrice(item.price as number,1)}}</text>
+                </view>
+                <view class="old-price">
+                  <text class="text">￥{{item.originalPrice}}</text>
+                </view>
+              </view>
+              <view class="btn-info">
+                <view class="btn">
+                  <text class="text">抢购</text>
+                </view>
+              </view>
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+	<!-- #ifdef APP -->
+	</scroll-view>
+	<!-- #endif -->
+</template>
+
+<script>
+  import {seckillGoodsData,goodsItems} from '@/mock/goodsData.uts'
+  import {BannerData,bannerItem} from  '@/mock/bannerData.uts'
+	export default {
+    data() {
+      return {
+        statusBarHeight: 0,
+        pageScrollTop: 0,
+        sessionCut: 0,
+        seckillList: seckillGoodsData as Array<goodsItems>,
+        bannerList: BannerData as Array<bannerItem>
+      };
+    },
+    onLoad(){
+      let windowInfo = uni.getWindowInfo();
+      this.statusBarHeight = windowInfo.statusBarHeight;
+    },
+    methods:{
+      /**
+       * 返回点击
+       */
+      onBack(){
+        uni.navigateBack();
+      },
+      /**
+       * 页面滑动事件
+       * @param e
+       */
+      onPageScroll(e: ScrollEvent){
+        let scrollTop:number = e.detail.scrollTop;
+        let top = scrollTop / 100;
+        this.pageScrollTop = top;
+        // 监听顶部滚动
+        if(top >= 1){
+          this.pageScrollTop = 1;
+        }
+      },
+      /**
+       * 数量计算
+       * @param count
+       * @param useCount
+       * @param type
+       */
+      calculateNumber(count: Number,useCount: Number,type: Number) :Number{
+        let sum = count - useCount;
+        let bar = (useCount / count) * 100;
+        return type === 0 ? sum : Math.round(bar*100)/100
+      },
+      formatPrice(price: Number,type: Number): string{
+        let strPrice = price.toString();
+        let start:string = strPrice.split('.')[0];
+        let end:string = '';
+        try {
+          end = strPrice.split('.')[1]
+        }catch (e){
+          end = '';
+        }
+
+        return type === 0 ? start : end
+      },
+      /**
+       * 商品点击
+       * @param item
+       */
+      onGoodsItem(item: goodsItems){
+        uni.navigateTo({
+          url: `/pages/GoodsDetail/GoodsDetail?goodsId=${item.id}`
+        })
+      },
+      /**
+       * 场次切换点击
+       * @param type
+       */
+      onSessionCut(type: Number){
+        this.sessionCut = type;
+      }
+    }
+	}
+</script>
+
+<style lang="scss">
+  @import "seckill.scss";
+</style>

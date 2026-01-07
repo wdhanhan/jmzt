@@ -1,0 +1,286 @@
+<template>
+  <!-- 外层容器：整页布局 -->
+  <view class="page">
+
+    <!-- 顶部导航：固定在顶部，不再放到 scroll-view 里 -->
+    <view class="head-info">
+
+      <!-- 白底头部（向下滑动出现） -->
+      <view class="head-info-white"
+        :style="{
+          height: (statusBarHeight+50)+'px',
+          paddingTop: statusBarHeight+'px',
+          opacity: pageScrollTop
+        }"
+      >
+        <view class="back" @click="onBack">
+          <image src="/static/images/icon/back_icon1.png" class="image"></image>
+        </view>
+
+        <view class="head-item">
+          <view class="item" @click="onScrollView(0)">
+            <text class="text" :class="{'active': headCut===0}">商品</text>
+          </view>
+          <view class="item" @click="onScrollView(1)">
+            <text class="text" :class="{'active': headCut===1}">店铺</text>
+          </view>
+          <view class="item" @click="onScrollView(2)">
+            <text class="text" :class="{'active': headCut===2}">评价</text>
+          </view>
+          <view class="item" @click="onScrollView(3)">
+            <text class="text" :class="{'active': headCut===3}">详情</text>
+          </view>
+        </view>
+
+        <view class="operation-btn">
+          <view class="btn">
+            <image src="/static/images/icon/fx_icon1.png" class="image"></image>
+          </view>
+          <view class="btn">
+            <image src="/static/images/icon/more_icon1.png" class="image"></image>
+          </view>
+        </view>
+      </view>
+
+      <!-- 透明头部 -->
+      <view class="head-info-transparen"
+        :style="{
+          height: (statusBarHeight+50)+'px',
+          paddingTop: statusBarHeight+'px'
+        }"
+      >
+        <view class="back" v-show="pageScrollTop <= 0" @click="onBack">
+          <image src="/static/images/icon/back_icon2.png" class="image"></image>
+        </view>
+
+        <view class="operation-btn" v-show="pageScrollTop <= 0">
+          <view class="btn">
+            <image src="/static/images/icon/fx_icon2.png" class="image"></image>
+          </view>
+          <view class="btn">
+            <image src="/static/images/icon/more_icon2.png" class="image"></image>
+          </view>
+        </view>
+      </view>
+
+    </view>
+
+    <!-- 中间内容：scroll-view 只负责滚动内容 -->
+    <scroll-view
+      class="page-scroll"
+      scroll-y="true"
+      :scroll-top="scrollTop"
+      @scroll="onPageScroll"
+      :style="{ flex: 1 }"
+    >
+      <!-- 给内容加 paddingTop 避免被 fixed 的 head-info 盖住，
+           加 paddingBottom 避免被底部栏遮住 -->
+      <view
+        :style="{
+          paddingTop: (statusBarHeight + 50) + 'px',
+          paddingBottom: '140rpx'
+        }"
+      >
+        <!-- Banner 多图轮播 -->
+        <view class="banner-info" :style="{height: screenWidth+'px'}">
+          <swiper class="swiper"
+            :autoplay="true"
+            :circular="true"
+            :indicator-dots="false"
+            @change="changeBanner">
+
+            <swiper-item 
+              v-for="(img,index) in info.images" 
+              :key="index"
+            >
+              <image :src="img" class="image" mode="aspectFill"></image>
+            </swiper-item>
+
+          </swiper>
+
+          <view class="indicator-dot">
+            <view class="dots"
+              v-for="(img,index) in info.images"
+              :key="index"
+              :class="{'active':bannerCurrent===index}"/>
+          </view>
+        </view>
+
+        <!-- 商品信息 -->
+        <view class="goods-info">
+          <view class="price-info">
+            <view class="price">
+              <text class="min">￥</text>
+              <text class="max">{{ displayPrice }}</text>
+            </view>
+          </view>
+
+          <view class="goods-name">
+            <view class="name">
+              <text class="text">{{info.name}}</text>
+            </view>
+          </view>
+
+          <view class="goods-desc">
+            <text class="text">
+              {{ info.description }}
+            </text>
+          </view>
+        </view>
+
+        <!-- 图文详情 -->
+        <view class="goods-detail" ref="goodsDetail">
+          <view class="title-info">
+            <view class="title">
+              <view class="line"></view>
+              <text class="tit">图文信息</text>
+            </view>
+          </view>
+
+          <view class="content">
+            <image 
+              v-for="(img,index) in info.images"
+              :key="index"
+              :src="img"
+              mode="widthFix"
+              style="width:100%;margin-bottom:15rpx;"
+            ></image>
+          </view>
+        </view>
+      </view>
+    </scroll-view>
+
+    <!-- 底部按钮：移到 scroll-view 外，真正 fixed，在 iOS 上就能稳定显示 -->
+    <view class="footer-info">
+      <view class="footer-btn">
+        <view class="btn" @click="onCallService">
+          <image src="/static/images/icon/kft_icon.png" class="image"></image>
+          <text class="text">咨询</text>
+        </view>
+      </view>
+
+      <view class="buy-info">
+        <!-- ⭐ 这里继续用 openPopup，内部调用 $callMethod 跟旧版保持一致 -->
+        <view class="add-cart-btn" @click="openPopup('cart')">
+          <text class="text">加入购物车</text>
+        </view>
+        <view class="buy-btn" @click="openPopup('buy')">
+          <text class="text">立即购买</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- SKU 弹窗（uts 组件）：也放在 scroll-view 外更安全 -->
+    <attr-popup ref="AttrPopup" :info="info"></attr-popup>
+  </view>
+</template>
+
+<script>
+import AttrPopup from './components/AttrPopup/AttrPopup'
+
+export default {
+  components: {
+    AttrPopup
+  },
+
+  data() {
+    return {
+      statusBarHeight: 0,
+      screenWidth: 0,
+      bannerCurrent: 0,
+      scrollTop: 0,
+      pageScrollTop: 0,
+      headCut: 0,
+      goodsId: 0,
+      info: { images: [], skus: [] },
+    };
+  },
+
+  computed: {
+    // 显示价格：优先用第一个 SKU 的价格，没有就用商品 price
+    displayPrice() {
+      if (this.info.skus && this.info.skus.length > 0) {
+        return this.info.skus[0].price;
+      }
+      return this.info.price || 0;
+    }
+  },
+
+  onLoad(options) {
+    const w = uni.getWindowInfo();
+    this.statusBarHeight = w.statusBarHeight;
+    this.screenWidth = w.screenWidth;
+
+    this.goodsId = Number(options.goodsId || 0);
+    this.getData();
+  },
+
+  methods: {
+    onBack() {
+      uni.navigateBack();
+    },
+
+    // ⭐ 拨打客服电话
+    onCallService() {
+      uni.makePhoneCall({
+        phoneNumber: '0939-5959039',
+        fail: (err) => {
+          console.error('拨打电话失败：', err);
+          uni.showToast({
+            title: '无法发起电话',
+            icon: 'none'
+          });
+        }
+      });
+    },
+
+    // 拉取后端商品详情（你自己的 Node 接口）
+    getData() {
+      uni.request({
+        url: `https://wdxwhdglzx.jzzw-tech.cn/api/products/${this.goodsId}`,
+        method: "GET",
+        success: (res) => {
+          const data = res.data.data || {};
+          this.info = {
+            ...data,
+            images: data.images || [],
+          };
+        }
+      });
+    },
+
+    onPageScroll(e) {
+      const top = e.detail.scrollTop;
+      this.pageScrollTop = Math.min(top / 100, 1);
+      if (top <= 50) this.headCut = 0;
+    },
+
+    onScrollView(type) {
+      this.headCut = type;
+      if (type === 0) this.scrollTop = 0;
+      // 其他 tab 的滚动你后面要的话再加 createSelectorQuery
+    },
+
+    changeBanner(e) {
+      this.bannerCurrent = e.detail.current;
+    },
+
+    /** 🔥 弹起 SKU 组件 */
+    openPopup(type) {
+      if (this.$refs.AttrPopup && this.$refs.AttrPopup.$callMethod) {
+        this.$refs.AttrPopup.$callMethod('open', type);
+      } else {
+        console.warn('AttrPopup 实例上没有 $callMethod，检查 AttrPopup 是否为 uvue / uts 组件');
+      }
+    },
+
+    onToShop() {
+      uni.showToast({ title: "暂未实现", icon: "none" });
+    }
+  },
+};
+</script>
+
+<style lang="scss">
+  @import "GoodsDetail.scss";
+</style>

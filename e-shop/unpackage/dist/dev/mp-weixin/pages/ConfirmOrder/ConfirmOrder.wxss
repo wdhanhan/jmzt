@@ -1,0 +1,353 @@
+@import "../../uvue.wxss";
+:host{display:flex;flex-direction:column}
+/**
+ * 这里是uni-app内置的常用样式变量
+ *
+ * uni-app 官方扩展插件及插件市场（https://ext.dcloud.net.cn）上很多三方插件均使用了这些样式变量
+ * 如果你是插件开发者，建议你使用scss预处理，并在插件代码中直接使用这些变量（无需 import 这个文件），方便用户通过搭积木的方式开发整体风格一致的App
+ *
+ */
+/**
+ * 如果你是App开发者（插件使用者），你可以通过修改这些变量来定制自己的插件主题，实现自定义主题功能
+ *
+ * 如果你的项目同样使用了scss预处理，你也可以直接在你的 scss 代码中使用如下变量，同时无需 import 这个文件
+ */
+/* 颜色变量 */
+/* 文字颜色 */
+/* 主色渐变 */
+/* 按钮颜色 */
+/* 行为相关颜色 */
+/* 文字基本颜色 */
+/* 背景颜色 */
+/* 边框颜色 */
+/* 尺寸变量 */
+/* 文字尺寸 */
+/* 图片尺寸 */
+/* Border Radius */
+/* 水平间距 */
+/* 垂直间距 */
+/* 透明度 */
+/* 文章场景相关 */
+.page {
+  background-color: #f8f8f8;
+}
+/* 用户信息 */
+.user-info {
+  margin: 30rpx;
+  padding: 30rpx;
+  background-color: #ffffff;
+  border-radius: 20rpx;
+}
+.user-info .user-item {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 20rpx 0;
+  border-bottom: 1rpx solid #f8f8f8;
+}
+.user-info .user-item:last-child {
+  border-bottom-width: 0;
+}
+.user-info .user-item .label {
+  width: 150rpx;
+}
+.user-info .user-item .label .text {
+  font-size: 28rpx;
+  color: #333333;
+}
+.user-info .user-item .input-wrap {
+  flex: 1;
+}
+.user-info .user-item .input-wrap .input {
+  width: 100%;
+  font-size: 28rpx;
+  color: #333333;
+}
+/* 店铺商品 */
+.shop-goods {
+  margin-left: 30rpx;
+  margin-right: 30rpx;
+}
+.shop-goods .shop-list {
+  width: 100%;
+  margin-bottom: 30rpx;
+  padding: 30rpx;
+  background-color: #ffffff;
+  border-radius: 20rpx;
+}
+.shop-goods .shop-list .shop-name {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  width: 100%;
+  margin-bottom: 20rpx;
+}
+.shop-goods .shop-list .shop-name .icon {
+  display: flex;
+  align-items: center;
+  margin-right: 10rpx;
+}
+.shop-goods .shop-list .shop-name .icon .image {
+  width: 38rpx;
+  height: 38rpx;
+}
+.shop-goods .shop-list .shop-name .name {
+  display: flex;
+  align-items: center;
+}
+.shop-goods .shop-list .shop-name .name .text {
+  font-size: 28rpx;
+  color: #333333;
+}
+.shop-goods .shop-list .goods-list {
+  width: 100%;
+  margin-bottom: 10px;
+}
+.shop-goods .shop-list .goods-list .list {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  width: 100%;
+  height: 160rpx;
+  margin-bottom: 20rpx;
+}
+.shop-goods .shop-list .goods-list .list .pic {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 20rpx;
+}
+.shop-goods .shop-list .goods-list .list .pic .image {
+  width: 160rpx;
+  height: 160rpx;
+  border-radius: 10rpx;
+}
+.shop-goods .shop-list .goods-list .list .info {
+  flex: 1;
+  height: 100%;
+}
+.shop-goods .shop-list .goods-list .list .info .name {
+  width: 100%;
+  height: 40rpx;
+  overflow: hidden;
+}
+.shop-goods .shop-list .goods-list .list .info .name .text {
+  width: 100%;
+  height: 60rpx;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  font-size: 28rpx;
+  color: #333333;
+}
+.shop-goods .shop-list .goods-list .list .info .attr {
+  width: 100%;
+  margin-bottom: 10rpx;
+}
+.shop-goods .shop-list .goods-list .list .info .attr .text {
+  font-size: 26rpx;
+  color: #aaaaaa;
+}
+.shop-goods .shop-list .goods-list .list .info .price-number {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  margin-top: 20rpx;
+}
+.shop-goods .shop-list .goods-list .list .info .price-number .price {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-end;
+}
+.shop-goods .shop-list .goods-list .list .info .price-number .price .min {
+  font-size: 24rpx;
+  font-weight: bold;
+  color: #fe9a5c;
+}
+.shop-goods .shop-list .goods-list .list .info .price-number .price .max {
+  font-size: 34rpx;
+  font-weight: bold;
+  color: #fe9a5c;
+}
+.shop-goods .shop-list .goods-list .list .info .price-number .number {
+  display: flex;
+  align-items: center;
+  /* 数量加减样式 */
+}
+.shop-goods .shop-list .goods-list .list .info .price-number .number .num-ctrl {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+.shop-goods .shop-list .goods-list .list .info .price-number .number .num-ctrl .btn {
+  width: 48rpx;
+  height: 48rpx;
+  border-radius: 24rpx;
+  border: 1rpx solid #f8f8f8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.shop-goods .shop-list .goods-list .list .info .price-number .number .num-ctrl .btn .text {
+  font-size: 28rpx;
+  color: #333333;
+}
+.shop-goods .shop-list .goods-list .list .info .price-number .number .num-ctrl .btn.minus {
+  margin-right: 12rpx;
+}
+.shop-goods .shop-list .goods-list .list .info .price-number .number .num-ctrl .btn.plus {
+  margin-left: 12rpx;
+}
+.shop-goods .shop-list .goods-list .list .info .price-number .number .num-ctrl .qty {
+  min-width: 60rpx;
+  text-align: center;
+}
+.shop-goods .shop-list .goods-list .list .info .price-number .number .num-ctrl .qty .text {
+  font-size: 28rpx;
+  color: #333333;
+}
+/* 订单信息 */
+.order-info {
+  padding: 20rpx 30rpx;
+  margin-left: 30rpx;
+  margin-right: 30rpx;
+  margin-bottom: 30rpx;
+  background-color: #ffffff;
+  border-radius: 20rpx;
+}
+.order-info .order-item {
+  width: 100%;
+}
+.order-info .order-item .item {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  height: 80rpx;
+}
+.order-info .order-item .item .title {
+  display: flex;
+  align-items: center;
+}
+.order-info .order-item .item .title .text {
+  font-size: 28rpx;
+  color: #333333;
+}
+.order-info .order-item .item .content {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+.order-info .order-item .item .content .select {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+.order-info .order-item .item .content .select .text {
+  font-size: 28rpx;
+  color: #333333;
+}
+.order-info .order-item .item .content .select .pl {
+  color: #aaaaaa;
+}
+.order-info .order-item .item .content .price {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+.order-info .order-item .item .content .price .text {
+  font-size: 28rpx;
+  font-weight: bold;
+  color: #333333;
+}
+.order-info .total-price {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-end;
+  width: 100%;
+  height: 80rpx;
+  border-top: 1px solid #f8f8f8;
+}
+.order-info .total-price .tit {
+  display: flex;
+  align-items: center;
+}
+.order-info .total-price .tit .text {
+  font-size: 28rpx;
+  color: #333333;
+}
+.order-info .total-price .price {
+  display: flex;
+  align-items: center;
+}
+.order-info .total-price .price .text {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #fe9a5c;
+}
+/* 提交订单 */
+.footer-info {
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  z-index: 100;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  min-height: 100rpx;
+  padding-left: 30rpx;
+  padding-right: 30rpx;
+  background-color: #ffffff;
+}
+.footer-info .price-info {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+.footer-info .price-info .title {
+  display: flex;
+  align-items: center;
+}
+.footer-info .price-info .title .text {
+  font-size: 28rpx;
+  color: #aaaaaa;
+}
+.footer-info .price-info .price {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-end;
+}
+.footer-info .price-info .price .min {
+  font-size: 24rpx;
+  font-weight: bold;
+  color: #fe9a5c;
+  margin-bottom: 4rpx;
+}
+.footer-info .price-info .price .max {
+  font-weight: bold;
+  font-size: 48rpx;
+  color: #fe9a5c;
+}
+.footer-info .btn-info {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+.footer-info .btn-info .btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 230rpx;
+  height: 70rpx;
+  background-image: linear-gradient(to right, #fb9e6d, #ff6e37);
+  border-radius: 40rpx;
+}
+.footer-info .btn-info .btn .text {
+  font-size: 28rpx;
+  color: #ffffff;
+}

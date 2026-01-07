@@ -1,0 +1,137 @@
+.page{
+  background-color: $bg-color;
+}
+.evaluate-tab{
+  position: fixed;
+  top: 0;
+  left: 0;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  height: 100rpx;
+  background-color: #ffffff;
+  .tab-item{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    width: 100%;
+    height: 100rpx;
+    padding: 0 30rpx;
+    .item{
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: center;
+      padding: 10rpx 20rpx;
+      margin-right: 20rpx;
+      border: 1px solid $text-assist-color;
+      border-radius: 50rpx;
+      .text{
+        font-size: 24rpx;
+        color: $text-color;
+      }
+      .active-text{
+        color: $base;
+      }
+    }
+    .active{
+      border: 1px solid $base;
+    }
+  }
+}
+.evaluate-item{
+  width: 100%;
+  margin-top: 100rpx;
+  padding: 20rpx 30rpx;
+  .item{
+    width: 100%;
+    padding: 20rpx;
+    margin-bottom: 20rpx;
+    background-color: $bg-back-color;
+    border-radius: 20rpx;
+    .user-star{
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      width: 100%;
+      height: 70rpx;
+      .pic{
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 20rpx;
+        .image{
+          width: 60rpx;
+          height: 60rpx;
+          border-radius: 30rpx;
+        }
+      }
+      .name-star{
+        .name{
+          display: flex;
+          flex-direction: row;
+          align-items: center;
+          .text{
+            font-size: 24rpx;
+            color: $text-color;
+          }
+        }
+        .star{
+          display: flex;
+          flex-direction: row;
+          align-items: center;
+          .image{
+            width: 24rpx;
+            height: 24rpx;
+            margin-right: 4rpx;
+          }
+        }
+      }
+    }
+    .evaluate-content{
+      width: 100%;
+      margin-top: 10rpx;
+      .content{
+        width: 100%;
+        margin-bottom: 10rpx;
+        .text{
+          width: 100%;
+          font-size: 24rpx;
+          color: $text-color;
+          line-height: 40rpx;
+        }
+      }
+      .img-item{
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        width: 100%;
+        margin-bottom: 10rpx;
+        .img{
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          margin-bottom: 20rpx;
+          .image{
+            width: 314rpx;
+            height: 314rpx;
+            border-radius: 10rpx;
+          }
+        }
+      }
+      .attr{
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        width: 100%;
+        margin-bottom: 10rpx;
+        .text{
+          font-size: 26rpx;
+          color: $text-assist-color;
+        }
+      }
+    }
+  }
+}

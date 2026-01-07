@@ -1,0 +1,132 @@
+<script lang="uts">
+	let firstBackTime = 0
+
+	export default {
+		onLaunch() {
+			console.log('App Launch')
+			this.wxLogin() // 启动时自动获取一次 openid
+		},
+
+		onShow() {
+			console.log('App Show')
+		},
+
+		onHide() {
+			console.log('App Hide')
+		},
+
+		// 👇 只在 APP 端才有的生命周期，用条件编译包起来
+		// #ifdef APP-PLUS
+		onLastPageBackPress() {
+			console.log('App LastPageBackPress')
+			if (firstBackTime == 0) {
+				uni.showToast({
+					title: '再按一次退出应用',
+					position: 'bottom',
+				})
+				firstBackTime = Date.now()
+				setTimeout(() => {
+					firstBackTime = 0
+				}, 2000)
+			} else if (Date.now() - firstBackTime < 2000) {
+				firstBackTime = Date.now()
+				uni.exit()
+			}
+		},
+
+		onExit() {
+			console.log('App Exit')
+		},
+		// #endif
+
+		methods: {
+			wxLogin() {
+				// 如果已经有 openid，可以选择不重复请求
+				const oldOpenid = uni.getStorageSync('openid') as string
+				if (oldOpenid && oldOpenid.length > 0) {
+					console.log('已有 openid：', oldOpenid)
+					return
+				}
+
+				uni.login({
+					provider: 'weixin',
+					success: (loginRes) => {
+						console.log('uni.login success:', loginRes)
+
+						if (!loginRes.code) {
+							uni.showToast({
+								title: '微信登录失败：无 code',
+								icon: 'none'
+							})
+							return
+						}
+
+						// 把 code 发给你后端
+						uni.request({
+							url: 'https://wdxwhdglzx.jzzw-tech.cn/api/wechat/openid',
+							method: 'POST',
+							header: {
+								'content-type': 'application/json'
+							},
+							data: {
+								code: loginRes.code
+							},
+							success: (res) => {
+								console.log('openid 接口返回:', res)
+
+								// 这里的结构对上你后端的返回：
+								// { code: 200, data: { openid, session_key, unionid } }
+								const body = res.data as UTSJSONObject
+
+								if (body['code'] == 200) {
+									const data = body['data'] as UTSJSONObject
+									const openid = data['openid'] as string
+
+									console.log('拿到 openid:', openid)
+
+									// 存本地，后面下单、个人中心等都可以直接用
+									uni.setStorageSync('openid', openid)
+
+									uni.showToast({
+										title: '登录成功',
+										icon: 'success'
+									})
+								} else {
+									uni.showToast({
+										title: '获取 openid 失败:' + body['message'],
+										icon: 'none'
+									})
+								}
+							},
+							fail: (err) => {
+								console.log('请求 openid 接口失败:', err)
+								uni.showToast({
+									title: '服务器错误',
+									icon: 'none'
+								})
+							}
+						})
+					},
+					fail: (err) => {
+						console.log('uni.login fail:', err)
+						uni.showToast({
+							title: '微信登录失败',
+							icon: 'none'
+						})
+					}
+				})
+			}
+		}
+	}
+</script>
+
+<style lang="scss">
+/* 每个页面公共css */
+.uni-row {
+	flex-direction: row;
+}
+
+.uni-column {
+	flex-direction: column;
+}
+</style>

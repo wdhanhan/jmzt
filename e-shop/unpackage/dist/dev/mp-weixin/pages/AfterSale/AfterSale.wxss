@@ -1,0 +1,337 @@
+@import "../../uvue.wxss";
+:host{display:flex;flex-direction:column}
+/**
+ * 这里是uni-app内置的常用样式变量
+ *
+ * uni-app 官方扩展插件及插件市场（https://ext.dcloud.net.cn）上很多三方插件均使用了这些样式变量
+ * 如果你是插件开发者，建议你使用scss预处理，并在插件代码中直接使用这些变量（无需 import 这个文件），方便用户通过搭积木的方式开发整体风格一致的App
+ *
+ */
+/**
+ * 如果你是App开发者（插件使用者），你可以通过修改这些变量来定制自己的插件主题，实现自定义主题功能
+ *
+ * 如果你的项目同样使用了scss预处理，你也可以直接在你的 scss 代码中使用如下变量，同时无需 import 这个文件
+ */
+/* 颜色变量 */
+/* 文字颜色 */
+/* 主色渐变 */
+/* 按钮颜色 */
+/* 行为相关颜色 */
+/* 文字基本颜色 */
+/* 背景颜色 */
+/* 边框颜色 */
+/* 尺寸变量 */
+/* 文字尺寸 */
+/* 图片尺寸 */
+/* Border Radius */
+/* 水平间距 */
+/* 垂直间距 */
+/* 透明度 */
+/* 文章场景相关 */
+.page {
+  background-color: #f5f5f5;
+  min-height: 100vh;
+}
+
+/* 顶部栏 */
+.head-info {
+  position: fixed;
+  z-index: 100;
+  left: 0;
+  top: 0;
+  width: 100%;
+  padding: 0 24rpx;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  background-color: #ffffff;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.06);
+}
+.head-info .back {
+  width: 80rpx;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+.head-info .back .image {
+  width: 40rpx;
+  height: 40rpx;
+}
+.head-info .title {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+}
+.head-info .title .text {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #111827;
+}
+
+/* 提示条 */
+.tips-bar {
+  padding: 16rpx 28rpx 0 28rpx;
+}
+.tips-bar .tips-text {
+  font-size: 26rpx;
+  color: #6b7280;
+}
+.tips-bar .error {
+  color: #e11d48;
+}
+
+/* 块 */
+.block {
+  padding: 20rpx 24rpx 0 24rpx;
+}
+.block .block-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 8rpx;
+}
+.block .block-header .line {
+  width: 8rpx;
+  height: 28rpx;
+  border-radius: 4rpx;
+  background-color: #3b82f6;
+  margin-right: 10rpx;
+}
+.block .block-header .title {
+  font-size: 30rpx;
+  font-weight: 600;
+  color: #111827;
+}
+
+/* 订单卡片 */
+.order-card {
+  margin-top: 12rpx;
+  padding: 20rpx;
+  border-radius: 16rpx;
+  background-color: #ffffff;
+  box-shadow: 0 4rpx 10rpx rgba(15, 23, 42, 0.04);
+}
+.order-card.processing {
+  border: 1rpx solid #bfdbfe;
+}
+.order-card .order-top {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+.order-card .order-top .left {
+  flex: 1;
+  padding-right: 20rpx;
+}
+.order-card .order-top .left .course-name {
+  margin-bottom: 4rpx;
+}
+.order-card .order-top .left .course-name .course {
+  font-size: 30rpx;
+  color: #111827;
+  font-weight: 600;
+}
+.order-card .order-top .left .tags .tag {
+  font-size: 24rpx;
+  color: #6b7280;
+}
+.order-card .order-top .right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  justify-content: flex-start;
+}
+.order-card .order-top .right .amount {
+  display: flex;
+  align-items: baseline;
+}
+.order-card .order-top .right .amount .min {
+  font-size: 24rpx;
+  color: #ef4444;
+}
+.order-card .order-top .right .amount .max {
+  font-size: 32rpx;
+  font-weight: 700;
+  color: #ef4444;
+  margin-left: 2rpx;
+}
+.order-card .order-top .right .status {
+  margin-top: 4rpx;
+}
+.order-card .order-top .right .status .status-text {
+  font-size: 22rpx;
+  color: #059669;
+}
+.order-card .order-top .right .status .processing {
+  color: #1d4ed8;
+}
+.order-card .order-middle {
+  margin-top: 12rpx;
+  padding-top: 12rpx;
+  border-top: 1rpx dashed #e5e7eb;
+}
+.order-card .order-middle .line-item {
+  display: flex;
+  margin-bottom: 4rpx;
+}
+.order-card .order-middle .line-item .label {
+  font-size: 24rpx;
+  color: #6b7280;
+  width: 120rpx;
+}
+.order-card .order-middle .line-item .value {
+  font-size: 24rpx;
+  color: #111827;
+  flex: 1;
+}
+.order-card .order-bottom {
+  margin-top: 12rpx;
+  padding-top: 12rpx;
+  border-top: 1rpx solid #f3f4f6;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+.order-card .order-bottom .time-info {
+  flex: 1;
+  padding-right: 20rpx;
+}
+.order-card .order-bottom .time-info .time-text {
+  font-size: 22rpx;
+  color: #6b7280;
+  display: block;
+}
+.order-card .order-bottom .btn-area .btn-refund {
+  padding: 10rpx 26rpx;
+  border-radius: 999rpx;
+  border: 1rpx solid #ef4444;
+}
+.order-card .order-bottom .btn-area .btn-refund .text {
+  font-size: 24rpx;
+  color: #ef4444;
+}
+
+/* 空状态 */
+.empty {
+  padding: 80rpx 24rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.empty .empty-img {
+  width: 160rpx;
+  height: 160rpx;
+  margin-bottom: 20rpx;
+}
+.empty .empty-text {
+  font-size: 26rpx;
+  color: #9ca3af;
+}
+
+/* 弹窗蒙层 */
+.mask {
+  position: fixed;
+  z-index: 999;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(15, 23, 42, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* 弹窗 */
+.popup {
+  width: 86%;
+  max-width: 680rpx;
+  background-color: #ffffff;
+  border-radius: 20rpx;
+  padding: 20rpx 22rpx 16rpx 22rpx;
+  box-shadow: 0 16rpx 40rpx rgba(15, 23, 42, 0.35);
+  display: flex;
+  flex-direction: column;
+}
+.popup .popup-header {
+  margin-bottom: 10rpx;
+}
+.popup .popup-header .title {
+  font-size: 30rpx;
+  font-weight: 600;
+  color: #111827;
+}
+.popup .popup-body .row {
+  display: flex;
+  margin-bottom: 4rpx;
+}
+.popup .popup-body .row .label {
+  font-size: 24rpx;
+  color: #6b7280;
+  width: 150rpx;
+}
+.popup .popup-body .row .value {
+  font-size: 24rpx;
+  color: #111827;
+  flex: 1;
+}
+.popup .popup-body .row .amount {
+  color: #ef4444;
+  font-weight: 600;
+}
+.popup .popup-body .reason-box {
+  margin-top: 12rpx;
+}
+.popup .popup-body .reason-box .label {
+  font-size: 24rpx;
+  color: #6b7280;
+}
+.popup .popup-body .reason-box .textarea {
+  margin-top: 8rpx;
+  min-height: 120rpx;
+  max-height: 260rpx;
+  padding: 12rpx;
+  border-radius: 12rpx;
+  border: 1rpx solid #e5e7eb;
+  background-color: #f9fafb;
+  font-size: 24rpx;
+  color: #111827;
+}
+.popup .popup-body .reason-box .count {
+  margin-top: 4rpx;
+  display: flex;
+  justify-content: flex-end;
+}
+.popup .popup-body .reason-box .count .text {
+  font-size: 22rpx;
+  color: #9ca3af;
+}
+.popup .popup-footer {
+  margin-top: 16rpx;
+  display: flex;
+  justify-content: flex-end;
+}
+.popup .popup-footer .btn {
+  min-width: 140rpx;
+  padding: 12rpx 0;
+  border-radius: 999rpx;
+  margin-left: 10rpx;
+  justify-content: center;
+  align-items: center;
+  display: flex;
+}
+.popup .popup-footer .btn .text {
+  font-size: 26rpx;
+}
+.popup .popup-footer .cancel {
+  background-color: #f3f4f6;
+}
+.popup .popup-footer .cancel .text {
+  color: #6b7280;
+}
+.popup .popup-footer .submit {
+  background-color: #ef4444;
+}
+.popup .popup-footer .submit .text {
+  color: #ffffff;
+}

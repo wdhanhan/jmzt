@@ -1,0 +1,76 @@
+<template>
+	<view class="tab-bar-info" :style="{paddingBottom: statusBarBottom + 'px'}">
+    <view class="tab-item">
+      <view class="item" @click="onToNav('home')">
+        <image src="/static/images/shop/shop_nav_home_ac.png" class="image" v-show="flagStr==='home'"></image>
+        <image src="/static/images/shop/shop_nav_home.png" class="image" v-show="flagStr!=='home'"></image>
+        <text class="text" :class="{'active':flagStr==='home'}">首页</text>
+      </view>
+      <view class="item" @click="onToNav('goods')">
+        <image src="/static/images/shop/shop_nav_goods_ac.png" class="image" v-show="flagStr==='goods'"></image>
+        <image src="/static/images/shop/shop_nav_goods.png" class="image" v-show="flagStr!=='goods'"></image>
+        <text class="text" :class="{'active':flagStr==='goods'}">商品</text>
+      </view>
+      <view class="item" @click="onToNav('class')">
+        <image src="/static/images/shop/shop_nav_class_ac.png" class="image" v-show="flagStr==='class'"></image>
+        <image src="/static/images/shop/shop_nav_class.png" class="image" v-show="flagStr!=='class'"></image>
+        <text class="text" :class="{'active':flagStr==='class'}">分类</text>
+      </view>
+    </view>
+	</view>
+</template>
+
+<script>
+	export default {
+		data() {
+			return {
+        statusBarHeight: 0,
+        statusBarBottom: 0,
+			}
+		},
+    props:{
+      flagStr: {
+        type: String,
+        default: 'home'
+      }
+    },
+    mounted() {
+      let windowInfo = uni.getWindowInfo();
+      this.statusBarHeight = windowInfo.statusBarHeight;
+      this.statusBarBottom = windowInfo.safeAreaInsets.bottom;
+    },
+		methods: {
+      /**
+       * 导航点击
+       * @param flag
+       */
+      onToNav(flag: String){
+        this.flagStr = flag;
+        let url = '';
+        switch (flag){
+          case 'home':
+            url = '/pages/ShopDetails/ShopDetails'
+            break;
+          case 'goods':
+            url = '/pages/ShopDetails/ShopGoods/ShopGoods'
+            break;
+          case 'class':
+            url = '/pages/ShopDetails/ShopClassify/ShopClassify'
+            break;
+        }
+        // 获取当前路由
+        const currentRoute = getCurrentPages()[getCurrentPages().length - 1].route;
+        const nowUrl = `/${currentRoute}`;
+        if(nowUrl !== url){
+          uni.redirectTo({
+            url: url,
+          })
+        }
+      }
+		}
+	}
+</script>
+
+<style lang="scss">
+  @import "ShopTabNar.scss";
+</style>

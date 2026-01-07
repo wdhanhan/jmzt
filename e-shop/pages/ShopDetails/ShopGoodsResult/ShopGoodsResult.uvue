@@ -1,0 +1,26 @@
+<template>
+	<!-- #ifdef APP -->
+	<scroll-view style="flex:1">
+	<!-- #endif -->
+    <goods-list :isSearch="true"></goods-list>
+	<!-- #ifdef APP -->
+	</scroll-view>
+	<!-- #endif -->
+</template>
+
+<script>
+	import GoodsList from "../components/GoodsList/GoodsList.uvue";
+
+  export default {
+    components: {GoodsList},
+		data() {
+			return {
+
+			};
+		}
+	}
+</script>
+
+<style lang="scss">
+  @import "ShopGoodsResult.scss";
+</style>

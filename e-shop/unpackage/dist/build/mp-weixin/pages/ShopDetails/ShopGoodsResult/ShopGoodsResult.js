@@ -1,0 +1,1 @@
+"use strict";const o=require("../../../common/vendor.js"),e=o.defineComponent({components:{GoodsList:()=>"../components/GoodsList/GoodsList.js"},data:()=>({})});if(!Array){o.resolveComponent("goods-list")()}const s=o._export_sfc(e,[["render",function(e,s,n,t,r,i){return{a:o.gei(e,""),b:o.p({isSearch:!0,id:o.gei(e,"")})}}]]);wx.createPage(s);

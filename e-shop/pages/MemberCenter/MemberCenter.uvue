@@ -1,0 +1,187 @@
+<template>
+	<!-- #ifdef APP -->
+	<scroll-view style="flex:1" class="page" @scroll="onPageScroll">
+	<!-- #endif -->
+    <view class="head-info">
+      <view class="head-back" :style="{height: (statusBarHeight+50)+'px',paddingTop:statusBarHeight+'px',backgroundColor: 'rgba(255,255,255,'+pageScrollTop+')'}">
+        <view class="back" @click="onBack">
+          <image src="/static/images/icon/back_icon.png" class="image"></image>
+        </view>
+        <view class="title">
+          <text class="text">会员中心</text>
+        </view>
+        <view class="more">
+          <image src="/static/images/icon/more_icon1.png" class="image"></image>
+        </view>
+      </view>
+      <view class="card-info" :style="{marginTop: (statusBarHeight+50)+'px'}">
+        <image src="/static/images/icon/hyzx_bg.png" mode="scaleToFill" class="bg"></image>
+        <view class="card">
+          <view class="title-btn">
+            <view class="title-desc">
+              <text class="title">优享会员</text>
+              <text class="desc">尊享12大特权，省心又省钱</text>
+            </view>
+            <view class="btn">
+              <text class="text">去续费</text>
+            </view>
+          </view>
+          <view class="economize-price">
+            <text class="economize">已为您节省</text>
+            <text class="price">￥999</text>
+          </view>
+        </view>
+      </view>
+    </view>
+<!--    权益-->
+    <view class="rights-interests">
+      <view class="title-more">
+        <view class="title">
+          <text class="line"></text>
+          <text class="text">我的权益</text>
+        </view>
+      </view>
+      <view class="rights-item">
+        <view class="item">
+          <image src="/static/images/icon/hzx_icon1.png" class="image"></image>
+          <text class="text">商城折扣</text>
+        </view>
+        <view class="item">
+          <image src="/static/images/icon/hzx_icon2.png" class="image"></image>
+          <text class="text">定期领券</text>
+        </view>
+        <view class="item">
+          <image src="/static/images/icon/hzx_icon3.png" class="image"></image>
+          <text class="text">购物返现</text>
+        </view>
+        <view class="item">
+          <image src="/static/images/icon/hzx_icon4.png" class="image"></image>
+          <text class="text">活动预告</text>
+        </view>
+        <view class="item">
+          <image src="/static/images/icon/hzx_icon5.png" class="image"></image>
+          <text class="text">专属客服</text>
+        </view>
+      </view>
+    </view>
+<!--    瓷片区-->
+    <view class="tile-info">
+      <view class="item">
+        <view class="title-desc">
+          <text class="title">省钱套餐</text>
+          <text class="desc">优惠商城</text>
+        </view>
+        <view class="icon">
+          <image src="/static/images/icon/hyzx_sq.png" class="image"></image>
+        </view>
+      </view>
+      <view class="item" style="border-right: none;">
+        <view class="title-desc">
+          <text class="title">好物专享</text>
+          <text class="desc">甄选好物</text>
+        </view>
+        <view class="icon">
+          <image src="/static/images/icon/hyzx_hw.png" class="image"></image>
+        </view>
+      </view>
+      <view class="item" style="border-bottom: none">
+        <view class="title-desc">
+          <text class="title">福利中心</text>
+          <text class="desc">每月福利</text>
+        </view>
+        <view class="icon">
+          <image src="/static/images/icon/hyzx_fl.png" class="image"></image>
+        </view>
+      </view>
+      <view class="item" style="border-right: none; border-bottom: none">
+        <view class="title-desc">
+          <text class="title">生日礼物</text>
+          <text class="desc">专属红包</text>
+        </view>
+        <view class="icon">
+          <image src="/static/images/icon/hyzx_srlb.png" class="image"></image>
+        </view>
+      </view>
+    </view>
+<!--    精选推荐-->
+    <view class="recommend-info">
+      <view class="info-title">
+        <view class="title">
+          <text class="line"></text>
+          <text class="text">精选推荐</text>
+        </view>
+      </view>
+      <view class="goods-list">
+        <view class="list" v-for="(item,index) in goodsList" :key="index">
+          <view class="pic">
+            <image :src="item.pic" class="image"></image>
+          </view>
+          <view class="title">
+            <text class="text">{{item.name}}</text>
+          </view>
+          <view class="economize">
+            <text class="text">预计可省20元</text>
+          </view>
+          <view class="price">
+            <text class="min">￥</text>
+            <text class="max">{{formatPrice(item.price as number,0)}}</text>
+            <text class="min" v-if="formatPrice(item.price as number,1)">.{{formatPrice(item.price as number,1)}}</text>
+          </view>
+        </view>
+      </view>
+    </view>
+	<!-- #ifdef APP -->
+	</scroll-view>
+	<!-- #endif -->
+</template>
+
+<script>
+import {goodsData, goodsItems} from '@/mock/goodsData.uts'
+	export default {
+    data() {
+      return {
+        statusBarHeight: 0,
+        pageScrollTop: 0,
+        goodsList: goodsData as Array<goodsItems>,
+      };
+    },
+    onLoad(){
+      let windowInfo = uni.getWindowInfo();
+      this.statusBarHeight = windowInfo.statusBarHeight;
+    },
+    methods:{
+      onBack(){
+        uni.navigateBack();
+      },
+      /**
+       * 页面滑动事件
+       * @param e
+       */
+      onPageScroll(e: ScrollEvent){
+        let scrollTop:number = e.detail.scrollTop;
+        let top = scrollTop / 100;
+        this.pageScrollTop = top;
+        // 监听顶部滚动
+        if(top >= 1){
+          this.pageScrollTop = 1;
+        }
+      },
+      formatPrice(price: Number,type: Number): string{
+        let strPrice = price.toString();
+        let start:string = strPrice.split('.')[0];
+        let end:string = '';
+        try {
+          end = strPrice.split('.')[1]
+        }catch (e){
+          end = '';
+        }
+
+        return type === 0 ? start : end
+      },
+    }
+	}
+</script>
+
+<style lang="scss">
+  @import "MemberCenter.scss";
+</style>

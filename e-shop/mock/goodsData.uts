@@ -1,0 +1,347 @@
+
+/**
+ * 商品数据实例类
+ */
+export type goodsItems = {
+	id?: number
+	name ?: string,
+	price ?: number,
+	originalPrice ?: number,
+	salesVolume ?: number,
+	pic ?: string,
+	shopName ?: string,
+	inventory ?: number,
+}
+/**
+ * 品牌数据实例类
+ */
+export type breadGoodsItem = {
+	id: number,
+	name: string,
+	logo: string,
+	bgPic: string,
+	goodsList: Array<goodsItems>
+}
+/**
+ * 商品数据
+ */
+export const goodsData = [
+	{
+		id: 1,
+		name: '荣耀笔记本电脑MagicBook X 14 Pro 锐龙版 2023 R7-7840HS标压处理器 15h长续航 高色域护眼屏 高性能轻薄本',
+		pic: 'https://m.360buyimg.com/mobilecms/s1265x1265_jfs/t1/110990/16/38425/36858/64b90d71Fcf3e8f7d/598d2cbbbcfa5db9.jpg!q70.dpg.webp',
+		price: 3697.2,
+		originalPrice: 3999,
+		salesVolume: 5000,
+		shopName: '荣耀官方自营旗舰店',
+		inventory: 10000,
+	},{
+		id: 2,
+		name: '小米无线键鼠套装2 轻薄便携 全尺寸104键键盘鼠标套装 2.4G无线传输 电脑笔记本办公套装 键鼠套装',
+		pic: 'https://m.360buyimg.com/mobilecms/s750x750_jfs/t1/228249/6/9834/49378/65960c9fF8a394ce7/d5ee187f85c95aef.jpg!q80.dpg.webp',
+		price: 89.23,
+		originalPrice: 99.12,
+		salesVolume: 123,
+		shopName: '小米官方自营旗舰店',
+		inventory: 200,
+	},{
+		id: 3,
+		name: '华为（HUAWEI）旗舰手机 Mate 60 Pro 12GB+512GB 雅川青',
+		pic: 'https://m.360buyimg.com/mobilecms/s1265x1265_jfs/t1/211556/35/38471/42993/64f1aa51F7ee8e4e5/5f8c4f9c149335ad.jpg!q70.dpg.webp',
+		price: 6999,
+		originalPrice: 7999,
+		salesVolume: 999,
+		shopName: '华为官方自营旗舰店',
+		inventory: 3000,
+	},{
+		id: 4,
+		name: '罗蒙羊毛双面呢大衣男士秋冬中长款风衣外套休闲保暖呢子大衣上衣男装',
+		pic: 'https://m.360buyimg.com/mobilecms/s1265x1265_jfs/t1/220910/16/35955/54305/64e8bec4F86f0f1e7/8d78e685620a0712.jpg!q70.dpg.webp',
+		price: 272.34,
+		originalPrice: 299,
+		salesVolume: 235,
+		shopName: '罗蒙（ROMON）自营专区',
+		inventory: 500,
+	},{
+		id: 5,
+		name: '尚都比拉秋季复古气质女神范针织连衣裙中长款显瘦a字裙 黑色 L ',
+		pic: 'https://m.360buyimg.com/mobilecms/s750x750_jfs/t1/228639/27/5562/25890/6569ab29Ff3a9d0fe/91d6428be15da41c.jpg!q80.dpg.webp',
+		price: 169,
+		originalPrice: 199,
+		salesVolume: 235,
+		shopName: '尚都比拉自营旗舰店',
+		inventory: 6000,
+	},{
+		id: 6,
+		name: '资生堂（Shiseido）悦薇水乳小样护肤品化妆品旅行套装 滋润滋养 新款中样4件：洁面+水+乳液+精华',
+		pic: 'https://m.360buyimg.com/mobilecms/s750x750_jfs/t1/121610/13/41125/70882/64ffdc37F4afe4517/775a22b274bddbc8.jpg!q80.dpg.webp',
+		price: 276,
+		originalPrice: 299.67,
+		salesVolume: 235,
+		shopName: '慕雪倾城美妆专营店',
+		inventory: 300,
+	},{
+		id: 7,
+		name: 'olayks电压力锅 高压锅 家用多功能高压电饭锅快煮智能预约小压力锅 3升适用3-5人用',
+		pic: 'https://m.360buyimg.com/mobilecms/s1265x1265_jfs/t1/218941/9/35528/25457/65755e41F35e7888c/fef994d37d44ecca.jpg!q70.dpg.webp',
+		price: 299,
+		originalPrice: 329,
+		salesVolume: 97,
+		shopName: 'olayks自营旗舰店',
+		inventory: 100,
+	},{
+		id: 8,
+		name: '乐芬兰（LeFenLan）短外套女2023秋冬新款宽松气质羊羔毛小个子复古皮毛一体夹克上衣 卡其色 S',
+		pic: 'https://m.360buyimg.com/mobilecms/s750x750_jfs/t1/104119/12/39372/58031/6523addaF4a77719f/8b7fa71598a9e566.jpg!q80.dpg.webp',
+		price: 158,
+		originalPrice: 199,
+		salesVolume: 999,
+		shopName: '乐芬兰女装旗舰店',
+		inventory: 10002,
+	},
+] as Array<goodsItems>;
+
+/**
+ * 每日推荐
+ */
+export const dayData = [
+	{
+		id: 1,
+		name: '荣耀笔记本电脑MagicBook X 14 Pro 锐龙版 2023 R7-7840HS标压处理器 15h长续航 高色域护眼屏 高性能轻薄本',
+		pic: 'https://m.360buyimg.com/mobilecms/s1265x1265_jfs/t1/110990/16/38425/36858/64b90d71Fcf3e8f7d/598d2cbbbcfa5db9.jpg!q70.dpg.webp',
+		price: 3697.2,
+		originalPrice: 3999,
+		salesVolume: 5000,
+		shopName: '荣耀官方自营旗舰店'
+	},{
+		id: 2,
+		name: '小米无线键鼠套装2 轻薄便携 全尺寸104键键盘鼠标套装 2.4G无线传输 电脑笔记本办公套装 键鼠套装',
+		pic: 'https://m.360buyimg.com/mobilecms/s750x750_jfs/t1/228249/6/9834/49378/65960c9fF8a394ce7/d5ee187f85c95aef.jpg!q80.dpg.webp',
+		price: 89.23,
+		originalPrice: 99.12,
+		salesVolume: 123,
+		shopName: '小米官方自营旗舰店'
+	},{
+		id: 3,
+		name: '华为（HUAWEI）旗舰手机 Mate 60 Pro 12GB+512GB 雅川青',
+		pic: 'https://m.360buyimg.com/mobilecms/s1265x1265_jfs/t1/211556/35/38471/42993/64f1aa51F7ee8e4e5/5f8c4f9c149335ad.jpg!q70.dpg.webp',
+		price: 6999,
+		originalPrice: 7999,
+		salesVolume: 999,
+		shopName: '华为官方自营旗舰店'
+	}
+] as Array<goodsItems>;
+
+/**
+ * 购物车数据
+ */
+export const cartData = [
+	{
+		id: 1,
+		name: '荣耀笔记本电脑MagicBook X 14 Pro 锐龙版 2023 R7-7840HS标压处理器 15h长续航 高色域护眼屏 高性能轻薄本',
+		pic: 'https://m.360buyimg.com/mobilecms/s1265x1265_jfs/t1/110990/16/38425/36858/64b90d71Fcf3e8f7d/598d2cbbbcfa5db9.jpg!q70.dpg.webp',
+		price: 3697.2,
+		originalPrice: 3999,
+		salesVolume: 5000,
+		shopName: '荣耀官方自营旗舰店'
+	},{
+		id: 2,
+		name: '小米无线键鼠套装2 轻薄便携 全尺寸104键键盘鼠标套装 2.4G无线传输 电脑笔记本办公套装 键鼠套装',
+		pic: 'https://m.360buyimg.com/mobilecms/s750x750_jfs/t1/228249/6/9834/49378/65960c9fF8a394ce7/d5ee187f85c95aef.jpg!q80.dpg.webp',
+		price: 89.23,
+		originalPrice: 99.12,
+		salesVolume: 123,
+		shopName: '小米官方自营旗舰店'
+	},{
+		id: 3,
+		name: '华为（HUAWEI）旗舰手机 Mate 60 Pro 12GB+512GB 雅川青',
+		pic: 'https://m.360buyimg.com/mobilecms/s1265x1265_jfs/t1/211556/35/38471/42993/64f1aa51F7ee8e4e5/5f8c4f9c149335ad.jpg!q70.dpg.webp',
+		price: 6999,
+		originalPrice: 7999,
+		salesVolume: 999,
+		shopName: '华为官方自营旗舰店'
+	}
+] as Array<goodsItems>;
+
+/**
+ * 秒杀商品数据
+ */
+export const seckillGoodsData = [
+	{
+		id: 1,
+		name: '荣耀笔记本电脑MagicBook X 14 Pro 锐龙版 2023 R7-7840HS标压处理器 15h长续航 高色域护眼屏 高性能轻薄本',
+		pic: 'https://m.360buyimg.com/mobilecms/s1265x1265_jfs/t1/110990/16/38425/36858/64b90d71Fcf3e8f7d/598d2cbbbcfa5db9.jpg!q70.dpg.webp',
+		price: 3697.2,
+		originalPrice: 3999,
+		salesVolume: 27,
+		inventory: 100,
+	},{
+		id: 2,
+		name: '小米无线键鼠套装2 轻薄便携 全尺寸104键键盘鼠标套装 2.4G无线传输 电脑笔记本办公套装 键鼠套装',
+		pic: 'https://m.360buyimg.com/mobilecms/s750x750_jfs/t1/228249/6/9834/49378/65960c9fF8a394ce7/d5ee187f85c95aef.jpg!q80.dpg.webp',
+		price: 89.23,
+		originalPrice: 99.12,
+		salesVolume: 123,
+		inventory: 200,
+	},{
+		id: 3,
+		name: '华为（HUAWEI）旗舰手机 Mate 60 Pro 12GB+512GB 雅川青',
+		pic: 'https://m.360buyimg.com/mobilecms/s1265x1265_jfs/t1/211556/35/38471/42993/64f1aa51F7ee8e4e5/5f8c4f9c149335ad.jpg!q70.dpg.webp',
+		price: 6999,
+		originalPrice: 7999,
+		salesVolume: 999,
+		inventory: 1000,
+	},{
+		id: 4,
+		name: '罗蒙羊毛双面呢大衣男士秋冬中长款风衣外套休闲保暖呢子大衣上衣男装',
+		pic: 'https://m.360buyimg.com/mobilecms/s1265x1265_jfs/t1/220910/16/35955/54305/64e8bec4F86f0f1e7/8d78e685620a0712.jpg!q70.dpg.webp',
+		price: 272.34,
+		originalPrice: 299,
+		salesVolume: 235,
+		inventory: 300,
+	},{
+		id: 5,
+		name: '尚都比拉秋季复古气质女神范针织连衣裙中长款显瘦a字裙 黑色 L ',
+		pic: 'https://m.360buyimg.com/mobilecms/s750x750_jfs/t1/228639/27/5562/25890/6569ab29Ff3a9d0fe/91d6428be15da41c.jpg!q80.dpg.webp',
+		price: 169,
+		originalPrice: 199,
+		salesVolume: 235,
+		inventory: 300
+	},{
+		id: 6,
+		name: '资生堂（Shiseido）悦薇水乳小样护肤品化妆品旅行套装 滋润滋养 新款中样4件：洁面+水+乳液+精华',
+		pic: 'https://m.360buyimg.com/mobilecms/s750x750_jfs/t1/121610/13/41125/70882/64ffdc37F4afe4517/775a22b274bddbc8.jpg!q80.dpg.webp',
+		price: 276,
+		originalPrice: 299.67,
+		salesVolume: 235,
+		inventory: 300
+	},{
+		id: 7,
+		name: 'olayks电压力锅 高压锅 家用多功能高压电饭锅快煮智能预约小压力锅 3升适用3-5人用',
+		pic: 'https://m.360buyimg.com/mobilecms/s1265x1265_jfs/t1/218941/9/35528/25457/65755e41F35e7888c/fef994d37d44ecca.jpg!q70.dpg.webp',
+		price: 299,
+		originalPrice: 329,
+		salesVolume: 97,
+		inventory: 100,
+	},{
+		id: 8,
+		name: '乐芬兰（LeFenLan）短外套女2023秋冬新款宽松气质羊羔毛小个子复古皮毛一体夹克上衣 卡其色 S',
+		pic: 'https://m.360buyimg.com/mobilecms/s750x750_jfs/t1/104119/12/39372/58031/6523addaF4a77719f/8b7fa71598a9e566.jpg!q80.dpg.webp',
+		price: 158,
+		originalPrice: 199,
+		salesVolume: 666,
+		inventory: 1000,
+	},
+] as Array<goodsItems>;
+
+/**
+ * 品牌商品数据
+ */
+export const brandGoodsData = [
+	{
+		id: 1,
+		name: '华为',
+		logo: 'https://m.360buyimg.com/babel/jfs/t1/208085/14/30593/1587/64c214c4F6d62760f/80cfa31c908685aa.png',
+		bgPic: 'https://m11.360buyimg.com/babel/s531x768_jfs/t20270108/88577/35/38548/76327/659d12e0Fc109995f/0df46d1eae2f6dba.jpg!q70.dpg.webp',
+		goodsList: [
+			{
+				id: 1,
+				name: '荣耀笔记本电脑MagicBook X 14 Pro 锐龙版 2023 R7-7840HS标压处理器 15h长续航 高色域护眼屏 高性能轻薄本',
+				pic: 'https://m.360buyimg.com/mobilecms/s1265x1265_jfs/t1/110990/16/38425/36858/64b90d71Fcf3e8f7d/598d2cbbbcfa5db9.jpg!q70.dpg.webp',
+				price: 3697.2,
+				originalPrice: 3999,
+				salesVolume: 5000,
+				shopName: '荣耀官方自营旗舰店',
+				inventory: 10000,
+			},{
+				id: 2,
+				name: '小米无线键鼠套装2 轻薄便携 全尺寸104键键盘鼠标套装 2.4G无线传输 电脑笔记本办公套装 键鼠套装',
+				pic: 'https://m.360buyimg.com/mobilecms/s750x750_jfs/t1/228249/6/9834/49378/65960c9fF8a394ce7/d5ee187f85c95aef.jpg!q80.dpg.webp',
+				price: 89.23,
+				originalPrice: 99.12,
+				salesVolume: 123,
+				shopName: '小米官方自营旗舰店',
+				inventory: 200,
+			},{
+				id: 3,
+				name: '华为（HUAWEI）旗舰手机 Mate 60 Pro 12GB+512GB 雅川青',
+				pic: 'https://m.360buyimg.com/mobilecms/s1265x1265_jfs/t1/211556/35/38471/42993/64f1aa51F7ee8e4e5/5f8c4f9c149335ad.jpg!q70.dpg.webp',
+				price: 6999,
+				originalPrice: 7999,
+				salesVolume: 999,
+				shopName: '华为官方自营旗舰店',
+				inventory: 3000,
+			}
+		] as Array<goodsItems>
+	},{
+		id: 2,
+		name: '小米',
+		logo: 'https://m.360buyimg.com/babel/jfs/t1/193915/33/35652/871/64c1deeaFdd644add/b12fd01dbc2f8118.png',
+		bgPic: 'https://m11.360buyimg.com/babel/s531x768_jfs/t1/246864/15/2746/126292/659cf28dF5d40b3b9/683aa6008f232455.png.webp',
+		goodsList: [
+			{
+				id: 1,
+				name: '荣耀笔记本电脑MagicBook X 14 Pro 锐龙版 2023 R7-7840HS标压处理器 15h长续航 高色域护眼屏 高性能轻薄本',
+				pic: 'https://m.360buyimg.com/mobilecms/s1265x1265_jfs/t1/110990/16/38425/36858/64b90d71Fcf3e8f7d/598d2cbbbcfa5db9.jpg!q70.dpg.webp',
+				price: 3697.2,
+				originalPrice: 3999,
+				salesVolume: 5000,
+				shopName: '荣耀官方自营旗舰店',
+				inventory: 10000,
+			},{
+				id: 2,
+				name: '小米无线键鼠套装2 轻薄便携 全尺寸104键键盘鼠标套装 2.4G无线传输 电脑笔记本办公套装 键鼠套装',
+				pic: 'https://m.360buyimg.com/mobilecms/s750x750_jfs/t1/228249/6/9834/49378/65960c9fF8a394ce7/d5ee187f85c95aef.jpg!q80.dpg.webp',
+				price: 89.23,
+				originalPrice: 99.12,
+				salesVolume: 123,
+				shopName: '小米官方自营旗舰店',
+				inventory: 200,
+			},{
+				id: 3,
+				name: '华为（HUAWEI）旗舰手机 Mate 60 Pro 12GB+512GB 雅川青',
+				pic: 'https://m.360buyimg.com/mobilecms/s1265x1265_jfs/t1/211556/35/38471/42993/64f1aa51F7ee8e4e5/5f8c4f9c149335ad.jpg!q70.dpg.webp',
+				price: 6999,
+				originalPrice: 7999,
+				salesVolume: 999,
+				shopName: '华为官方自营旗舰店',
+				inventory: 3000,
+			}
+		] as Array<goodsItems>
+	},{
+		id: 3,
+		name: '荣耀',
+		logo: 'https://m.360buyimg.com/babel/jfs/t20260727/171047/19/39009/4954/64c33864F32d41c91/92ae66a179f96989.png',
+		bgPic: 'https://img12.360buyimg.com/n2/s240x240_jfs/t1/227842/26/11786/104155/659cae74F3eeea9dd/c7ed11ed6e989cda.jpg!q70.jpg.webp',
+		goodsList: [
+			{
+				id: 1,
+				name: '荣耀笔记本电脑MagicBook X 14 Pro 锐龙版 2023 R7-7840HS标压处理器 15h长续航 高色域护眼屏 高性能轻薄本',
+				pic: 'https://m.360buyimg.com/mobilecms/s1265x1265_jfs/t1/110990/16/38425/36858/64b90d71Fcf3e8f7d/598d2cbbbcfa5db9.jpg!q70.dpg.webp',
+				price: 3697.2,
+				originalPrice: 3999,
+				salesVolume: 5000,
+				shopName: '荣耀官方自营旗舰店',
+				inventory: 10000,
+			},{
+				id: 2,
+				name: '小米无线键鼠套装2 轻薄便携 全尺寸104键键盘鼠标套装 2.4G无线传输 电脑笔记本办公套装 键鼠套装',
+				pic: 'https://m.360buyimg.com/mobilecms/s750x750_jfs/t1/228249/6/9834/49378/65960c9fF8a394ce7/d5ee187f85c95aef.jpg!q80.dpg.webp',
+				price: 89.23,
+				originalPrice: 99.12,
+				salesVolume: 123,
+				shopName: '小米官方自营旗舰店',
+				inventory: 200,
+			},{
+				id: 3,
+				name: '华为（HUAWEI）旗舰手机 Mate 60 Pro 12GB+512GB 雅川青',
+				pic: 'https://m.360buyimg.com/mobilecms/s1265x1265_jfs/t1/211556/35/38471/42993/64f1aa51F7ee8e4e5/5f8c4f9c149335ad.jpg!q70.dpg.webp',
+				price: 6999,
+				originalPrice: 7999,
+				salesVolume: 999,
+				shopName: '华为官方自营旗舰店',
+				inventory: 3000,
+			}
+		] as Array<goodsItems>
+	}
+] as Array<breadGoodsItem>

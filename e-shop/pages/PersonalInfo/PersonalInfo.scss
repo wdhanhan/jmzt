@@ -1,0 +1,43 @@
+.page{
+  background-color: $bg-color;
+}
+
+.info-item{
+  width: 100%;
+  padding: 0 30rpx;
+  background-color: $bg-back-color;
+  .item{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    min-height: 80rpx;
+    .title{
+      display: flex;
+      align-items: center;
+      .text{
+        font-size: 28rpx;
+        color: $text-color;
+      }
+    }
+    .content{
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      .text{
+        font-size: 26rpx;
+        color: $text-assist-color;
+      }
+      .more{
+        width: 38rpx;
+        height: 38rpx;
+      }
+      .pic{
+        width: 100rpx;
+        height: 100rpx;
+        border-radius: 60rpx;
+      }
+    }
+  }
+}

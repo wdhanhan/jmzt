@@ -1,0 +1,194 @@
+.page{
+  background-color: $bg-color;
+}
+
+.head-info{
+  width: 100%;
+  background-color: #ffffff;
+  .head-title{
+    position: fixed;
+    left: 0;
+    top: 0;
+    z-index: 100;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    height: 100rpx;
+    padding: 0 30rpx;
+    background-color: #ffffff;
+    .back{
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      .image{
+        width: 48rpx;
+        height: 48rpx;
+      }
+    }
+    .title{
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      .image{
+        width: 280rpx;
+        height: 48rpx;
+      }
+    }
+    .more{
+      display: flex;
+      align-items: center;
+      .image{
+        width: 48rpx;
+        height: 48rpx;
+      }
+    }
+  }
+}
+
+.banner-info{
+  width: 100%;
+  padding: 0 30rpx;
+  margin-top: 20rpx;
+  .banner{
+    width: 100%;
+    height: 300rpx;
+    .swiper{
+      width: 100%;
+      height: 300rpx;
+      .image{
+        width: 100%;
+        height: 100%;
+        border-radius: 20rpx;
+      }
+    }
+  }
+}
+
+.brand-info{
+  width: 100%;
+  margin-top: 20rpx;
+  padding: 0 30rpx;
+  box-sizing: border-box;
+  .brand-view{
+    width: 100%;
+    background-color: #0f0e13;
+    border-radius: 20rpx 20rpx 0 0;
+    .classify-info{
+      width: 100%;
+      height: 100rpx;
+      .classify-item{
+        display: flex;
+        flex-direction: row;
+        width: 100%;
+        height: 100rpx;
+        .item{
+          position: relative;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          width: 180rpx;
+          height: 100rpx;
+          .text{
+            font-size: 28rpx;
+            color: #b5b4b9;
+          }
+          .line{
+            position: absolute;
+            bottom: 18rpx;
+            width: 20%;
+            height: 6rpx;
+            background-color: transparent;
+            border-radius: 8rpx;
+          }
+          .active{
+            color: #ffffff;
+            font-size: 32rpx;
+            font-weight: bold;
+          }
+          .active-line{
+            background-color: #ffffff;
+          }
+        }
+      }
+    }
+    .brand-list{
+      width: 100%;
+      margin-top: 10rpx;
+      padding: 20rpx;
+      background-color: #f7f7f7;
+      border-radius: 20rpx 20rpx 0 0;
+      .list{
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        width: 100%;
+        height: 240rpx;
+        background-color: #ffffff;
+        border-radius: 20rpx;
+        margin-bottom: 20rpx;
+        .goods{
+          display: flex;
+          flex-direction: row;
+          align-items: center;
+          flex: 1;
+          height: 100%;
+          padding: 0 20rpx;
+          .pic{
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-right: 20rpx;
+            .image{
+              width: 140rpx;
+              height: 140rpx;
+            }
+            .price{
+              display: flex;
+              flex-direction: row;
+              align-items: flex-end;
+              margin-top: 6rpx;
+              .min{
+                font-size: 24rpx;
+                font-weight: bold;
+                color: #0f0e13;
+              }
+              .max{
+                font-size: 34rpx;
+                font-weight: bold;
+                color: #0f0e13;
+              }
+            }
+          }
+        }
+        .brand{
+          position: relative;
+          width: 150rpx;
+          height: 100%;
+          .bg{
+            width: 100%;
+            height: 100%;
+            border-radius: 20rpx;
+          }
+          .logo{
+            position: absolute;
+            bottom: 60rpx;
+            left: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            .image{
+              width: 130rpx;
+              height: 60rpx;
+              border-radius: 80rpx;
+              background-color: #ffffff;
+            }
+          }
+        }
+      }
+    }
+  }
+}

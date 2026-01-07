@@ -1,0 +1,26 @@
+
+
+/**
+ * banner数据实例类
+ */
+export type bannerItem = {
+	id: number,
+	pic: string,
+	title?: string,
+}
+
+export const BannerData = [
+	{
+		id: 1,
+		pic: 'https://m.360buyimg.com/babel/s1071x321_jfs/t20270109/235883/3/12114/47052/659e3034F21c8d0b7/7b7abb4f8cc2627c.jpg!q70.dpg',
+		title: '',
+	},{
+		id: 2,
+		pic: 'https://m.360buyimg.com/babel/jfs/t1/232236/36/11109/182790/6597bae7Ff23261c1/11f54ec6423324ae.png',
+		title: '',
+	},{
+		id: 3,
+		pic: 'https://m.360buyimg.com/babel/jfs/t20270102/245832/19/1737/93109/6594dd77F6bf121b2/8c8bbd22ed90d51f.png',
+		title: '',
+	},
+] as Array<bannerItem>

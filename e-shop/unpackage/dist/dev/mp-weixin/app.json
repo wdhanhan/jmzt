@@ -1,0 +1,79 @@
+{
+  "pages": [
+    "pages/home/home",
+    "pages/classify/classify",
+    "pages/cart/cart",
+    "pages/my/my",
+    "pages/search/search",
+    "pages/SearchGoods/SearchGoods",
+    "pages/GoodsDetail/GoodsDetail",
+    "pages/ConfirmOrder/ConfirmOrder",
+    "pages/AddressList/AddressList",
+    "pages/AddressAddEdit/AddressAddEdit",
+    "pages/GoodsCollect/GoodsCollect",
+    "pages/ShopCollect/ShopCollect",
+    "pages/OrderList/OrderList",
+    "pages/OrderDetails/OrderDetails",
+    "pages/setting/setting",
+    "pages/PersonalInfo/PersonalInfo",
+    "pages/MemberCenter/MemberCenter",
+    "pages/seckill/seckill",
+    "pages/MyCoupon/MyCoupon",
+    "pages/CouponUseRecord/CouponUseRecord",
+    "pages/CouponCenter/CouponCenter",
+    "pages/ShopDetails/ShopDetails",
+    "pages/ShopDetails/ShopGoods/ShopGoods",
+    "pages/ShopDetails/ShopClassify/ShopClassify",
+    "pages/ShopDetails/ShopGoodsResult/ShopGoodsResult",
+    "pages/SpecialOffer/SpecialOffer",
+    "pages/brand/brand",
+    "pages/ClassifyGoods/ClassifyGoods",
+    "pages/message/message",
+    "pages/GoodsEvaluate/GoodsEvaluate",
+    "pages/AfterSale/AfterSale",
+    "pages/login/login"
+  ],
+  "window": {
+    "navigationBarTextStyle": "black",
+    "navigationBarTitleText": "uni-app",
+    "navigationBarBackgroundColor": "#FFFFFF",
+    "backgroundColor": "#F8F8F8"
+  },
+  "tabBar": {
+    "color": "#777777",
+    "selectedColor": "#fe9a5c",
+    "borderStyle": "white",
+    "backgroundColor": "#ffffff",
+    "custom": false,
+    "list": [
+      {
+        "pagePath": "pages/home/home",
+        "iconPath": "static/images/nav/home.png",
+        "selectedIconPath": "static/images/nav/home_ac.png",
+        "text": "首页"
+      },
+      {
+        "pagePath": "pages/classify/classify",
+        "iconPath": "static/images/nav/buy.png",
+        "selectedIconPath": "static/images/nav/buy_ac.png",
+        "text": "分类"
+      },
+      {
+        "pagePath": "pages/cart/cart",
+        "iconPath": "static/images/nav/cart.png",
+        "selectedIconPath": "static/images/nav/cart_ac.png",
+        "text": "购物车"
+      },
+      {
+        "pagePath": "pages/my/my",
+        "iconPath": "static/images/nav/my.png",
+        "selectedIconPath": "static/images/nav/my_ac.png",
+        "text": "我的"
+      }
+    ]
+  },
+  "permission": {},
+  "usingComponents": {
+    "page": "/components/page/page"
+  }
+}

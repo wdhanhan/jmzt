@@ -1,0 +1,102 @@
+<template>
+	<!-- #ifdef APP -->
+	<scroll-view style="flex:1" class="page">
+	<!-- #endif -->
+    <view class="tab-info">
+      <scroll-view class="tab-item"
+                   :scroll-x="true">
+        <view class="item" v-for="(item,index) in classifyList"
+              @click="onClassify(item.id)"
+              :key="index">
+          <text class="text" :class="{'active':classifyId===item.id}">{{item.name}}</text>
+          <view class="line" :class="{'active-line':classifyId===item.id}"></view>
+        </view>
+      </scroll-view>
+    </view>
+<!--    领券列表-->
+    <view class="coupon-info">
+      <view class="coupon-list">
+        <view class="list" v-for="(item,index) in couponList" :key="index">
+          <view class="goods-item">
+            <view class="item" v-for="(value,idx) in item.goodsList"
+                  @click="onGoodsItem(value)"
+                  :key="idx">
+              <view class="pic">
+                <image :src="value.pic" class="image"></image>
+              </view>
+              <view class="price">
+                <text class="text">￥{{value.price}}</text>
+              </view>
+            </view>
+          </view>
+          <view class="coupon-data">
+            <view class="full-price">
+              <text class="text">满{{item.fullPrice}}</text>
+            </view>
+            <view class="price">
+              <text class="min">减</text>
+              <text class="text">{{item.subPrice}}</text>
+            </view>
+            <view class="btn">
+              <text class="text">立即领取</text>
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+	<!-- #ifdef APP -->
+	</scroll-view>
+	<!-- #endif -->
+</template>
+
+<script>
+import {ClassifyData,classifyItem} from '@/mock/classifyData.uts'
+import {CouponData,CouponItem} from '@/mock/couponData.uts'
+import {goodsData, goodsItems} from '@/mock/goodsData.uts'
+export default {
+		data() {
+			return {
+        classifyList: [] as Array<classifyItem>,
+        couponList: CouponData as Array<CouponItem>,
+        classifyId: 0,
+			};
+		},
+    onLoad(){
+      this.getData();
+    },
+    methods: {
+      getData(){
+        if(ClassifyData[0].id === 0){
+          ClassifyData.splice(0,1);
+        }
+        this.classifyList = ClassifyData;
+        this.classifyList.unshift({
+          id: 0,
+          parent: 0,
+          name: '精选推荐',
+          pic: '',
+          children: [] as Array<classifyItem>
+        } as classifyItem)
+      },
+      /**
+       * 分类点击
+       * @param id
+       */
+      onClassify(id: Number){
+        this.classifyId = id;
+      },
+      /**
+       * 商品点击
+       */
+      onGoodsItem(item: goodsItems){
+        uni.navigateTo({
+          url: `/pages/GoodsDetail/GoodsDetail?goodsId=${item.id}`
+        })
+      },
+    },
+	}
+</script>
+
+<style lang="scss">
+  @import "CouponCenter.scss";
+</style>

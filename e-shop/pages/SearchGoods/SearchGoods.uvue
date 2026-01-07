@@ -1,0 +1,265 @@
+<template>
+	<!-- #ifdef APP -->
+	<scroll-view style="flex:1;background-color: #ffffff">
+	<!-- #endif -->
+    <view class="head-info" :style="{height: (statusBarHeight+50)+'px',paddingTop: statusBarHeight+'px'}">
+      <view class="search-info">
+        <view class="back" @click="onBack">
+          <image src="/static/images/icon/back_icon.png" class="image"></image>
+        </view>
+        <view class="search">
+          <image src="/static/images/icon/fdj_icon.png" class="image"></image>
+          <input type="text" placeholder="请输入搜索内容" v-model="keyword" class="input"/>
+        </view>
+        <view class="btn">
+          <text class="text">搜索</text>
+        </view>
+      </view>
+    </view>
+<!--    筛选-->
+    <view class="filtrate-info" :style="{top: (statusBarHeight+50)+'px'}">
+      <view class="filtrate-item">
+        <view class="item active">
+          <view class="title">
+            <text class="text">综合推荐</text>
+          </view>
+          <view class="cut">
+            <image src="/static/images/icon/pxx_ac_icon.png" class="image"></image>
+          </view>
+        </view>
+        <view class="item">
+          <view class="title">
+            <text class="text">销量</text>
+          </view>
+        </view>
+        <view class="item">
+          <view class="title">
+            <text class="text">价格</text>
+          </view>
+          <view class="cut">
+            <image src="/static/images/icon/sort_icon.png" class="up"></image>
+          </view>
+        </view>
+        <view class="item">
+          <view class="title" @click="onFiltrate">
+            <text class="text">筛选</text>
+          </view>
+          <view class="icon" @click="onGoodCut">
+            <image src="/static/images/icon/lbt_icon.png" class="image" v-show="goodsCut === 0"></image>
+            <image src="/static/images/icon/stt_icon.png" class="image" v-show="goodsCut === 1"></image>
+          </view>
+        </view>
+      </view>
+    </view>
+<!--    商品-->
+    <view class="goods-info" :style="{backgroundColor: goodsCut === 1 ? '#f8f8f8' : '#ffffff',marginTop: (statusBarHeight+100)+'px'}">
+      <view class="goods-list" v-show="goodsCut === 0">
+        <view class="list" v-for="(item,index) in goodsLists"
+              @click="onGoodsItem(item)"
+              :key="index">
+          <view class="pic">
+            <image :src="item.pic" class="image"></image>
+          </view>
+          <view class="info">
+            <view class="title">
+              <text class="text">{{item.name}}</text>
+            </view>
+            <view class="sales-volume">
+              <text class="text">{{item.salesVolume}}件售出</text>
+            </view>
+            <view class="price-info">
+              <view class="price">
+                <text class="min">￥</text>
+                <text class="max">{{formatPrice(item.price as number,0)}}</text>
+                <text class="min" v-if="formatPrice(item.price as number,1)">.{{formatPrice(item.price as number,1)}}</text>
+              </view>
+              <view class="old-price">
+                <text class="text">￥{{item.originalPrice}}</text>
+              </view>
+            </view>
+            <view class="shop-info">
+              <view class="name">
+                <text class="text">{{item.shopName}}</text>
+              </view>
+              <view class="more">
+                <text class="text">进店</text>
+                <image src="/static/images/icon/more_right.png" class="image"></image>
+              </view>
+            </view>
+          </view>
+        </view>
+      </view>
+      <view class="goods-view" v-show="goodsCut === 1">
+        <view class="list" v-for="(item,index) in goodsLists"
+              @click="onGoodsItem(item)"
+              :key="index">
+          <view class="pic">
+            <image :src="item.pic" class="image"></image>
+          </view>
+          <view class="info">
+            <view class="title">
+              <text class="text">{{item.name}}</text>
+            </view>
+            <view class="sales-volume">
+              <text class="text">{{item.salesVolume}}件售出</text>
+            </view>
+            <view class="price-info">
+              <view class="price">
+                <text class="min">￥</text>
+                <text class="max">{{formatPrice(item.price as number,0)}}</text>
+                <text class="min" v-if="formatPrice(item.price as number,1)">.{{formatPrice(item.price as number,1)}}</text>
+              </view>
+              <view class="old-price">
+                <text class="text">￥{{item.originalPrice}}</text>
+              </view>
+            </view>
+            <view class="shop-info">
+              <view class="name">
+                <text class="text">{{item.shopName}}</text>
+              </view>
+              <view class="more">
+                <text class="text">进店</text>
+                <image src="/static/images/icon/more_right.png" class="image"></image>
+              </view>
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+<!--    排序弹窗-->
+    <view class="sort-popup" :style="{paddingTop: (statusBarHeight+90)+'px'}" v-show="false">
+      <view class="sort-item">
+        <view class="item active">
+          <text class="text">综合推荐</text>
+        </view>
+        <view class="item">
+          <text class="text">评价优先</text>
+        </view>
+      </view>
+    </view>
+    <cat-popup ref="CatPopup" mode="right">
+      <view class="filtrate-popup" :style="{paddingTop: statusBarHeight,height: screenHeight+'px'}">
+        <view class="filtrate-data">
+          <view class="filtrate-title">
+            <view class="title">
+              <text class="text">服务</text>
+            </view>
+          </view>
+          <view class="serve-item">
+            <view class="item" :class="{'active':serveCut===0}" @click="onFiltrateServe(0)">
+              <text class="text" :class="{'active-text':serveCut===0}">包邮</text>
+            </view>
+            <view class="item" :class="{'active':serveCut===1}" @click="onFiltrateServe(1)">
+              <text class="text" :class="{'active-text':serveCut===1}">有货</text>
+            </view>
+            <view class="item" :class="{'active':serveCut===2}" @click="onFiltrateServe(2)">
+              <text class="text" :class="{'active-text':serveCut===2}">新品</text>
+            </view>
+          </view>
+        </view>
+        <view class="filtrate-data">
+          <view class="filtrate-title">
+            <view class="title">
+              <text class="text">价格区间</text>
+            </view>
+          </view>
+          <view class="price-area">
+            <input type="number" placeholder="最低价" class="price" />
+            <text class="line">-</text>
+            <input type="number" placeholder="最高价" class="price" />
+          </view>
+        </view>
+        <view class="reset-confirm">
+          <view class="rest">
+            <text class="text">重置</text>
+          </view>
+          <view class="confirm">
+            <text class="text">确认</text>
+          </view>
+        </view>
+      </view>
+    </cat-popup>
+	<!-- #ifdef APP -->
+	</scroll-view>
+	<!-- #endif -->
+</template>
+
+<script>
+	import type { ComponentPublicInstance } from 'vue'
+  import CatPopup from '../../components/CatPopup/CatPopup.uvue'
+  import {goodsData,goodsItems} from '@/mock/goodsData.uts'
+  export default {
+    components: {
+      CatPopup,
+    },
+		data() {
+			return {
+        statusBarHeight: 0,
+        screenHeight: 0,
+        goodsCut: 0,  // 商品切换状态 0  列表  1 视图
+        keyword: '',  // 搜索关键词
+        goodsLists: goodsData as Array<goodsItems>,
+        serveCut: 0,
+			};
+		},
+    onLoad(options: OnLoadOptions){
+      this.goodsCut = 1;
+      const windowInfo = uni.getWindowInfo();
+      this.statusBarHeight = windowInfo.statusBarHeight;
+      this.screenHeight = windowInfo.screenHeight;
+      this.keyword = options.get('keyword') === null ? '' : options.get('keyword') as string;
+    },
+    methods: {
+      /**
+       * 返回点击
+       */
+      onBack(){
+        uni.navigateBack();
+      },
+      /**
+       * 商品列表切换点击
+       */
+      onGoodCut(){
+        this.goodsCut = this.goodsCut === 1 ? 0 : 1;
+      },
+      /**
+       * 筛选点击
+       */
+      onFiltrate(){
+        (this.$refs['CatPopup'] as ComponentPublicInstance).$callMethod('open')
+      },
+      /**
+       * 筛选服务点击
+       * @param type
+       */
+      onFiltrateServe(type: Number){
+        this.serveCut = type;
+      },
+      /**
+       * 商品点击
+       * @param item
+       */
+      onGoodsItem(item: goodsItems){
+        uni.navigateTo({
+          url: `/pages/GoodsDetail/GoodsDetail?goodsId=${item.id}`
+        })
+      },
+      formatPrice(price: Number,type: Number): string{
+        let strPrice = price.toString();
+        let start:string = strPrice.split('.')[0];
+        let end:string = '';
+        try {
+          end = strPrice.split('.')[1]
+        }catch (e){
+          end = '';
+        }
+
+        return type === 0 ? start : end
+      },
+    },
+	}
+</script>
+
+<style lang="scss">
+  @import "SearchGoods.scss";
+</style>

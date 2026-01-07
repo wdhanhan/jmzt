@@ -1,0 +1,3 @@
+@import "../../uvue.wxss";
+:host{display:flex;flex-direction:column}
+.page{background-color:#f8f8f8}.info-item{width:100%;padding:0 30rpx;background-color:#fff}.info-item .item{display:flex;flex-direction:row;align-items:center;justify-content:space-between;width:100%;min-height:80rpx}.info-item .item .title{display:flex;align-items:center}.info-item .item .title .text{font-size:28rpx;color:#333}.info-item .item .content{display:flex;flex-direction:row;align-items:center}.info-item .item .content .text{font-size:26rpx;color:#aaa}.info-item .item .content .more{width:38rpx;height:38rpx}.info-item .item .content .pic{width:100rpx;height:100rpx;border-radius:60rpx}

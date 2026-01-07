@@ -1,0 +1,30 @@
+/**
+ * 通用方法文件
+ * @Mr小斌
+ * 
+ */
+
+
+/**
+ * 吐司方法
+ */
+export function toast (title: String) {
+	uni.showToast({
+		title: title,
+		icon: 'none',
+		duration: 2000
+	})
+}
+
+export function formatPrice(price: Number,type: Number): string{
+	let strPrice = price.toString();
+	let start:string = strPrice.split('.')[0];
+	let end:string = '';
+	try {
+		end = strPrice.split('.')[1]
+	}catch (e){
+		end = '';
+	}
+
+	return type === 0 ? start : end
+}

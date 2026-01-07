@@ -1,0 +1,569 @@
+<template>
+  <!-- #ifdef APP -->
+  <scroll-view style="flex:1;padding-bottom: 120rpx" :scroll-y="true">
+  <!-- #endif -->
+
+    <view class="cart-info">
+
+      <!-- 购物车店铺（目前只有一个“默认店铺”） -->
+      <view class="cart-list" v-for="(shop, sIndex) in cartShops" :key="sIndex">
+
+        <!-- 店铺行：选择店铺（全选店铺内商品） -->
+        <view class="shop-info">
+          <view class="check" @click="toggleShop(sIndex)">
+            <image
+              :src="shop.checked ? '/static/images/icon/check_on.png' : '/static/images/icon/check_off.png'"
+              class="image"
+            ></image>
+          </view>
+          <view class="shop-data">
+            <image src="/static/images/icon/shop_icon.png" class="image"></image>
+            <text class="text">{{ shop.shopName }}</text>
+          </view>
+        </view>
+
+        <!-- 店铺下的商品列表 -->
+        <view class="cart-goods">
+          <view
+            class="goods-item"
+            v-for="(g, gIndex) in shop.goods"
+            :key="g.id || g.sku_id || gIndex"
+          >
+            <!-- 勾选单个商品 -->
+            <view class="check" @click="toggleItem(sIndex, gIndex)">
+              <image
+                :src="g.checked ? '/static/images/icon/check_on.png' : '/static/images/icon/check_off.png'"
+                class="image"
+              ></image>
+            </view>
+
+            <!-- 商品信息 -->
+            <view class="goods">
+              <view class="pic">
+                <image :src="g.pic" class="image"></image>
+              </view>
+
+              <view class="info">
+                <view class="title">
+                  <text class="text">{{ g.name }}</text>
+                </view>
+
+                <view class="attr">
+                  <text class="text">{{ g.sku_text || '' }}</text>
+                </view>
+
+                <view class="price-num">
+                  <!-- 单价 -->
+                  <view class="price">
+                    <text class="min">￥</text>
+                    <text class="max">{{ formatPrice(g.price, 0) }}</text>
+                    <text class="min" v-if="formatPrice(g.price,1)">
+                      .{{ formatPrice(g.price,1) }}
+                    </text>
+                  </view>
+
+                  <!-- 数量加减 -->
+                  <view class="goods-num">
+                    <image
+                      src="/static/images/icon/sub_icon.png"
+                      class="add-sub"
+                      @click="changeQty(sIndex, gIndex, -1)"
+                    ></image>
+
+                    <text class="nums">{{ g.count }}</text>
+
+                    <image
+                      src="/static/images/icon/add_icon.png"
+                      class="add-sub"
+                      @click="changeQty(sIndex, gIndex, 1)"
+                    ></image>
+                  </view>
+                </view>
+              </view>
+            </view>
+          </view>
+        </view>
+      </view>
+
+      <!-- 空购物车提示 -->
+      <view v-if="!hasGoods" class="empty-cart">
+        <image src="/static/images/empty-cart.png" class="empty-img"></image>
+        <text class="empty-text">购物车竟然是空的~</text>
+        <view class="go-index" @click="goHome">
+          去首页逛逛
+        </view>
+      </view>
+
+    </view>
+
+    <!-- 底部合计栏（只有有商品才显示） -->
+    <view v-if="hasGoods" class="footer-total">
+      <!-- 全选 -->
+      <view class="check-all" @click="toggleAll">
+        <image
+          :src="allChecked ? '/static/images/icon/check_on.png' : '/static/images/icon/check_off.png'"
+          class="image"
+        ></image>
+        <text class="text">全选</text>
+      </view>
+
+      <view class="total-btn">
+        <!-- 合计金额（只统计已勾选的商品） -->
+        <view class="total">
+          <text class="tit">合计：</text>
+          <view class="price">
+            <text class="min">￥</text>
+            <text class="max">{{ selectedTotalInt }}</text>
+            <text class="min">.{{ selectedTotalDec }}</text>
+          </view>
+        </view>
+
+        <!-- 去结算 -->
+        <view class="btn" @click="goSettle">
+          <text class="text">去结算</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 猜你喜欢 -->
+    <view class="guess-like">
+      <view class="goods-list">
+        <view
+          class="list"
+          v-for="(item,index) in guessList"
+          :key="index"
+          @click="onGuessItem(item)"
+        >
+          <view class="pic">
+            <image :src="item.pic" class="image"></image>
+          </view>
+
+          <view class="title">
+            <text class="text">{{ item.name }}</text>
+          </view>
+
+          <view class="price">
+            <text class="min">￥</text>
+            <text class="max">{{ formatPrice(item.price,0) }}</text>
+            <text class="min" v-if="formatPrice(item.price,1)">
+              .{{ formatPrice(item.price,1) }}
+            </text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+  <!-- #ifdef APP -->
+  </scroll-view>
+  <!-- #endif -->
+</template>
+
+<script>
+const API_BASE = "https://wdxwhdglzx.jzzw-tech.cn";
+
+export default {
+  data() {
+    return {
+      cartShops: [],    // [{ shopName, checked, goods: [...] }]
+      guessList: [],    // 猜你喜欢
+    };
+  },
+
+  computed: {
+    // 是否有任何商品
+    hasGoods() {
+      return this.cartShops.some(shop => shop.goods.length > 0);
+    },
+
+    // 是否全部勾选
+    allChecked() {
+      const allGoods = this.flatGoods();
+      if (!allGoods.length) return false;
+      return allGoods.every(g => g.checked);
+    },
+
+    // 被选中的商品列表
+    selectedGoods() {
+      return this.flatGoods().filter(g => g.checked);
+    },
+
+    // 选中商品总价
+    selectedTotal() {
+      let total = 0;
+      this.selectedGoods.forEach(g => {
+        total += Number(g.price || 0) * Number(g.count || 0);
+      });
+      return total;
+    },
+
+    selectedTotalInt() {
+      const s = this.selectedTotal.toFixed(2);
+      return s.split(".")[0];
+    },
+    selectedTotalDec() {
+      const s = this.selectedTotal.toFixed(2);
+      return s.split(".")[1] || "00";
+    }
+  },
+
+  onShow() {
+    this.loadCart();
+    // 你之后可以在这里顺便加载一下猜你喜欢
+  },
+
+  methods: {
+    // 扁平化所有商品
+    flatGoods() {
+      const arr = [];
+      this.cartShops.forEach(shop => {
+        shop.goods.forEach(g => arr.push(g));
+      });
+      return arr;
+    },
+
+    // =====================
+    // 加载购物车数据
+    // =====================
+    loadCart() {
+      const openid = uni.getStorageSync("openid");
+      if (!openid) {
+        return;
+      }
+
+      uni.showLoading({ title: "加载中" });
+
+      uni.request({
+        url: `${API_BASE}/api/cart/list`,
+        method: "GET",
+        data: { openid },
+        success: (res) => {
+          const body = res.data || {};
+
+          if (body.code !== 200) {
+            uni.showToast({ title: body.msg || "购物车加载失败", icon: "none" });
+            return;
+          }
+
+          const list = body.data || [];
+
+          // 映射为前端结构
+          const goods = list.map(item => ({
+            id: item.cart_id,
+            sku_id: item.sku_id,
+            product_id: item.product_id,
+            name: item.product_name || item.name,
+            pic: item.image,
+            sku_text: item.sku_name || "",
+            sku_name: item.sku_name || "",
+            price: item.price,
+            count: item.quantity,
+            attr1: item.attr1,
+            attr2: item.attr2,
+            attr3: item.attr3,
+            attr4: item.attr4,
+            checked: false,  // 默认不选中
+          }));
+
+          this.cartShops = [
+            {
+              shopName: "默认店铺",
+              checked: false,
+              goods
+            }
+          ];
+        },
+        complete: () => {
+          uni.hideLoading();
+        }
+      });
+    },
+
+    // =====================
+    // 格式化金额
+    // =====================
+    formatPrice(price, type) {
+      if (!price) return type ? "" : "0";
+      let [i, d] = price.toString().split(".");
+      return type === 0 ? i : d || "";
+    },
+
+    // =====================
+    // 店铺级勾选
+    // =====================
+    toggleShop(sIndex) {
+      const shop = this.cartShops[sIndex];
+      const next = !shop.checked;
+      shop.checked = next;
+      shop.goods.forEach(g => g.checked = next);
+    },
+
+    // =====================
+    // 单个商品勾选
+    // =====================
+    toggleItem(sIndex, gIndex) {
+      const shop = this.cartShops[sIndex];
+      const g = shop.goods[gIndex];
+      g.checked = !g.checked;
+
+      // 更新店铺是否全选
+      shop.checked = shop.goods.length > 0 && shop.goods.every(x => x.checked);
+    },
+
+    // =====================
+    // 全选 / 取消全选
+    // =====================
+    toggleAll() {
+      const next = !this.allChecked;
+      this.cartShops.forEach(shop => {
+        shop.checked = next;
+        shop.goods.forEach(g => g.checked = next);
+      });
+    },
+
+    // =====================
+    // 更改数量（加减）
+    // =====================
+    changeQty(sIndex, gIndex, delta) {
+      const shop = this.cartShops[sIndex];
+      const g = shop.goods[gIndex];
+
+      const next = g.count + delta;
+      const openid = uni.getStorageSync("openid");
+      if (!openid) {
+        uni.showToast({ title: "请先登录", icon: "none" });
+        return;
+      }
+
+      if (next <= 0) {
+        // 数量变为 0：调用 update 接口，后端会删除；前端也本地删掉
+        uni.request({
+          url: `${API_BASE}/api/cart/update`,
+          method: "POST",
+          header: { "content-type": "application/json" },
+          data: {
+            openid: openid,
+            sku_id: g.sku_id,
+            quantity: 0
+          },
+          success: (res) => {
+            const body = res.data || {};
+            if (body.code === 200) {
+              // 本地删除
+              shop.goods.splice(gIndex, 1);
+              // 如果这个店铺没商品了，店铺也可以不删，继续留着
+            } else {
+              uni.showToast({
+                title: body.msg || "更新失败",
+                icon: "none"
+              });
+            }
+          },
+          fail: () => {
+            uni.showToast({
+              title: "网络错误，请稍后重试",
+              icon: "none"
+            });
+          }
+        });
+      } else {
+        // 数量 > 0：更新数量
+        uni.request({
+          url: `${API_BASE}/api/cart/update`,
+          method: "POST",
+          header: { "content-type": "application/json" },
+          data: {
+            openid: openid,
+            sku_id: g.sku_id,
+            quantity: next
+          },
+          success: (res) => {
+            const body = res.data || {};
+            if (body.code === 200) {
+              g.count = next;
+            } else {
+              uni.showToast({
+                title: body.msg || "更新失败",
+                icon: "none"
+              });
+            }
+          },
+          fail: () => {
+            uni.showToast({
+              title: "网络错误，请稍后重试",
+              icon: "none"
+            });
+          }
+        });
+      }
+    },
+
+    // =====================
+    // 去首页逛逛
+    // =====================
+    goHome() {
+      uni.switchTab({
+        url: "/pages/home/home"
+      });
+    },
+
+    // =====================
+    // 猜你喜欢点击
+    // =====================
+    onGuessItem(item) {
+      uni.navigateTo({
+        url: `/pages/GoodsDetail/GoodsDetail?goodsId=${item.id}`
+      });
+    },
+
+    // =====================
+    // 去结算（把选中的多件商品传给 ConfirmOrder）
+    // =====================
+    goSettle() {
+      const selected = this.selectedGoods;
+      if (!selected.length) {
+        uni.showToast({
+          title: "请先选择要结算的商品",
+          icon: "none"
+        });
+        return;
+      }
+
+      const orderItems = selected.map(g => ({
+        product_id: g.product_id,
+        sku_id: g.sku_id,
+        name: g.name,
+        sku_name: g.sku_name || g.sku_text || "",
+        price: g.price,
+        quantity: g.count,
+        image: g.pic,
+        attr1: g.attr1,
+        attr2: g.attr2,
+        attr3: g.attr3,
+        attr4: g.attr4
+      }));
+
+      uni.navigateTo({
+        url: "/pages/ConfirmOrder/ConfirmOrder",
+        success: (res) => {
+          const eventChannel = res.eventChannel;
+          eventChannel.emit("orderData", {
+            items: orderItems,
+            from: "cart"
+          });
+        }
+      });
+    }
+  }
+};
+</script>
+
+<style lang="scss">
+@import "cart.scss";
+
+/* 空购物车样式 */
+.empty-cart {
+  padding: 100rpx 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  .empty-img {
+    width: 300rpx;
+    height: 300rpx;
+  }
+
+  .empty-text {
+    margin-top: 20rpx;
+    font-size: 28rpx;
+    color: #999;
+  }
+
+  .go-index {
+    margin-top: 40rpx;
+    padding: 20rpx 40rpx;
+    background-color: #ff5500;
+    color: #fff;
+    border-radius: 50rpx;
+    font-size: 28rpx;
+  }
+}
+
+/* 底部合计栏（如果 cart.scss 没定义，补一份） */
+.footer-total {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 100rpx;
+  padding: 0 24rpx;
+  background-color: #ffffff;
+  box-shadow: 0 -4rpx 12rpx rgba(0, 0, 0, 0.06);
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+
+  .check-all {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+
+    .image {
+      width: 36rpx;
+      height: 36rpx;
+      margin-right: 8rpx;
+    }
+
+    .text {
+      font-size: 28rpx;
+      color: #333;
+    }
+  }
+
+  .total-btn {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+
+    .total {
+      margin-right: 20rpx;
+      display: flex;
+      flex-direction: row;
+      align-items: baseline;
+
+      .tit {
+        font-size: 26rpx;
+        color: #666;
+      }
+
+      .price {
+        display: flex;
+        flex-direction: row;
+        align-items: baseline;
+
+        .min {
+          font-size: 24rpx;
+          color: #ff5500;
+        }
+        .max {
+          font-size: 32rpx;
+          font-weight: 700;
+          color: #ff5500;
+          margin-left: 2rpx;
+        }
+      }
+    }
+
+    .btn {
+      padding: 16rpx 40rpx;
+      background-color: #ff5500;
+      border-radius: 50rpx;
+
+      .text {
+        font-size: 28rpx;
+        color: #ffffff;
+      }
+    }
+  }
+}
+</style>

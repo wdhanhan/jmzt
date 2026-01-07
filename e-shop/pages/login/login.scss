@@ -1,0 +1,115 @@
+
+.logo-info{
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 100%;
+	height: 360rpx;
+	.logo{
+		width: 200rpx;
+		height: 200rpx;
+		.image{
+			width: 200rpx;
+			height: 200rpx;
+		}
+	}
+}
+
+.login-info{
+	width: 100%;
+	.login-account{
+		width: 100%;
+		padding: 0 30rpx;
+		.input-text{
+			width: 100%;
+			height: 100rpx;
+			padding: 0 20rpx;
+			margin-bottom: 30rpx;
+			background-color: $bg-color;
+			border-radius: 100rpx;
+			.input{
+				width: 100%;
+				height: 100%;
+				font-size: 32rpx;
+				color: $text-color;
+			}
+		}
+	}
+	.protocol{
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		.text{
+			font-size: 28rpx;
+			color: $text-assist-color;
+		}
+		.link{
+			font-size: 28rpx;
+			color: #0044ff;
+		}
+	}
+	.login-btn{
+		width: 100%;
+		margin-top: 30rpx;
+		.btn{
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			width: 100%;
+			height: 100rpx;
+			background-color: $base-rgba-03;
+			border-radius: 100rpx;
+			.text{
+				font-size: 32rpx;
+				color: #fff;
+			}
+		}
+		.active{
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			width: 100%;
+			height: 100rpx;
+			background-color: $base;
+			border-radius: 100rpx;
+			.text{
+				font-size: 32rpx;
+				color: #fff;
+			}
+		}
+	}
+}
+
+.login-other{
+	position: fixed;
+	bottom: 300rpx;
+	width: 100%;
+	.title{
+		display: flex;
+		flex-direction: row;
+		justify-content: center;
+		width: 100%;
+		.text{
+			font-size: 24rpx;
+			color: $text-assist-color;
+		}
+	}
+	.login-way{
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		justify-content: center;
+		width: 100%;
+		margin-top: 30rpx;
+		.way{
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			margin: 0 20rpx;
+			.image{
+				width: 60rpx;
+				height: 60rpx;
+			}
+		}
+	}
+}
