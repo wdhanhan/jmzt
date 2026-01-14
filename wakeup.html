@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>两融持仓</title>
+    <style>
+        :root {
+            --galaxy-red: #e62e2e;
+            --galaxy-green: #00a846;
+            --text-main: #333333;
+            --text-sub: #999999;
+            --bg-gray: #f7f7f7;
+            --border-color: #eeeeee;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, "SF Pro Text", "Helvetica Neue", Arial, sans-serif;
+            background-color: var(--bg-gray);
+            color: var(--text-main);
+            -webkit-user-select: none;
+            user-select: none;
+        }
+
+        [contenteditable="true"] {
+            outline: none;
+            cursor: text;
+            -webkit-user-select: text;
+            user-select: text;
+            transition: background 0.2s;
+        }
+        
+        [contenteditable="true"]:focus {
+            background: rgba(0, 0, 0, 0.03);
+            border-radius: 2px;
+        }
+
+        /* 颜色控制 */
+        .text-red { color: var(--galaxy-red) !important; }
+        .text-green { color: var(--galaxy-green) !important; }
+        .text-default { color: #333 !important; }
+
+        .nav-header {
+            background-color: var(--galaxy-red);
+            color: white;
+            padding: 45px 15px 10px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .nav-header .back-btn { font-size: 20px; width: 30px; }
+        .nav-header .title-area { text-align: center; flex: 1; }
+        .nav-header .title-area h1 { margin: 0; font-size: 17px; font-weight: 500; }
+        .nav-header .title-area p { margin: 2px 0 0; font-size: 11px; opacity: 0.8; }
+
+        .menu-bar {
+            background: white;
+            display: flex;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .menu-item {
+            flex: 1;
+            text-align: center;
+            padding: 12px 0;
+            font-size: 15px;
+            color: #666;
+            position: relative;
+        }
+        .menu-item.active {
+            color: var(--galaxy-red);
+            font-weight: bold;
+        }
+        .menu-item.active::after {
+            content: "";
+            position: absolute;
+            bottom: 0;
+            left: 25%;
+            width: 50%;
+            height: 2px;
+            background: var(--galaxy-red);
+        }
+
+        .asset-card {
+            background: white;
+            padding: 15px;
+            margin-bottom: 10px;
+        }
+        .asset-title {
+            display: flex;
+            justify-content: space-between;
+            font-size: 13px;
+            color: var(--text-sub);
+            margin-bottom: 15px;
+        }
+        .asset-tag {
+            background: #f2f2f2;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 11px;
+            color: #666;
+        }
+
+        .asset-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px 0;
+        }
+        .asset-item .label {
+            font-size: 12px;
+            color: var(--text-sub);
+            margin-bottom: 4px;
+        }
+        .asset-item .value {
+            font-size: 16px;
+            font-weight: 500;
+            font-family: "DIN Alternate", sans-serif;
+        }
+        .asset-item .value.large { font-size: 19px; }
+
+        .stock-list { background: white; }
+        .list-header-top {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 15px;
+            font-size: 16px;
+            font-weight: bold;
+            border-bottom: 1px solid #f5f5f5;
+        }
+        .list-columns {
+            display: grid;
+            grid-template-columns: 1.2fr 1fr 1fr 1fr;
+            padding: 8px 15px;
+            font-size: 11px;
+            color: var(--text-sub);
+            border-bottom: 1px solid #f5f5f5;
+        }
+        .stock-row {
+            display: grid;
+            grid-template-columns: 1.2fr 1fr 1fr 1fr;
+            padding: 12px 15px;
+            border-bottom: 1px solid #f5f5f5;
+            align-items: center;
+        }
+        .stock-info .name {
+            font-size: 15px;
+            color: var(--galaxy-red);
+            font-weight: 500;
+            margin-bottom: 2px;
+        }
+        .stock-info .market-val { font-size: 13px; color: #333; font-family: "DIN Alternate"; }
+        .col-right { text-align: right; }
+        .val-main { font-size: 13px; display: block; margin-bottom: 2px; font-family: "DIN Alternate"; }
+        .val-sub { font-size: 11px; color: #333; font-family: "DIN Alternate"; }
+
+        .bottom-actions {
+            background: white;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            padding: 15px;
+            font-size: 14px;
+            color: #666;
+            margin-top: 10px;
+        }
+
+        .tab-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 50px;
+            background: white;
+            display: flex;
+            border-top: 1px solid var(--border-color);
+            padding-bottom: env(safe-area-inset-bottom);
+        }
+        .tab-item {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            color: #666;
+        }
+        .tab-item.active { color: var(--galaxy-red); }
+        .tab-icon { font-size: 20px; margin-bottom: 2px; }
+
+        .more-indicator { text-align: center; padding: 10px; color: #ccc; font-size: 12px; }
+    </style>
+</head>
+<body>
+
+    <div class="nav-header">
+        <div class="back-btn">〈</div>
+        <div class="title-area">
+            <h1 contenteditable="true">中国银河证券</h1>
+            <p contenteditable="true">**9798</p>
+        </div>
+        <div class="actions">
+            <span>🔍</span>
+            <span>↻</span>
+        </div>
+    </div>
+
+    <div class="menu-bar">
+        <div class="menu-item">买入</div>
+        <div class="menu-item">卖出</div>
+        <div class="menu-item">撤单</div>
+        <div class="menu-item active">两融持仓</div>
+        <div class="menu-item">查询</div>
+    </div>
+
+    <div class="asset-card">
+        <div class="asset-title">
+            <span>资产负债明细</span>
+            <span class="asset-tag">仓位 <span contenteditable="true" id="pos-percent">105.6</span>% 查看</span>
+        </div>
+        <div class="asset-grid">
+            <div class="asset-item">
+                <div class="label">总资产 👁</div>
+                <div class="value large" contenteditable="true" id="total-assets">701,674.09</div>
+            </div>
+            <div class="asset-item">
+                <div class="label">总盈亏</div>
+                <div class="value large" contenteditable="true" id="total-profit">+362,108.46</div>
+            </div>
+            <div class="asset-item">
+                <div class="label">当日参考盈亏 ⓘ</div>
+                <div class="value text-red" contenteditable="true" id="day-profit-val">20,981.63</div>
+                <div class="label text-red" style="margin-top:2px" contenteditable="true" id="day-profit-percent">3.08%</div>
+            </div>
+            <div class="asset-item">
+                <div class="label">总市值</div>
+                <div class="value" contenteditable="true" id="total-market-val">450,712.15</div>
+            </div>
+            <div class="asset-item">
+                <div class="label">可用</div>
+                <div class="value" contenteditable="true" id="available-funds">250,961.94</div>
+            </div>
+            <div class="asset-item">
+                <div class="label">可用保证金</div>
+                <div class="value" contenteditable="true" id="margin-funds">88,730.79</div>
+            </div>
+        </div>
+        <div class="more-indicator">∨</div>
+    </div>
+
+    <div class="stock-list">
+        <div class="list-header-top">
+            <span>持仓股</span>
+            <span style="font-size: 18px; font-weight: normal; color: #999;">📈 ☷</span>
+        </div>
+        <div class="list-columns">
+            <div>市值/股票</div>
+            <div class="col-right">盈亏</div>
+            <div class="col-right">持仓/可用</div>
+            <div class="col-right">成本/现价</div>
+        </div>
+
+        <div id="stock-container">
+            <div class="stock-row" data-stock-row>
+                <div class="stock-info">
+                    <div class="name" contenteditable="true">红旗连锁</div>
+                    <div class="market-val" contenteditable="true" data-row-market-val>363,742.15</div>
+                </div>
+                <div class="col-right">
+                    <span class="val-main" contenteditable="true" data-profit-val>14,912.85</span>
+                    <span class="val-sub" contenteditable="true" data-profit-percent>4.275%</span>
+                </div>
+                <div class="col-right">
+                    <span class="val-main" contenteditable="true" data-hold-count>52337</span>
+                    <span class="val-sub" contenteditable="true">30137</span>
+                </div>
+                <div class="col-right">
+                    <span class="val-main" contenteditable="true" data-cost-price>6.665</span>
+                    <span class="val-sub" contenteditable="true" data-current-price>6.950</span>
+                </div>
+            </div>
+
+            <div class="stock-row" data-stock-row>
+                <div class="stock-info">
+                    <div class="name" contenteditable="true">航天发展</div>
+                    <div class="market-val" contenteditable="true" data-row-market-val>86,970.00</div>
+                </div>
+                <div class="col-right">
+                    <span class="val-main" contenteditable="true" data-profit-val>-347.61</span>
+                    <span class="val-sub" contenteditable="true" data-profit-percent>-1.558%</span>
+                </div>
+                <div class="col-right">
+                    <span class="val-main" contenteditable="true" data-hold-count>3900</span>
+                    <span class="val-sub" contenteditable="true">3900</span>
+                </div>
+                <div class="col-right">
+                    <span class="val-main" contenteditable="true" data-cost-price>22.650</span>
+                    <span class="val-sub" contenteditable="true" data-current-price>22.300</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="bottom-actions">
+        <span>持仓管理</span> | <span>批量买入</span> | <span>批量卖出</span>
+    </div>
+
+    <div style="height: 100px;"></div>
+
+    <div class="tab-bar">
+        <div class="tab-item">🏠<span>首页</span></div>
+        <div class="tab-item">📊<span>行情</span></div>
+        <div class="tab-item active">🔄<span>交易</span></div>
+        <div class="tab-item">💰<span>理财</span></div>
+    </div>
+
+    <script>
+        function formatNum(num, fixed = 2) {
+            return num.toLocaleString('en-US', { minimumFractionDigits: fixed, maximumFractionDigits: fixed });
+        }
+
+        function parseNum(str) {
+            if (!str) return 0;
+            const cleanStr = str.toString().replace(/[^\d.-]/g, '');
+            return parseFloat(cleanStr) || 0;
+        }
+
+        // 更新单行股票颜色的工具函数
+        function updateRowColors(row, profitVal) {
+            const pValEl = row.querySelector('[data-profit-val]');
+            const pPercentEl = row.querySelector('[data-profit-percent]');
+            const costEl = row.querySelector('[data-cost-price]');
+            const currEl = row.querySelector('[data-current-price]');
+            
+            const colorClass = profitVal > 0 ? 'text-red' : (profitVal < 0 ? 'text-green' : 'text-default');
+            [pValEl, pPercentEl, costEl, currEl].forEach(el => {
+                el.classList.remove('text-red', 'text-green', 'text-default');
+                el.classList.add(colorClass);
+            });
+        }
+
+        function calculateEverything(sourceElement) {
+            const rows = document.querySelectorAll('[data-stock-row]');
+            let totalMarketVal = 0;
+            let totalProfitAmount = 0;
+
+            // 1. 处理股票列表逻辑
+            rows.forEach(row => {
+                const costPrice = parseNum(row.querySelector('[data-cost-price]').innerText);
+                const currentPrice = parseNum(row.querySelector('[data-current-price]').innerText);
+                const holdCount = parseNum(row.querySelector('[data-hold-count]').innerText);
+
+                // 如果用户正在编辑单行中的核心字段，则重算该行的盈亏和市值
+                const isEditingRowKeyFields = sourceElement && (
+                    row.contains(sourceElement) && 
+                    (sourceElement.hasAttribute('data-cost-price') || 
+                     sourceElement.hasAttribute('data-current-price') || 
+                     sourceElement.hasAttribute('data-hold-count'))
+                );
+
+                if (isEditingRowKeyFields || !sourceElement) {
+                    const marketVal = currentPrice * holdCount;
+                    const profitVal = (currentPrice - costPrice) * holdCount;
+                    const profitPercent = costPrice !== 0 ? ((currentPrice - costPrice) / costPrice) * 100 : 0;
+
+                    row.querySelector('[data-row-market-val]').innerText = formatNum(marketVal);
+                    row.querySelector('[data-profit-val]').innerText = (profitVal >= 0 ? "+" : "") + formatNum(profitVal);
+                    row.querySelector('[data-profit-percent]').innerText = (profitVal >= 0 ? "+" : "") + formatNum(profitPercent, 3) + "%";
+                    
+                    updateRowColors(row, profitVal);
+                }
+
+                totalMarketVal += parseNum(row.querySelector('[data-row-market-val]').innerText);
+                totalProfitAmount += parseNum(row.querySelector('[data-profit-val]').innerText);
+            });
+
+            // 2. 处理汇总区域逻辑
+            const totalAssetsEl = document.getElementById('total-assets');
+            const totalMarketEl = document.getElementById('total-market-val');
+            const availableFundsEl = document.getElementById('available-funds');
+            const totalProfitEl = document.getElementById('total-profit');
+
+            // 如果用户编辑的是单股数据，则强制重算汇总
+            const isEditingStockList = sourceElement && sourceElement.closest('#stock-container');
+            
+            if (isEditingStockList || !sourceElement) {
+                totalMarketEl.innerText = formatNum(totalMarketVal);
+                totalProfitEl.innerText = (totalProfitAmount >= 0 ? "+" : "") + formatNum(totalProfitAmount);
+                totalProfitEl.classList.remove('text-red', 'text-green', 'text-default');
+                totalProfitEl.classList.add(totalProfitAmount > 0 ? 'text-red' : (totalProfitAmount < 0 ? 'text-green' : 'text-default'));
+            }
+
+            // 无论什么时候，总资产 = 总市值 + 可用
+            const finalMarket = parseNum(totalMarketEl.innerText);
+            const finalAvailable = parseNum(availableFundsEl.innerText);
+            
+            // 只有当用户没有直接在改“总资产”时，我们才自动更新总资产
+            if (!sourceElement || sourceElement.id !== 'total-assets') {
+                totalAssetsEl.innerText = formatNum(finalMarket + finalAvailable);
+            }
+        }
+
+        document.body.addEventListener('input', (e) => {
+            calculateEverything(e.target);
+        });
+
+        window.onload = () => calculateEverything(null);
+    </script>
+</body>
+</html>
