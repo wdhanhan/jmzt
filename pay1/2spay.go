@@ -19,9 +19,9 @@ import (
 
 func main() {
 	var (
-		mchID                      string = "1732393234"                                // Merchant ID
-		mchCertificateSerialNumber string = "24719560EEEA4B83AC040BC8C9CF6A2545F5859C"  // Merchant certificate serial number
-		mchAPIv3Key                string = "ABCDEFGH12345678ABCDEFGH12345678"          // Merchant APIv3 key
+		mchID                      string = "1738346388"                                // Merchant ID
+		mchCertificateSerialNumber string = "5D1A93B2210662938B478568045CD3612D1378AF"  // Merchant certificate serial number
+		mchAPIv3Key                string = "12345678123456781234567812345678"          // Merchant APIv3 key
 	)
 
 	// Load merchant private key from local file
@@ -83,7 +83,7 @@ func main() {
 				Description: core.String(reqData.Description),
 				OutTradeNo:  core.String(reqData.OutTradeNo),
 				Attach:      core.String(reqData.Attach),
-				NotifyUrl:   core.String("https://pay.jzzw-tech.cn/callback"),
+				NotifyUrl:   core.String("https://jmpay.cxxyonline.cn/callback"),
 				Amount: &jsapi.Amount{
 					Total: core.Int64(reqData.Total),
 				},

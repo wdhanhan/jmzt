@@ -19,8 +19,8 @@ const db = mysql.createPool({
 });
 
 const PORT = 8088; // 按你实际需要改
-const WECHAT_APPID = 'wx506c944851f9f1eb';
-const WECHAT_SECRET = 'df64f12abbbd7f411cf1ce606208b9ba';
+const WECHAT_APPID = 'wx2ee0ec34076f93e6';
+const WECHAT_SECRET = 'ec9df976dd69a8d78fadd5d03ff9ae4f';
 
 
 // ================== 获取微信小程序用户 openid ==================
