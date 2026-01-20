@@ -1,0 +1,293 @@
+<template>
+  <view class="cashier-page">
+    <view :style="{ height: statusBarHeight + 'px' }"></view>
+    
+    <view class="nav-title">收银台</view>
+
+    <view class="bill-card">
+      <view class="brand-area">
+        <view class="icon-box">
+          <uni-icons type="cart-filled" size="30" color="#07c160"></uni-icons>
+        </view>
+        <text class="shop-name">聚美优选 · 会员服务</text>
+      </view>
+
+      <view class="amount-area">
+        <text class="currency">￥</text>
+        <text class="num">{{ formatPrice(amount).int }}</text>
+        <text class="dec">.{{ formatPrice(amount).dec }}</text>
+      </view>
+      
+      <view class="status-tag">待支付</view>
+
+      <view class="divider"></view>
+
+      <view class="detail-list">
+        <view class="row">
+          <text class="label">商品说明</text>
+          <text class="val highlight">{{ payDesc || '未知商品' }}</text>
+        </view>
+        <view class="row">
+          <text class="label">订单类型</text>
+          <text class="val">{{ getTypeName(payType) }}</text>
+        </view>
+        <view class="row">
+          <text class="label">支付账户</text>
+          <text class="val">{{ mobile || '当前用户' }}</text>
+        </view>
+        <view class="row">
+          <text class="label">创建时间</text>
+          <text class="val">{{ createTime }}</text>
+        </view>
+      </view>
+    </view>
+
+    <view class="action-area">
+      <button class="pay-btn" hover-class="btn-hover" @click="handlePay" :disabled="submitting">
+        <uni-icons v-if="!submitting" type="weixin" size="24" color="#fff" style="margin-right:10rpx"></uni-icons>
+        <text>{{ submitting ? '正在连接安全支付...' : '立即支付' }}</text>
+      </button>
+      <view class="safe-tips">
+        <uni-icons type="locked-filled" size="12" color="#ccc"></uni-icons>
+        <text>本交易由微信支付提供安全保障</text>
+      </view>
+    </view>
+  </view>
+</template>
+
+<script lang="ts">
+  const WX_APPID = 'wx2ee0ec34076f93e6'
+  const WX_MCHID = '1738346388'
+  const PAY_URL = 'https://jmpay.cxxyonline.cn/'
+
+  export default {
+    data() {
+      return {
+        statusBarHeight: 0,
+        submitting: false,
+        mobile: uni.getStorageSync('mobile') || '',
+        createTime: '',
+        
+        // 核心参数：全部由上个页面传入
+        amount: 0,     // 支付金额
+        payDesc: '',   // 支付描述 (如：购买轻月卡)
+        payType: ''    // 支付类型 (如：light_month)
+      }
+    },
+    onLoad(options: any) {
+      const windowInfo = uni.getWindowInfo()
+      this.statusBarHeight = windowInfo.statusBarHeight || 0
+      
+      // 生成当前时间用于展示
+      const now = new Date()
+      this.createTime = `${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')}`
+
+      // 接收参数
+      if (options.amount) this.amount = parseFloat(options.amount)
+      if (options.desc) this.payDesc = decodeURIComponent(options.desc)
+      if (options.type) this.payType = options.type
+      
+      // 安全校验
+      if (this.amount <= 0) {
+        uni.showToast({ title: '参数错误:金额无效', icon: 'none' })
+        setTimeout(() => uni.navigateBack(), 1500)
+      }
+    },
+    methods: {
+      formatPrice(v: number) {
+        const s = (v || 0).toFixed(2)
+        const arr = s.split('.')
+        return { int: arr[0], dec: arr[1] || '00' }
+      },
+      getTypeName(type: string) {
+        const map: any = {
+          'light_month': '轻月卡开通',
+          'heavy_month': '重月卡充值',
+          'times_year': '分次年卡',
+          'free_year': '自由年卡',
+          'recharge': '余额充值'
+        }
+        return map[type] || '增值服务'
+      },
+      handlePay() {
+        if (this.submitting) return
+        this.submitting = true
+        
+        // 生成订单号前缀
+        const prefix = this.payType === 'recharge' ? 'RE' : 'ME'
+        const outTradeNo = prefix + Date.now()
+
+        console.log('发起支付:', this.amount, this.payType)
+
+        uni.request({
+          url: PAY_URL,
+          method: 'POST',
+          data: {
+            appid: WX_APPID,
+            mchid: WX_MCHID,
+            description: this.payDesc,
+            outTradeNo: outTradeNo,
+            total: Math.round(this.amount * 100), // 转为分
+            openid: uni.getStorageSync('openid'),
+            attach: this.payType
+          },
+          success: (res: any) => {
+            if (res.statusCode !== 200) {
+              this.showErr('服务暂不可用')
+              return
+            }
+            const p = res.data
+            uni.requestPayment({
+              // #ifdef MP-WEIXIN
+              timeStamp: String(p.timeStamp),
+              nonceStr: p.nonceStr,
+              package: p.package,
+              signType: 'RSA',
+              paySign: p.paySign,
+              // #endif
+              success: () => {
+                uni.showToast({ title: '支付成功', icon: 'success' })
+                setTimeout(() => {
+                    // 支付成功逻辑：如果是充值返回上一页，如果是买会员去会员页
+                    if(this.payType === 'recharge') uni.navigateBack()
+                    else uni.redirectTo({ url: '/pages/member/status' })
+                }, 1500)
+              },
+              fail: () => {
+                uni.showToast({ title: '已取消支付', icon: 'none' })
+              }
+            } as any)
+          },
+          fail: () => {
+            this.showErr('网络连接失败')
+          },
+          complete: () => {
+            this.submitting = false
+          }
+        })
+      },
+      showErr(msg: string) {
+        uni.showModal({ title: '提示', content: msg, showCancel: false })
+      }
+    }
+  }
+</script>
+
+<style lang="scss">
+  /* 页面背景：极简灰 */
+  .cashier-page {
+    min-height: 100vh;
+    background-color: #F2F3F5;
+    padding: 0 40rpx;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* 顶部标题 */
+  .nav-title {
+    text-align: center;
+    font-size: 36rpx;
+    font-weight: 500;
+    color: #333;
+    padding: 20rpx 0 40rpx;
+  }
+
+  /* 账单卡片：核心视觉 */
+  .bill-card {
+    background: #fff;
+    border-radius: 32rpx;
+    padding: 60rpx 40rpx;
+    box-shadow: 0 10rpx 40rpx rgba(0,0,0,0.03);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    /* 品牌区 */
+    .brand-area {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-bottom: 40rpx;
+      .icon-box {
+        width: 80rpx; height: 80rpx;
+        background: rgba(7, 193, 96, 0.1);
+        border-radius: 50%;
+        display: flex; align-items: center; justify-content: center;
+        margin-bottom: 16rpx;
+      }
+      .shop-name { font-size: 26rpx; color: #999; }
+    }
+
+    /* 金额区 */
+    .amount-area {
+      display: flex;
+      align-items: baseline;
+      color: #333;
+      margin-bottom: 16rpx;
+      .currency { font-size: 40rpx; font-weight: 500; margin-right: 4rpx; }
+      .num { font-size: 80rpx; font-weight: bold; line-height: 1; font-family: 'DIN', sans-serif; }
+      .dec { font-size: 40rpx; font-weight: 500; }
+    }
+
+    .status-tag {
+      font-size: 24rpx; color: #ff9900; background: #fff8e8;
+      padding: 6rpx 20rpx; border-radius: 20rpx; margin-bottom: 40rpx;
+    }
+
+    /* 虚线分割 */
+    .divider {
+      width: 100%;
+      height: 1px;
+      border-top: 2rpx dashed #eee;
+      position: relative;
+      margin-bottom: 40rpx;
+      
+      /* 两侧圆孔装饰，模仿票据 */
+      &::before, &::after {
+        content: ''; position: absolute; top: -12rpx;
+        width: 24rpx; height: 24rpx; background: #F2F3F5; border-radius: 50%;
+      }
+      &::before { left: -52rpx; }
+      &::after { right: -52rpx; }
+    }
+
+    /* 详情列表 */
+    .detail-list {
+      width: 100%;
+      .row {
+        display: flex; justify-content: space-between; margin-bottom: 24rpx;
+        &:last-child { margin-bottom: 0; }
+        
+        .label { font-size: 28rpx; color: #999; }
+        .val { font-size: 28rpx; color: #333; text-align: right; max-width: 60%; }
+        .highlight { font-weight: bold; font-size: 30rpx; }
+      }
+    }
+  }
+
+  /* 底部按钮区 */
+  .action-area {
+    margin-top: 60rpx;
+    
+    .pay-btn {
+      background-color: #07c160;
+      color: #fff;
+      font-size: 32rpx;
+      font-weight: bold;
+      height: 100rpx;
+      border-radius: 50rpx;
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 20rpx 30rpx rgba(7, 193, 96, 0.2);
+      border: none;
+      
+      &::after { border: none; } /* 去除小程序默认边框 */
+    }
+    .btn-hover { opacity: 0.9; transform: scale(0.98); }
+
+    .safe-tips {
+      margin-top: 30rpx;
+      display: flex; justify-content: center; align-items: center; gap: 8rpx;
+      text { font-size: 24rpx; color: #ccc; }
+    }
+  }
+</style>

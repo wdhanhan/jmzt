@@ -1,0 +1,260 @@
+@import "../../uvue.wxss";
+:host{display:flex;flex-direction:column}
+/**
+ * 这里是uni-app内置的常用样式变量
+ *
+ * uni-app 官方扩展插件及插件市场（https://ext.dcloud.net.cn）上很多三方插件均使用了这些样式变量
+ * 如果你是插件开发者，建议你使用scss预处理，并在插件代码中直接使用这些变量（无需 import 这个文件），方便用户通过搭积木的方式开发整体风格一致的App
+ *
+ */
+/**
+ * 如果你是App开发者（插件使用者），你可以通过修改这些变量来定制自己的插件主题，实现自定义主题功能
+ *
+ * 如果你的项目同样使用了scss预处理，你也可以直接在你的 scss 代码中使用如下变量，同时无需 import 这个文件
+ */
+/* 颜色变量 */
+/* 文字颜色 */
+/* 主色渐变 */
+/* 按钮颜色 */
+/* 行为相关颜色 */
+/* 文字基本颜色 */
+/* 背景颜色 */
+/* 边框颜色 */
+/* 尺寸变量 */
+/* 文字尺寸 */
+/* 图片尺寸 */
+/* Border Radius */
+/* 水平间距 */
+/* 垂直间距 */
+/* 透明度 */
+/* 文章场景相关 */
+/* 全局容器：深邃黑金风格 */
+.vip-dashboard {
+  height: 100vh;
+  width: 100vw;
+  background: radial-gradient(circle at top right, #2b3040 0%, #141414 100%);
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  overflow: hidden;
+  /* 禁止页面滚动 */
+  color: #fff;
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+/* 1. 头部 */
+.header-section {
+  flex: 0 0 14%;
+  padding: 40rpx 40rpx 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.header-section .brand-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10rpx;
+}
+.header-section .brand-row .logo-text {
+  font-family: "Helvetica Neue", sans-serif;
+  font-size: 44rpx;
+  font-weight: 900;
+  letter-spacing: 2rpx;
+  background: linear-gradient(90deg, #F0D3A6, #C6A266);
+  -webkit-background-clip: text;
+  color: transparent;
+}
+.header-section .slogan {
+  font-size: 24rpx;
+  color: rgba(255, 255, 255, 0.4);
+  letter-spacing: 1rpx;
+}
+
+/* 2. Grid 宫格布局 (核心) */
+.grid-container {
+  flex: 1;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  /* 两列等宽 */
+  grid-template-rows: 1fr 1fr;
+  /* 两行等高 */
+  gap: 24rpx;
+  padding: 20rpx 30rpx 30rpx;
+}
+
+/* 卡片通用样式 */
+.card {
+  border-radius: 28rpx;
+  padding: 30rpx 24rpx;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  position: relative;
+  transition: all 0.2s;
+  border: 1rpx solid rgba(255, 255, 255, 0.08);
+  /* 按下微缩效果 */
+  /* 头部 */
+  /* 价格区 */
+  /* 权益列表 */
+  /* 按钮 */
+  /* 推荐角标 */
+}
+.card:active {
+  transform: scale(0.98);
+}
+.card .card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+.card .card-header .title {
+  font-size: 30rpx;
+  font-weight: bold;
+  color: rgba(255, 255, 255, 0.9);
+}
+.card .card-header .badge {
+  font-size: 18rpx;
+  padding: 4rpx 10rpx;
+  border-radius: 8rpx;
+  border: 1rpx solid rgba(255, 255, 255, 0.2);
+  opacity: 0.8;
+}
+.card .price-row {
+  margin: 16rpx 0;
+  font-size: 52rpx;
+  font-weight: bold;
+  font-family: "DIN", sans-serif;
+}
+.card .price-row .unit {
+  font-size: 24rpx;
+  margin-right: 4rpx;
+  opacity: 0.8;
+}
+.card .price-row .sub {
+  font-size: 22rpx;
+  margin-left: 6rpx;
+  opacity: 0.6;
+  font-weight: normal;
+}
+.card .benefit-list {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8rpx;
+}
+.card .benefit-list text {
+  font-size: 22rpx;
+  opacity: 0.6;
+  line-height: 1.4;
+}
+.card .benefit-list.highlight text:first-child {
+  color: #fff;
+  font-weight: bold;
+  opacity: 1;
+  margin-bottom: 4rpx;
+}
+.card .btn {
+  height: 64rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 32rpx;
+  font-size: 24rpx;
+  font-weight: bold;
+  margin-top: 16rpx;
+  background: rgba(255, 255, 255, 0.05);
+  color: rgba(255, 255, 255, 0.8);
+  /* 实心按钮文字色 */
+}
+.card .btn.fill {
+  color: #141414;
+}
+.card .tag-float {
+  position: absolute;
+  top: 0;
+  right: 0;
+  padding: 6rpx 16rpx;
+  font-size: 18rpx;
+  font-weight: bold;
+  border-radius: 0 28rpx 0 16rpx;
+  z-index: 1;
+}
+
+/* --- 四种卡片皮肤 --- */
+/* 1. 银灰 (入门) */
+.silver {
+  background: linear-gradient(135deg, #2A2D35 0%, #202228 100%);
+}
+
+/* 2. 黑金 (推荐) */
+.gold {
+  background: linear-gradient(135deg, #3D352B 0%, #29221B 100%);
+  border-color: rgba(240, 211, 166, 0.3);
+}
+.gold .title {
+  color: #F0D3A6;
+}
+.gold .price-row {
+  color: #F0D3A6;
+}
+.gold .tag-float {
+  background: #F0D3A6;
+  color: #3D352B;
+}
+.gold .btn.fill {
+  background: linear-gradient(90deg, #F0D3A6, #C6A266);
+}
+
+/* 3. 幻紫 (家庭) */
+.purple {
+  background: linear-gradient(135deg, #2E2A3D 0%, #221F2D 100%);
+}
+.purple .title {
+  color: #D4C4FF;
+}
+.purple .price-row {
+  color: #D4C4FF;
+}
+.purple .btn {
+  background: rgba(212, 196, 255, 0.1);
+  color: #D4C4FF;
+}
+
+/* 4. 铂金 (至尊) */
+.platinum {
+  background: linear-gradient(135deg, #3A3F47 0%, #24282F 100%);
+  border-color: rgba(165, 222, 255, 0.3);
+}
+.platinum .title {
+  color: #A5DEFF;
+}
+.platinum .price-row {
+  color: #A5DEFF;
+}
+.platinum .tag-float {
+  background: #A5DEFF;
+  color: #1E2B38;
+}
+.platinum .btn.fill {
+  background: linear-gradient(90deg, #A5DEFF, #6ABFFF);
+}
+
+/* 底部栏 */
+.footer-bar {
+  flex: 0 0 6%;
+  display: flex;
+  justify-content: center;
+  gap: 40rpx;
+  align-items: center;
+  border-top: 1rpx solid rgba(255, 255, 255, 0.05);
+}
+.footer-bar .tip-item {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+}
+.footer-bar .tip-item text {
+  font-size: 20rpx;
+  color: #666;
+}

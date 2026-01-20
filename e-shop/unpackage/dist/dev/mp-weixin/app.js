@@ -34,6 +34,10 @@ if (!Math) {
   "./pages/GoodsEvaluate/GoodsEvaluate.js";
   "./pages/AfterSale/AfterSale.js";
   "./pages/login/login.js";
+  "./pages/a/a.js";
+  "./pages/chongzhi/chongzhi.js";
+  "./pages/vip/vip.js";
+  "./pages/brandnews/brandnews.js";
 }
 const _sfc_main = common_vendor.defineComponent({
   onLaunch() {
@@ -66,7 +70,7 @@ const _sfc_main = common_vendor.defineComponent({
             return null;
           }
           common_vendor.index.request({
-            url: "https://wdxwhdglzx.jzzw-tech.cn/api/wechat/openid",
+            url: "https://jmzt.cxxyonline.cn/api/wechat/openid",
             method: "POST",
             header: new UTSJSONObject({
               "content-type": "application/json"

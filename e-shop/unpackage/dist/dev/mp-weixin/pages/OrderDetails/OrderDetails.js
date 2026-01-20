@@ -1,7 +1,7 @@
 "use strict";
 const common_vendor = require("../../common/vendor.js");
 const common_assets = require("../../common/assets.js");
-const API_BASE = "https://wdxwhdglzx.jzzw-tech.cn";
+const API_BASE = "https://jmzt.cxxyonline.cn";
 const _sfc_main = common_vendor.defineComponent({
   data() {
     return {
@@ -141,7 +141,7 @@ const _sfc_main = common_vendor.defineComponent({
 function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
   "raw js";
   return common_vendor.e({
-    a: common_assets._imports_0$3,
+    a: common_assets._imports_0$2,
     b: common_vendor.o((...args) => $options.onBack && $options.onBack(...args)),
     c: !$data.order || !$data.order.id
   }, !$data.order || !$data.order.id ? {} : common_vendor.e({

@@ -51,7 +51,7 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
   return common_vendor.e({
     a: $props.isSearch
   }, $props.isSearch ? {
-    b: common_assets._imports_0$3,
+    b: common_assets._imports_0$2,
     c: common_vendor.o((...args) => $options.onBack && $options.onBack(...args)),
     d: common_assets._imports_1$3,
     e: $data.statusBarHeight + 50 + "px",

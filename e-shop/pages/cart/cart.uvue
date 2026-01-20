@@ -90,7 +90,7 @@
         <image src="/static/images/empty-cart.png" class="empty-img"></image>
         <text class="empty-text">购物车竟然是空的~</text>
         <view class="go-index" @click="goHome">
-          去首页逛逛
+          去逛逛
         </view>
       </view>
 
@@ -402,7 +402,7 @@ export default {
     // =====================
     goHome() {
       uni.switchTab({
-        url: "/pages/home/home"
+        url: "/pages/classify/classify"
       });
     },
 

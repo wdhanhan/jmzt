@@ -1,304 +1,130 @@
 <template>
-  <view class="page-container">
-    <view class="bg-image-placeholder"></view>
-
-    <view class="nav-bar">
-      <view class="back-btn"><text class="back-icon">‹</text></view>
-      <text class="nav-title">积分抽奖</text>
-      <view class="capsule-placeholder"></view>
-    </view>
-
-    <view class="title-section">
-      <text class="main-title">积分抽奖</text>
-      <text class="sub-title">10积分抽奖, 剩余 {{ remainingChances }} 次</text>
-    </view>
-
-    <view class="wheel-container">
-      <view 
-        class="wheel-rotate-bg" 
-        :style="{ 
-          transform: 'rotate(' + rotateDegree + 'deg)',
-          transition: transitionConfig 
-        }"
-      >
-        <view class="wheel-content">
-          <text class="wheel-text-0">5积分</text>
-          <text class="wheel-text-1">10元卡</text>
-          <text class="wheel-text-2">5积分</text>
-          <text class="wheel-text-3">20积分</text>
-          <text class="wheel-text-4">5积分</text>
-          <text class="wheel-text-5">谢谢参与</text>
+	<!-- #ifdef APP -->
+	<scroll-view style="flex:1">
+	<!-- #endif -->
+    <view class="head-info" :style="{height: (statusBarHeight+140)+'px',paddingTop: statusBarHeight+'px'}">
+      <view class="operation-info">
+        <view class="operation-btn">
+          <image src="/static/images/icon/message_icon.png" class="btn" @click="onTool('message')"></image>
+          <image src="/static/images/icon/setting_icon.png" class="btn" @click="onTool('setting')"></image>
         </view>
       </view>
+			<view class="user-info" @click="onTool('PersonalInfo')" v-if="isLogin">
+			  <view class="profile">
+			    <image src="https://oss-pai-o3z31qzfhn5wnngkso-cn-shanghai.oss-cn-shanghai.aliyuncs.com/products/1764007431866_39003ca4-587d-4ef6-86fb-6dec71d872d1.png" class="image"></image>
+			  </view>
+			  <view class="user-data">
+			    <view class="nickname">
+			      <text class="text">哇哈哈</text>
+			    </view>
+			    <view class="phone">
+			      <text class="text">178****8888</text>
+			    </view>
+			  </view>
+			  <view class="more">
+			    <image src="/static/images/icon/more_right.png" class="image"></image>
+			  </view>
+			</view>
+			<view class="user-info" @click="onTool('login')" v-else>
+			  <view class="profile">
+			    <image src="https://oss-pai-o3z31qzfhn5wnngkso-cn-shanghai.oss-cn-shanghai.aliyuncs.com/products/1768730384426_logo.png" class="image"></image>
+			  </view>
+			  <view class="user-data">
+			    <view class="nickname">
+			      <text class="text">欢迎加入饺满灶台</text>
+			    </view>
+			    <view class="phone">
+			      <text class="text"></text>
+			    </view>
+			  </view>
+			</view>
+    </view>
 
-      <view class="wheel-pointer"></view>
+<!--    订单-->
+    <view class="order-info">
+      <view class="order-data">
+        <view class="title-info">
+          <view class="title">
+            <text class="line"></text>
+            <text class="tit">订单</text>
+          </view>
+        </view>
+        <view class="order-item">
+<!--          <view class="item" @click="onOrder">
+            <image src="/static/images/icon/order_dfk.png" class="image"></image>
+            <text class="text">我的订单</text>
+          </view> -->
 
-      <view class="center-btn" @click="startLottery">
-        <text class="draw-text">立即</text>
-        <text class="draw-text">抽奖</text>
+          <view class="item" @click="onTool('AfterSale')">
+            <image src="/static/images/icon/order_tksh.png" class="image"></image>
+            <text class="text">退款/售后</text>
+          </view>
+		  
+		  <view class="item" @click="onchoujiang">
+		    <image src="/static/images/icon/hzx_icon3.png" class="image"></image>
+		    <text class="text">积分抽奖</text>
+		  </view>
+		  
+		  <view class="item" @click="onchonghzhi">
+		    <image src="/static/images/icon/hzx_icon1.png" class="image"></image>
+		    <text class="text">余额充值</text>
+		  </view>
+        </view>
       </view>
     </view>
 
-    <view class="bottom-section">
-      <view class="tab-header">
-        <view class="tab-item active-tab"><text class="tab-text active-tab-text">任务</text></view>
-        <view class="tab-item"><text class="tab-text inactive-tab-text">我的</text></view>
-      </view>
-      <view class="tab-content">
-        <text style="color:#999; font-size:12px; align-self:center;">完成任务获取更多积分...</text>
-      </view>
-    </view>
-
-    <view v-if="showModal" class="modal-mask">
-      <view class="modal-content" :class="{ 'modal-animate': showModalAnimate }">
-        <view class="modal-light-bg"></view>
-        
-        <text class="modal-title">恭喜获得</text>
-        
-        <view class="prize-box">
-          <text class="prize-icon">🎁</text>
-        </view>
-        
-        <text class="prize-name">{{ prizeName }}</text>
-        
-        <view class="modal-btn" @click="closeModal">
-          <text class="modal-btn-text">开心收下</text>
-        </view>
-        
-        <view class="close-icon-area" @click="closeModal">
-          <text class="close-x">✕</text>
-        </view>
-      </view>
-    </view>
-
-  </view>
+	<!-- #ifdef APP -->
+	</scroll-view>
+	<!-- #endif -->
 </template>
 
-<script setup lang="uts">
-  // 定义奖品列表 (假设顺时针排列，每个45度)
-  // 索引对应角度：0: 0-60度, 1: 60-120度... 这里简单按6等分计算
-  const prizes = ["5积分", "10元礼品卡", "5积分", "20积分", "5积分", "谢谢参与"];
-  
-  // 状态变量
-  const rotateDegree = ref(0); // 当前旋转角度
-  const transitionConfig = ref(''); // 动画配置字符串
-  const isSpinning = ref(false); // 是否正在旋转
-  const remainingChances = ref(3); // 剩余次数
-  
-  // 弹窗相关
-  const showModal = ref(false); // 遮罩层显示
-  const showModalAnimate = ref(false); // 触发内容动画
-  const prizeName = ref("");
-
-  // 开始抽奖
-  const startLottery = () => {
-    if (isSpinning.value) return;
-    if (remainingChances.value <= 0) {
-      uni.showToast({ title: "没有机会啦", icon: "none" });
-      return;
+<script>
+	export default {
+		data() {
+			return {
+        statusBarHeight: 0,
+				isLogin: false
+			};
+		},
+    onLoad(){
+      let windowInfo = uni.getWindowInfo();
+      this.statusBarHeight = windowInfo.statusBarHeight;
+    },
+		onShow() {
+			this.isLogin = uni.getStorageSync('isLogin') as Boolean;
+		},
+    methods:{
+      /**
+       * 工具点击
+       * @param url
+       */
+      onTool(url : String){
+        uni.navigateTo({
+          url: `/pages/${url}/${url}`
+        })
+      },
+      /**
+       * 订单点击
+       */
+      onOrder(){
+        uni.navigateTo({
+          url: '/pages/OrderList/OrderList'
+        })
+      },
+	  onchoujiang(){
+	    uni.navigateTo({
+	      url: '/pages/a/a'
+	    })
+	  },
+	  onchonghzhi(){
+	    uni.navigateTo({
+	      url: '/pages/chongzhi/chongzhi'
+	    })
+	  },
     }
-
-    isSpinning.value = true;
-    remainingChances.value--;
-
-    // 1. 模拟随机中奖索引 (0-5)
-    const prizeIndex = Math.floor(Math.random() * 6);
-    prizeName.value = prizes[prizeIndex];
-
-    // 2. 计算旋转角度
-    // 基础旋转圈数 (例如转 6 圈，360 * 6)
-    const baseRounds = 360 * 6; 
-    // 每个奖项 60度 (360 / 6 = 60)
-    // 加上随机偏移量让指针停在扇区中间 (+30)
-    // 注意：旋转方向通常是顺时针，所以角度是负数或者累加正数
-    // 这里我们用累加正数。需要计算目标角度。
-    // 假设 index 0 在 0度位置，index 1 在 60度...
-    // 为了停在 index 处，我们需要转过 (360 - index * 60) 度 (视具体的转盘图片起始角度而定)
-    // 这里简单模拟：目标角度 = 索引 * 60
-    const targetAngle = prizeIndex * 60; 
-    
-    // 累加之前的角度，防止倒转
-    // 新的角度 = 当前角度 + 基础圈数 + (目标位置 - 当前相对位置)
-    // 简单做法：直接狂加角度
-    const newDegree = rotateDegree.value + baseRounds + (360 - (rotateDegree.value % 360)) + (360 - targetAngle);
-
-    // 3. 启用 CSS 过渡动画 (先慢后快再慢: cubic-bezier)
-    transitionConfig.value = "transform 4s cubic-bezier(0.25, 0.1, 0.25, 1)";
-    
-    // 4. 执行旋转 (Vue 会自动更新 DOM style)
-    // 强制一点延时确保 transition 生效
-    setTimeout(() => {
-      rotateDegree.value = newDegree;
-    }, 20);
-
-    // 5. 监听动画结束 (4秒后)
-    setTimeout(() => {
-      isSpinning.value = false;
-      // 重置 transition 以便下次可以瞬间重置角度(如果需要)或者保持现状
-      // 这里我们保持现状，下次继续累加
-      
-      // 弹出结果
-      openModal();
-    }, 4000); // 必须匹配 transition-duration
-  };
-
-  const openModal = () => {
-    showModal.value = true;
-    // 延时一小会儿给个进场动画类
-    setTimeout(() => {
-      showModalAnimate.value = true;
-    }, 50);
-  }
-
-  const closeModal = () => {
-    showModalAnimate.value = false;
-    setTimeout(() => {
-        showModal.value = false;
-    }, 200);
-  }
+	}
 </script>
 
-<style>
-  /* --- 基础容器 --- */
-  .page-container {
-    flex: 1;
-    background-color: #a8e6cf;
-    position: relative;
-  }
-  .bg-image-placeholder {
-    position: absolute;
-    top: 0; bottom: 0; left: 0; right: 0;
-    background-image: linear-gradient(to bottom, #d4f5e9, #82dcb8);
-  }
-
-  /* --- 导航与标题 --- */
-  .nav-bar {
-    height: 44px; margin-top: 44px;
-    flex-direction: row; justify-content: space-between; align-items: center; padding: 0 15px;
-  }
-  .back-btn {
-    width: 30px; height: 30px; border-radius: 15px;
-    background-color: rgba(255,255,255,0.5);
-    justify-content: center; align-items: center;
-  }
-  .back-icon { font-size: 20px; color: #006c5b; }
-  .nav-title { font-size: 18px; font-weight: bold; color: #005a4b; }
-  .capsule-placeholder { width: 80px; }
-
-  .title-section { align-items: center; margin: 20px 0; }
-  .main-title { font-size: 32px; font-weight: 900; color: #fff; text-shadow: 0 2px 5px rgba(0,108,91,0.3); }
-  .sub-title { font-size: 13px; color: #fff; background-color: rgba(0,108,91,0.2); padding: 4px 12px; border-radius: 12px; margin-top: 5px; }
-
-  /* --- 转盘核心样式 --- */
-  .wheel-container {
-    width: 300px; height: 300px;
-    align-self: center;
-    position: relative;
-    justify-content: center; align-items: center;
-    margin-bottom: 20px;
-  }
-
-  .wheel-rotate-bg {
-    width: 280px; height: 280px;
-    border-radius: 140px;
-    background-color: #fff;
-    border-width: 8px; border-color: #6cdfbf;
-    /* 内部布局 */
-    position: relative;
-    overflow: hidden;
-  }
-
-  /* 模拟扇区文字 (绝对定位) */
-  .wheel-content { width: 100%; height: 100%; position: relative; }
-  .wheel-text-0 { position: absolute; top: 20px; left: 120px; font-size: 12px; color: #E91E63; transform: rotate(0deg); }
-  .wheel-text-1 { position: absolute; top: 60px; right: 40px; font-size: 12px; color: #FF9800; transform: rotate(60deg); }
-  .wheel-text-2 { position: absolute; bottom: 60px; right: 40px; font-size: 12px; color: #E91E63; transform: rotate(120deg); }
-  .wheel-text-3 { position: absolute; bottom: 20px; left: 120px; font-size: 12px; color: #2196F3; transform: rotate(180deg); }
-  .wheel-text-4 { position: absolute; bottom: 60px; left: 40px; font-size: 12px; color: #E91E63; transform: rotate(240deg); }
-  .wheel-text-5 { position: absolute; top: 60px; left: 40px; font-size: 12px; color: #999; transform: rotate(300deg); }
-
-  .wheel-pointer {
-    position: absolute; top: -5px; z-index: 10;
-    width: 0; height: 0;
-    border-left: 10px solid transparent;
-    border-right: 10px solid transparent;
-    border-top: 30px solid #ff4d4f; /* 红色倒三角指针 */
-  }
-
-  .center-btn {
-    position: absolute; z-index: 11;
-    width: 70px; height: 70px; border-radius: 35px;
-    background-image: linear-gradient(to bottom, #ff9c00, #ff5722);
-    border: 4px solid #fff;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-    justify-content: center; align-items: center;
-  }
-  .draw-text { color: #fff; font-weight: bold; font-size: 16px; line-height: 18px; }
-
-  /* --- 底部区域 --- */
-  .bottom-section {
-    flex: 1; background-color: #f5f5f5; border-top-left-radius: 20px; border-top-right-radius: 20px; overflow: hidden;
-  }
-  .tab-header { flex-direction: row; height: 50px; background-color: #006c5b; }
-  .tab-item { flex: 1; justify-content: center; align-items: center; }
-  .active-tab { background-color: #f5f5f5; border-top-left-radius: 20px; border-top-right-radius: 20px; }
-  .tab-text { font-size: 14px; font-weight: bold; }
-  .active-tab-text { color: #006c5b; }
-  .inactive-tab-text { color: #fff; opacity: 0.8; }
-  .tab-content { padding: 30px; }
-
-  /* --- 弹窗样式 (Modal) --- */
-  .modal-mask {
-    position: absolute; top: 0; bottom: 0; left: 0; right: 0;
-    background-color: rgba(0,0,0,0.6);
-    justify-content: center; align-items: center;
-    z-index: 999;
-  }
-
-  .modal-content {
-    width: 280px;
-    background-color: #fff;
-    border-radius: 16px;
-    padding: 20px;
-    align-items: center;
-    transform: scale(0.8);
-    opacity: 0;
-    transition-property: transform, opacity;
-    transition-duration: 0.3s;
-    transition-timing-function: cubic-bezier(0.175, 0.885, 0.32, 1.275); /* 弹性效果 */
-  }
-  
-  /* 弹窗激活时的样式类 */
-  .modal-animate {
-    transform: scale(1);
-    opacity: 1;
-  }
-
-  .modal-light-bg {
-    position: absolute; top: -50px; left: 0; right: 0; height: 150px;
-    background-image: linear-gradient(to bottom, rgba(255,215,0,0.3), rgba(255,255,255,0));
-    border-top-left-radius: 16px; border-top-right-radius: 16px;
-  }
-
-  .modal-title { font-size: 20px; font-weight: bold; color: #d93025; margin-bottom: 15px; z-index: 1; }
-  
-  .prize-box {
-    width: 100px; height: 100px; background-color: #fdf6e6; border-radius: 50%;
-    justify-content: center; align-items: center; margin-bottom: 15px;
-    border: 2px solid #f7d6a8;
-  }
-  .prize-icon { font-size: 50px; }
-  
-  .prize-name { font-size: 18px; color: #333; font-weight: bold; margin-bottom: 25px; }
-
-  .modal-btn {
-    width: 200px; height: 44px; background-color: #d93025; border-radius: 22px;
-    justify-content: center; align-items: center; margin-bottom: 15px;
-    box-shadow: 0 4px 8px rgba(217,48,37,0.3);
-  }
-  .modal-btn-text { color: #fff; font-size: 16px; font-weight: bold; }
-
-  .close-icon-area { padding: 10px; }
-  .close-x { font-size: 24px; color: #ccc; }
-
+<style lang="scss">
+  @import "my.scss";
 </style>

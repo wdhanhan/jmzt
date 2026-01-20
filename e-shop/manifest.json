@@ -1,5 +1,5 @@
 {
-	"name": "喵购",
+	"name": "饺满灶台",
 	"appid": "__UNI__A471C0C",
 	"description": "一个电商商城",
 	"versionName": "1.0.0",
@@ -9,7 +9,7 @@
 	"quickapp": {},
 	/* 小程序特有相关 */
 	"mp-weixin": {
-		"appid": "wx506c944851f9f1eb",
+		"appid": "wx2ee0ec34076f93e6",
 		"setting": {
 			"urlCheck": false
 		},

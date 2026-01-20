@@ -276,6 +276,24 @@
 			"style": {
 				"navigationBarTitleText": ""
 			}
+		},
+		{
+			"path": "pages/chongzhi/chongzhi",
+			"style": {
+				"navigationBarTitleText": ""
+			}
+		},
+		{
+			"path": "pages/vip/vip",
+			"style": {
+				"navigationBarTitleText": ""
+			}
+		},
+		{
+			"path": "pages/brandnews/brandnews",
+			"style": {
+				"navigationBarTitleText": ""
+			}
 		}
 	],
 	"globalStyle": {
@@ -305,10 +323,10 @@
 			"selectedIconPath": "static/images/nav/buy_ac.png",
 			"text": "分类"
 		}, {
-			"pagePath": "pages/cart/cart",
+			"pagePath": "pages/OrderList/OrderList",
 			"iconPath": "static/images/nav/cart.png",
 			"selectedIconPath": "static/images/nav/cart_ac.png",
-			"text": "购物车"
+			"text": "我的订单"
 		}, {
 			"pagePath": "pages/my/my",
 			"iconPath": "static/images/nav/my.png",

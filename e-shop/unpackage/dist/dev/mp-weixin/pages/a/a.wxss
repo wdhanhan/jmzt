@@ -1,0 +1,161 @@
+@import "../../uvue.wxss";
+:host{display:flex;flex-direction:column}
+
+  /* --- 基础容器 --- */
+.page-container {
+    flex: 1;
+    background-color: #a8e6cf;
+    position: relative;
+}
+.bg-image-placeholder {
+    position: absolute;
+    top: 0; bottom: 0; left: 0; right: 0;
+    background-image: linear-gradient(to bottom, #d4f5e9, #82dcb8);
+}
+
+  /* --- 导航与标题 --- */
+.nav-bar {
+    height: 44px; margin-top: 44px;
+    flex-direction: row; justify-content: space-between; align-items: center; padding: 0 15px;
+}
+.back-btn {
+    width: 30px; height: 30px; border-radius: 15px;
+    background-color: rgba(255,255,255,0.5);
+    justify-content: center; align-items: center;
+}
+.back-icon { font-size: 20px; color: #006c5b;
+}
+.nav-title { font-size: 18px; font-weight: bold; color: #005a4b;
+}
+.capsule-placeholder { width: 80px;
+}
+.title-section { align-items: center; margin: 20px 0;
+}
+.main-title { font-size: 32px; font-weight: 900; color: #fff; text-shadow: 0 2px 5px rgba(0,108,91,0.3);
+}
+.sub-title { font-size: 13px; color: #fff; background-color: rgba(0,108,91,0.2); padding: 4px 12px; border-radius: 12px; margin-top: 5px;
+}
+
+  /* --- 转盘核心样式 --- */
+.wheel-container {
+    width: 300px; height: 300px;
+    align-self: center;
+    position: relative;
+    justify-content: center; align-items: center;
+    margin-bottom: 20px;
+}
+.wheel-rotate-bg {
+    width: 280px; height: 280px;
+    border-radius: 140px;
+    background-color: #fff;
+    border-width: 8px; border-color: #6cdfbf;
+    /* 内部布局 */
+    position: relative;
+    overflow: hidden;
+}
+
+  /* 模拟扇区文字 (绝对定位) */
+.wheel-content { width: 100%; height: 100%; position: relative;
+}
+.wheel-text-0 { position: absolute; top: 20px; left: 120px; font-size: 12px; color: #E91E63; transform: rotate(0deg);
+}
+.wheel-text-1 { position: absolute; top: 60px; right: 40px; font-size: 12px; color: #FF9800; transform: rotate(60deg);
+}
+.wheel-text-2 { position: absolute; bottom: 60px; right: 40px; font-size: 12px; color: #E91E63; transform: rotate(120deg);
+}
+.wheel-text-3 { position: absolute; bottom: 20px; left: 120px; font-size: 12px; color: #2196F3; transform: rotate(180deg);
+}
+.wheel-text-4 { position: absolute; bottom: 60px; left: 40px; font-size: 12px; color: #E91E63; transform: rotate(240deg);
+}
+.wheel-text-5 { position: absolute; top: 60px; left: 40px; font-size: 12px; color: #999; transform: rotate(300deg);
+}
+.wheel-pointer {
+    position: absolute; top: -5px; z-index: 10;
+    width: 0; height: 0;
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    border-top: 30px solid #ff4d4f; /* 红色倒三角指针 */
+}
+.center-btn {
+    position: absolute; z-index: 11;
+    width: 70px; height: 70px; border-radius: 35px;
+    background-image: linear-gradient(to bottom, #ff9c00, #ff5722);
+    border: 4px solid #fff;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    justify-content: center; align-items: center;
+}
+.draw-text { color: #fff; font-weight: bold; font-size: 16px; line-height: 18px;
+}
+
+  /* --- 底部区域 --- */
+.bottom-section {
+    flex: 1; background-color: #f5f5f5; border-top-left-radius: 20px; border-top-right-radius: 20px; overflow: hidden;
+}
+.tab-header { flex-direction: row; height: 50px; background-color: #006c5b;
+}
+.tab-item { flex: 1; justify-content: center; align-items: center;
+}
+.active-tab { background-color: #f5f5f5; border-top-left-radius: 20px; border-top-right-radius: 20px;
+}
+.tab-text { font-size: 14px; font-weight: bold;
+}
+.active-tab-text { color: #006c5b;
+}
+.inactive-tab-text { color: #fff; opacity: 0.8;
+}
+.tab-content { padding: 30px;
+}
+
+  /* --- 弹窗样式 (Modal) --- */
+.modal-mask {
+    position: absolute; top: 0; bottom: 0; left: 0; right: 0;
+    background-color: rgba(0,0,0,0.6);
+    justify-content: center; align-items: center;
+    z-index: 999;
+}
+.modal-content {
+    width: 280px;
+    background-color: #fff;
+    border-radius: 16px;
+    padding: 20px;
+    align-items: center;
+    transform: scale(0.8);
+    opacity: 0;
+    transition-property: transform, opacity;
+    transition-duration: 0.3s;
+    transition-timing-function: cubic-bezier(0.175, 0.885, 0.32, 1.275); /* 弹性效果 */
+}
+  
+  /* 弹窗激活时的样式类 */
+.modal-animate {
+    transform: scale(1);
+    opacity: 1;
+}
+.modal-light-bg {
+    position: absolute; top: -50px; left: 0; right: 0; height: 150px;
+    background-image: linear-gradient(to bottom, rgba(255,215,0,0.3), rgba(255,255,255,0));
+    border-top-left-radius: 16px; border-top-right-radius: 16px;
+}
+.modal-title { font-size: 20px; font-weight: bold; color: #d93025; margin-bottom: 15px; z-index: 1;
+}
+.prize-box {
+    width: 100px; height: 100px; background-color: #fdf6e6; border-radius: 50%;
+    justify-content: center; align-items: center; margin-bottom: 15px;
+    border: 2px solid #f7d6a8;
+}
+.prize-icon { font-size: 50px;
+}
+.prize-name { font-size: 18px; color: #333; font-weight: bold; margin-bottom: 25px;
+}
+.modal-btn {
+    width: 200px; height: 44px; background-color: #d93025; border-radius: 22px;
+    justify-content: center; align-items: center; margin-bottom: 15px;
+    box-shadow: 0 4px 8px rgba(217,48,37,0.3);
+}
+.modal-btn-text { color: #fff; font-size: 16px; font-weight: bold;
+}
+.close-icon-area { padding: 10px;
+}
+.close-x { font-size: 24px; color: #ccc;
+}
+

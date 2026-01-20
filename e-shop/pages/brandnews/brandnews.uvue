@@ -1,0 +1,320 @@
+<template>
+  <scroll-view class="brand-page" :show-scrollbar="false">
+    
+    <view class="hero-section">
+      <image class="hero-bg" src="https://images.unsplash.com/photo-1534422298391-e4f8c172dddb?q=80&w=2069&auto=format&fit=crop" mode="aspectFill"></image>
+      <view class="hero-mask"></view>
+      <view class="hero-content" :style="{ paddingTop: statusBarHeight + 'px' }">
+        <view class="brand-logo">
+          <text class="logo-text">饺满灶台</text>
+          <text class="logo-en">JIAO MAN ZAO TAI</text>
+        </view>
+        <text class="slogan">灶台烟火气 · 饺子暖人心</text>
+        <view class="scroll-tip">
+          <text class="tip-text">探索我们的故事</text>
+          <view class="tip-line"></view>
+        </view>
+      </view>
+    </view>
+
+    <view class="story-container">
+      <view class="story-card">
+        <view class="quote-icon">“</view>
+        <text class="story-title">始于一口老灶，\n忠于指尖温度。</text>
+        <text class="story-desc">
+          2015年冬，我们在街角支起了一口热气腾腾的灶台。
+          
+          在这个快节奏的时代，「饺满灶台」依然坚持笨办法：
+          面要醒足一小时，肉要手工切丁，皮要擀出中间厚边缘薄。
+          
+          我们相信，机器能复制形状，但复制不了妈妈的味道。
+          每一只饺子，都是我们对东方饮食文化的致敬。
+        </text>
+        <view class="signature">—— 创始人 · 老王</view>
+      </view>
+    </view>
+
+    <view class="standard-section">
+      <view class="section-header">
+        <text class="cn">匠心手作</text>
+        <text class="en">CRAFTSMANSHIP</text>
+      </view>
+      
+      <view class="grid-box">
+        <view class="grid-item">
+          <view class="icon-circle">
+            <text class="num">18</text>
+          </view>
+          <text class="item-title">十八道褶</text>
+          <text class="item-desc">锁住汤汁，皮薄馅大</text>
+        </view>
+        <view class="grid-item">
+          <view class="icon-circle">
+            <text class="num">4h</text>
+          </view>
+          <text class="item-title">慢熬鸡汤</text>
+          <text class="item-desc">以汤和馅，鲜味加倍</text>
+        </view>
+        <view class="grid-item">
+          <view class="icon-circle">
+            <text class="num">0</text>
+          </view>
+          <text class="item-title">零隔夜</text>
+          <text class="item-desc">现包现煮，拒绝速冻</text>
+        </view>
+      </view>
+    </view>
+
+    <view class="menu-section">
+      <view class="section-header dark">
+        <text class="cn">招牌必吃</text>
+        <text class="en">SIGNATURE DISHES</text>
+      </view>
+      
+      <scroll-view direction="horizontal" class="menu-scroll" :show-scrollbar="false">
+        <view class="menu-row">
+          <view class="dish-card" v-for="(item, index) in dishes" :key="index">
+            <image class="dish-img" :src="item.img" mode="aspectFill"></image>
+            <view class="dish-info">
+              <text class="dish-name">{{ item.name }}</text>
+              <text class="dish-tag">{{ item.tag }}</text>
+            </view>
+          </view>
+        </view>
+      </scroll-view>
+    </view>
+
+    <view class="footer-section">
+      <view class="stat-row">
+        <view class="stat-item">
+          <text class="val">8</text>
+          <text class="label">年老店</text>
+        </view>
+        <view class="line"></view>
+        <view class="stat-item">
+          <text class="val">100w+</text>
+          <text class="label">累计服务</text>
+        </view>
+        <view class="line"></view>
+        <view class="stat-item">
+          <text class="val">4.9</text>
+          <text class="label">好评评分</text>
+        </view>
+      </view>
+      <text class="footer-slogan">饺满灶台 · 温暖每一座城市</text>
+      <button class="action-btn" hover-class="btn-hover">到店品尝</button>
+    </view>
+
+  </scroll-view>
+</template>
+
+<script lang="uts">
+  export default {
+    data() {
+      return {
+        statusBarHeight: 0,
+        // 编造的美味菜单数据
+        dishes: [
+          { 
+            name: '松茸鲜肉饺', 
+            tag: '桌桌必点',
+            img: 'https://images.unsplash.com/photo-1625243179244-6725350c337d?q=80&w=1000&auto=format&fit=crop'
+          },
+          { 
+            name: '虾仁三鲜饺', 
+            tag: '整颗大虾',
+            img: 'https://images.unsplash.com/photo-1559183533-eb86b72d0758?q=80&w=1000&auto=format&fit=crop'
+          },
+          { 
+            name: '酸汤水饺', 
+            tag: '开胃神器',
+            img: 'https://images.unsplash.com/photo-1604152135912-04a022e23696?q=80&w=1000&auto=format&fit=crop'
+          },
+          { 
+            name: '秘制酱大骨', 
+            tag: '下酒绝配',
+            img: 'https://images.unsplash.com/photo-1544025162-d76690b6d029?q=80&w=1000&auto=format&fit=crop'
+          }
+        ]
+      }
+    },
+    onLoad() {
+      // 获取状态栏高度，适配刘海屏
+      const windowInfo = uni.getWindowInfo()
+      this.statusBarHeight = windowInfo.statusBarHeight
+    }
+  }
+</script>
+
+<style lang="scss">
+  .brand-page {
+    background-color: #FFFFFF;
+    flex: 1;
+  }
+
+  /* 1. Hero 区域 */
+  .hero-section {
+    position: relative;
+    height: 560rpx;
+    background-color: #1a1a1a;
+  }
+  .hero-bg {
+    position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+  }
+  .hero-mask {
+    position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+    background: linear-gradient(to bottom, rgba(0,0,0,0.3), rgba(0,0,0,0.7));
+  }
+  .hero-content {
+    position: relative;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 1;
+  }
+  .brand-logo {
+    align-items: center;
+    margin-bottom: 20rpx;
+  }
+  .logo-text {
+    font-size: 64rpx; font-weight: 900; color: #fff; letter-spacing: 8rpx;
+    font-family: serif; /* 衬线体更有传统感 */
+  }
+  .logo-en {
+    font-size: 16rpx; color: rgba(255,255,255,0.6); letter-spacing: 4rpx; margin-top: 10rpx;
+  }
+  .slogan {
+    font-size: 28rpx; color: #ffdca8; margin-top: 20rpx; letter-spacing: 2rpx;
+    padding: 10rpx 30rpx; border: 1rpx solid rgba(255, 220, 168, 0.5); border-radius: 50rpx;
+  }
+  .scroll-tip {
+    position: absolute; bottom: 60rpx; align-items: center;
+  }
+  .tip-text { font-size: 20rpx; color: rgba(255,255,255,0.5); margin-bottom: 10rpx; }
+  .tip-line { width: 2rpx; height: 30rpx; background-color: rgba(255,255,255,0.3); }
+
+  /* 2. 故事卡片 */
+  .story-container {
+    padding: 0 40rpx;
+    margin-top: -80rpx; /* 向上浮动覆盖 Banner */
+    position: relative;
+    z-index: 2;
+  }
+  .story-card {
+    background-color: #fff;
+    border-radius: 20rpx;
+    padding: 60rpx 40rpx;
+    box-shadow: 0 20rpx 60rpx rgba(0,0,0,0.08);
+  }
+  .quote-icon {
+    font-size: 120rpx; line-height: 60rpx; color: #f2f2f2; font-family: serif;
+    position: absolute; top: 30rpx; left: 30rpx;
+  }
+  .story-title {
+    font-size: 40rpx; font-weight: bold; color: #333; line-height: 1.4; margin-bottom: 40rpx;
+    position: relative;
+  }
+  .story-desc {
+    font-size: 28rpx; color: #666; line-height: 1.8; text-align: justify;
+  }
+  .signature {
+    margin-top: 40rpx; text-align: right; font-size: 26rpx; color: #333; font-weight: bold; font-family: cursive;
+  }
+
+  /* 通用标题 */
+  .section-header {
+    align-items: center; margin-bottom: 50rpx;
+    &.dark .cn { color: #333; }
+    &.dark .en { color: #999; }
+  }
+  .cn { font-size: 36rpx; font-weight: bold; color: #333; margin-bottom: 6rpx; letter-spacing: 2rpx; }
+  .en { font-size: 18rpx; color: #999; letter-spacing: 4rpx; font-weight: bold; }
+
+  /* 3. 匠心标准 */
+  .standard-section {
+    padding: 100rpx 40rpx;
+    background-color: #fafafa;
+    margin-top: 60rpx;
+    align-items: center;
+  }
+  .grid-box {
+    flex-direction: row;
+    justify-content: space-between;
+    width: 100%;
+  }
+  .grid-item {
+    flex: 1; align-items: center;
+  }
+  .icon-circle {
+    width: 100rpx; height: 100rpx; border-radius: 50%;
+    border: 2rpx solid #e0e0e0;
+    align-items: center; justify-content: center;
+    margin-bottom: 24rpx;
+  }
+  .num { font-size: 36rpx; font-weight: bold; color: #ff9900; font-family: 'DIN'; }
+  .item-title { font-size: 28rpx; font-weight: bold; color: #333; margin-bottom: 8rpx; }
+  .item-desc { font-size: 20rpx; color: #999; }
+
+  /* 4. 菜单滚动 */
+  .menu-section {
+    padding: 100rpx 0;
+    background-color: #fff;
+    align-items: center;
+  }
+  .menu-scroll {
+    width: 100%;
+    flex-direction: row;
+  }
+  .menu-row {
+    flex-direction: row;
+    padding-left: 40rpx;
+  }
+  .dish-card {
+    width: 320rpx;
+    margin-right: 30rpx;
+    border-radius: 16rpx;
+    overflow: hidden;
+    background-color: #fff;
+    box-shadow: 0 8rpx 24rpx rgba(0,0,0,0.06);
+  }
+  .dish-img {
+    width: 320rpx; height: 320rpx;
+  }
+  .dish-info {
+    padding: 24rpx;
+  }
+  .dish-name { font-size: 30rpx; font-weight: bold; color: #333; margin-bottom: 8rpx; }
+  .dish-tag { 
+    font-size: 20rpx; color: #ff9900; background-color: #fff5e6; 
+    padding: 4rpx 12rpx; border-radius: 6rpx; align-self: flex-start;
+  }
+
+  /* 5. 底部 */
+  .footer-section {
+    background-color: #1a1a1a;
+    padding: 80rpx 40rpx 120rpx;
+    align-items: center;
+  }
+  .stat-row {
+    flex-direction: row; justify-content: space-between; align-items: center;
+    width: 100%; padding: 0 40rpx; margin-bottom: 60rpx;
+  }
+  .stat-item { align-items: center; }
+  .val { font-size: 40rpx; font-weight: bold; color: #ebd1a0; margin-bottom: 4rpx; }
+  .label { font-size: 22rpx; color: rgba(255,255,255,0.4); }
+  .line { width: 1rpx; height: 40rpx; background-color: rgba(255,255,255,0.1); }
+  
+  .footer-slogan { font-size: 26rpx; color: rgba(255,255,255,0.3); margin-bottom: 40rpx; letter-spacing: 4rpx; }
+  
+  .action-btn {
+    width: 400rpx; height: 90rpx;
+    background-color: #ff9900;
+    color: #fff; font-size: 30rpx; font-weight: bold;
+    border-radius: 45rpx;
+    line-height: 90rpx;
+    border: none;
+  }
+  .btn-hover { opacity: 0.9; transform: scale(0.98); }
+</style>

@@ -79,7 +79,7 @@ if (!Array) {
 function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
   "raw js";
   return {
-    a: common_assets._imports_0$3,
+    a: common_assets._imports_0$2,
     b: common_vendor.o((...args) => $options.onBack && $options.onBack(...args)),
     c: common_assets._imports_1$3,
     d: $data.keyword,
@@ -89,9 +89,9 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
     h: common_assets._imports_2$1,
     i: common_assets._imports_2$2,
     j: common_vendor.o((...args) => $options.onFiltrate && $options.onFiltrate(...args)),
-    k: common_assets._imports_4$1,
+    k: common_assets._imports_4,
     l: $data.goodsCut === 0,
-    m: common_assets._imports_5,
+    m: common_assets._imports_5$1,
     n: $data.goodsCut === 1,
     o: common_vendor.o((...args) => $options.onGoodCut && $options.onGoodCut(...args)),
     p: $data.statusBarHeight + 50 + "px",
@@ -145,7 +145,7 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
     I: common_vendor.o(($event) => $options.onFiltrateServe(2)),
     J: $data.statusBarHeight,
     K: $data.screenHeight + "px",
-    L: common_vendor.sr("CatPopup", "5d1c2b38-0"),
+    L: common_vendor.sr("CatPopup", "a83ecb0e-0"),
     M: common_vendor.p({
       mode: "right"
     })

@@ -1,0 +1,318 @@
+@import "../../uvue.wxss";
+:host{display:flex;flex-direction:column}
+/**
+ * 这里是uni-app内置的常用样式变量
+ *
+ * uni-app 官方扩展插件及插件市场（https://ext.dcloud.net.cn）上很多三方插件均使用了这些样式变量
+ * 如果你是插件开发者，建议你使用scss预处理，并在插件代码中直接使用这些变量（无需 import 这个文件），方便用户通过搭积木的方式开发整体风格一致的App
+ *
+ */
+/**
+ * 如果你是App开发者（插件使用者），你可以通过修改这些变量来定制自己的插件主题，实现自定义主题功能
+ *
+ * 如果你的项目同样使用了scss预处理，你也可以直接在你的 scss 代码中使用如下变量，同时无需 import 这个文件
+ */
+/* 颜色变量 */
+/* 文字颜色 */
+/* 主色渐变 */
+/* 按钮颜色 */
+/* 行为相关颜色 */
+/* 文字基本颜色 */
+/* 背景颜色 */
+/* 边框颜色 */
+/* 尺寸变量 */
+/* 文字尺寸 */
+/* 图片尺寸 */
+/* Border Radius */
+/* 水平间距 */
+/* 垂直间距 */
+/* 透明度 */
+/* 文章场景相关 */
+.brand-page {
+  background-color: #FFFFFF;
+  flex: 1;
+}
+
+/* 1. Hero 区域 */
+.hero-section {
+  position: relative;
+  height: 560rpx;
+  background-color: #1a1a1a;
+}
+.hero-bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+.hero-mask {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.7));
+}
+.hero-content {
+  position: relative;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 1;
+}
+.brand-logo {
+  align-items: center;
+  margin-bottom: 20rpx;
+}
+.logo-text {
+  font-size: 64rpx;
+  font-weight: 900;
+  color: #fff;
+  letter-spacing: 8rpx;
+  font-family: serif;
+  /* 衬线体更有传统感 */
+}
+.logo-en {
+  font-size: 16rpx;
+  color: rgba(255, 255, 255, 0.6);
+  letter-spacing: 4rpx;
+  margin-top: 10rpx;
+}
+.slogan {
+  font-size: 28rpx;
+  color: #ffdca8;
+  margin-top: 20rpx;
+  letter-spacing: 2rpx;
+  padding: 10rpx 30rpx;
+  border: 1rpx solid rgba(255, 220, 168, 0.5);
+  border-radius: 50rpx;
+}
+.scroll-tip {
+  position: absolute;
+  bottom: 60rpx;
+  align-items: center;
+}
+.tip-text {
+  font-size: 20rpx;
+  color: rgba(255, 255, 255, 0.5);
+  margin-bottom: 10rpx;
+}
+.tip-line {
+  width: 2rpx;
+  height: 30rpx;
+  background-color: rgba(255, 255, 255, 0.3);
+}
+
+/* 2. 故事卡片 */
+.story-container {
+  padding: 0 40rpx;
+  margin-top: -80rpx;
+  /* 向上浮动覆盖 Banner */
+  position: relative;
+  z-index: 2;
+}
+.story-card {
+  background-color: #fff;
+  border-radius: 20rpx;
+  padding: 60rpx 40rpx;
+  box-shadow: 0 20rpx 60rpx rgba(0, 0, 0, 0.08);
+}
+.quote-icon {
+  font-size: 120rpx;
+  line-height: 60rpx;
+  color: #f2f2f2;
+  font-family: serif;
+  position: absolute;
+  top: 30rpx;
+  left: 30rpx;
+}
+.story-title {
+  font-size: 40rpx;
+  font-weight: bold;
+  color: #333;
+  line-height: 1.4;
+  margin-bottom: 40rpx;
+  position: relative;
+}
+.story-desc {
+  font-size: 28rpx;
+  color: #666;
+  line-height: 1.8;
+  text-align: justify;
+}
+.signature {
+  margin-top: 40rpx;
+  text-align: right;
+  font-size: 26rpx;
+  color: #333;
+  font-weight: bold;
+  font-family: cursive;
+}
+
+/* 通用标题 */
+.section-header {
+  align-items: center;
+  margin-bottom: 50rpx;
+}
+.section-header.dark .cn {
+  color: #333;
+}
+.section-header.dark .en {
+  color: #999;
+}
+.cn {
+  font-size: 36rpx;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 6rpx;
+  letter-spacing: 2rpx;
+}
+.en {
+  font-size: 18rpx;
+  color: #999;
+  letter-spacing: 4rpx;
+  font-weight: bold;
+}
+
+/* 3. 匠心标准 */
+.standard-section {
+  padding: 100rpx 40rpx;
+  background-color: #fafafa;
+  margin-top: 60rpx;
+  align-items: center;
+}
+.grid-box {
+  flex-direction: row;
+  justify-content: space-between;
+  width: 100%;
+}
+.grid-item {
+  flex: 1;
+  align-items: center;
+}
+.icon-circle {
+  width: 100rpx;
+  height: 100rpx;
+  border-radius: 50%;
+  border: 2rpx solid #e0e0e0;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 24rpx;
+}
+.num {
+  font-size: 36rpx;
+  font-weight: bold;
+  color: #ff9900;
+  font-family: "DIN";
+}
+.item-title {
+  font-size: 28rpx;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 8rpx;
+}
+.item-desc {
+  font-size: 20rpx;
+  color: #999;
+}
+
+/* 4. 菜单滚动 */
+.menu-section {
+  padding: 100rpx 0;
+  background-color: #fff;
+  align-items: center;
+}
+.menu-scroll {
+  width: 100%;
+  flex-direction: row;
+}
+.menu-row {
+  flex-direction: row;
+  padding-left: 40rpx;
+}
+.dish-card {
+  width: 320rpx;
+  margin-right: 30rpx;
+  border-radius: 16rpx;
+  overflow: hidden;
+  background-color: #fff;
+  box-shadow: 0 8rpx 24rpx rgba(0, 0, 0, 0.06);
+}
+.dish-img {
+  width: 320rpx;
+  height: 320rpx;
+}
+.dish-info {
+  padding: 24rpx;
+}
+.dish-name {
+  font-size: 30rpx;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 8rpx;
+}
+.dish-tag {
+  font-size: 20rpx;
+  color: #ff9900;
+  background-color: #fff5e6;
+  padding: 4rpx 12rpx;
+  border-radius: 6rpx;
+  align-self: flex-start;
+}
+
+/* 5. 底部 */
+.footer-section {
+  background-color: #1a1a1a;
+  padding: 80rpx 40rpx 120rpx;
+  align-items: center;
+}
+.stat-row {
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  padding: 0 40rpx;
+  margin-bottom: 60rpx;
+}
+.stat-item {
+  align-items: center;
+}
+.val {
+  font-size: 40rpx;
+  font-weight: bold;
+  color: #ebd1a0;
+  margin-bottom: 4rpx;
+}
+.label {
+  font-size: 22rpx;
+  color: rgba(255, 255, 255, 0.4);
+}
+.line {
+  width: 1rpx;
+  height: 40rpx;
+  background-color: rgba(255, 255, 255, 0.1);
+}
+.footer-slogan {
+  font-size: 26rpx;
+  color: rgba(255, 255, 255, 0.3);
+  margin-bottom: 40rpx;
+  letter-spacing: 4rpx;
+}
+.action-btn {
+  width: 400rpx;
+  height: 90rpx;
+  background-color: #ff9900;
+  color: #fff;
+  font-size: 30rpx;
+  font-weight: bold;
+  border-radius: 45rpx;
+  line-height: 90rpx;
+  border: none;
+}
+.btn-hover {
+  opacity: 0.9;
+  transform: scale(0.98);
+}

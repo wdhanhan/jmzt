@@ -1,332 +1,186 @@
 @import "../../uvue.wxss";
 :host{display:flex;flex-direction:column}
-/**
- * 这里是uni-app内置的常用样式变量
- *
- * uni-app 官方扩展插件及插件市场（https://ext.dcloud.net.cn）上很多三方插件均使用了这些样式变量
- * 如果你是插件开发者，建议你使用scss预处理，并在插件代码中直接使用这些变量（无需 import 这个文件），方便用户通过搭积木的方式开发整体风格一致的App
- *
- */
-/**
- * 如果你是App开发者（插件使用者），你可以通过修改这些变量来定制自己的插件主题，实现自定义主题功能
- *
- * 如果你的项目同样使用了scss预处理，你也可以直接在你的 scss 代码中使用如下变量，同时无需 import 这个文件
- */
-/* 颜色变量 */
-/* 文字颜色 */
-/* 主色渐变 */
-/* 按钮颜色 */
-/* 行为相关颜色 */
-/* 文字基本颜色 */
-/* 背景颜色 */
-/* 边框颜色 */
-/* 尺寸变量 */
-/* 文字尺寸 */
-/* 图片尺寸 */
-/* Border Radius */
-/* 水平间距 */
-/* 垂直间距 */
-/* 透明度 */
-/* 文章场景相关 */
-.page {
-  background-color: #f8f8f8;
-  padding-bottom: 30rpx;
+
+  /* 全局容器 */
+.page-container {
+    flex: 1;
+    /* 去掉原来的红色背景 */
+    /* background-color: #d93025; */ 
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    position: relative; /* 确保子元素绝对定位相对于此 */
 }
-/*搜索*/
-.head-search {
-  position: fixed;
-  left: 0;
-  top: 0;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  width: 100%;
-  height: 100rpx;
-  background-color: #ffffff;
-  padding-left: 30rpx;
-  padding-right: 30rpx;
+
+  /* --- 新增：背景轮播样式 --- */
+.bg-swiper {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0; /* 在最底层 */
 }
-.head-search .search-info {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  flex: 1;
-  height: 70rpx;
-  padding: 0 20rpx;
-  background-color: #f8f8f8;
-  border-radius: 35rpx;
+.bg-image {
+    width: 100%;
+    height: 100%;
 }
-.head-search .search-info .text {
-  color: #aaaaaa;
-  font-size: 24rpx;
+  /* 可选：遮罩层，防止背景图太花影响文字阅读 */
+.bg-mask {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(255, 255, 255, 0.2); /* 20%白色遮罩，可自行调整颜色 */
+    z-index: 1;
+    pointer-events: none; /* 让点击穿透遮罩 */
 }
-.head-search .search-info .image {
-  width: 34rpx;
-  height: 34rpx;
-  margin-right: 20rpx;
+.status-bar-placeholder {
+    height: 44px;
+    /* 背景设为透明，让轮播图透出来 */
+    background-color: transparent; 
+    z-index: 2;
 }
-.head-search .scan-icon {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-left: 20rpx;
+.main-scroll {
+    flex: 1;
+    z-index: 2; /* 内容层级高于背景 */
 }
-.head-search .scan-icon .image {
-  width: 48rpx;
-  height: 48rpx;
+
+  /* --- 顶部 Hero 区域 --- */
+.hero-section {
+    height: 380px;
+    /* 移除原来的渐变色背景 */
+    background-color: transparent; 
+    padding: 10px 20px;
+    position: relative;
+    overflow: hidden;
 }
-/*banner*/
-.banner-info {
-  position: relative;
-  width: 100%;
-  height: 340rpx;
-  padding: 0 30rpx;
-  margin-bottom: 20rpx;
+
+  /* (保持原有的 hero 内部文字样式不变...) */
+.hero-text-group { margin-top: 10px;
 }
-.banner-info .swiper {
-  width: 100%;
-  height: 340rpx;
+.hero-title-row { flex-direction: row; align-items: flex-end;
 }
-.banner-info .swiper .image {
-  width: 100%;
-  height: 340rpx;
-  border-radius: 20rpx;
+.hero-big-num { font-size: 60px; font-weight: 900; color: #4a3b2a; line-height: 60px;
 }
-.banner-info .indicator-dot {
-  position: absolute;
-  left: 0;
-  bottom: 20rpx;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
+.hero-small-unit { font-size: 20px; color: #4a3b2a; margin-bottom: 10px; font-weight: bold;
 }
-.banner-info .indicator-dot .dots {
-  width: 16rpx;
-  height: 16rpx;
-  background-color: rgba(255, 255, 255, 0.3);
-  border-radius: 10rpx;
-  margin: 0 6rpx;
+.hero-sub-title { font-size: 24px; font-weight: bold; color: #4a3b2a; margin-top: -5px;
 }
-.banner-info .indicator-dot .active {
-  width: 34rpx;
-  height: 16rpx;
-  background-color: #ffffff;
-  border-radius: 16rpx;
+.hero-tag { background-color: #fff; border-radius: 4px; align-self: flex-start; padding: 2px 6px; margin-top: 5px; border-width: 1px; border-color: #4a3b2a;
 }
-/*金刚区*/
-.menu-info {
-  width: 100%;
-  height: 160rpx;
-  padding: 0 30rpx;
-  margin-bottom: 20rpx;
+.hero-tag-text { font-size: 10px; color: #4a3b2a;
 }
-.menu-info .menu-list {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  width: 100%;
-  height: 160rpx;
-  background-color: #ffffff;
-  border-radius: 20rpx;
+.rotate-tag { position: absolute; top: 65px; left: 110px; background-color: #fff; border-width: 1px; border-color: #d4a770; padding: 2px 5px; transform: rotate(15deg);
 }
-.menu-info .menu-list .list {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 25%;
-  height: 140rpx;
+.rotate-tag-text { font-size: 12px; color: #4a3b2a; font-weight: bold;
 }
-.menu-info .menu-list .list .image {
-  width: 80rpx;
-  height: 80rpx;
-  margin-bottom: 10rpx;
+.center-slogan { position: absolute; top: 150px; left: 0; right: 0; align-items: center; transform: rotate(-10deg);
 }
-.menu-info .menu-list .list .text {
-  font-size: 28rpx;
-  color: #333333;
+.slogan-text { font-size: 30px; font-weight: 900; color: #8c6a46; opacity: 0.2;
 }
-/*瓷片区*/
-.tile-info {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-between;
-  width: 100%;
-  height: 300rpx;
-  padding: 0 30rpx;
-  margin-bottom: 20rpx;
+.float-packet { position: absolute; right: 10px; top: 180px; width: 70px; height: 70px; background-color: #f7d6a8; border-radius: 35px; justify-content: center; align-items: center; border-width: 2px; border-color: #fff; z-index: 5;
 }
-.tile-info .tile-left {
-  width: 49%;
-  height: 300rpx;
+.packet-text { color: #d93025; font-weight: bold; font-size: 12px;
 }
-.tile-info .tile-left .image {
-  width: 100%;
-  height: 300rpx;
-  border-radius: 20rpx;
+.packet-sub { color: #d93025; font-size: 10px;
 }
-.tile-info .tile-right {
-  justify-content: space-between;
-  width: 49%;
-  height: 300rpx;
+
+  /* --- 白色核心卡片 --- */
+.core-card {
+    margin: -80px 15px 0 15px;
+    background-color: #ffffff; /* 保持白色背景，使其在复杂的图片背景上可见 */
+    border-radius: 12px;
+    padding: 15px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    z-index: 10;
 }
-.tile-info .tile-right .tile {
-  width: 100%;
-  height: 140rpx;
+
+  /* (保持原有的 core-card 内部样式不变...) */
+.user-row { flex-direction: row; justify-content: space-between; align-items: center; margin-bottom: 20px;
 }
-.tile-info .tile-right .tile .image {
-  width: 100%;
-  height: 140rpx;
-  border-radius: 20rpx;
+.user-left { flex-direction: row; align-items: center;
 }
-.title-info {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-between;
-  width: 100%;
-  height: 100rpx;
-  padding: 0 20rpx;
+.avatar-circle { width: 30px; height: 30px; background-color: #eee; border-radius: 15px; justify-content: center; align-items: center; margin-right: 8px;
 }
-.title-info .title {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
+.user-name { font-size: 14px; font-weight: bold; color: #046b5a;
 }
-.title-info .title .line {
-  width: 10rpx;
-  height: 40rpx;
-  background-color: #fe9a5c;
-  border-radius: 10rpx;
-  margin-right: 10rpx;
+.user-right { flex-direction: row; align-items: center;
 }
-.title-info .title .tit {
-  font-size: 28rpx;
-  font-weight: bold;
-  color: #333333;
+.user-stat { font-size: 11px; color: #046b5a; margin-left: 8px;
 }
-.title-info .more {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
+.qr-mini-icon { font-size: 16px; margin-left: 8px; color: #046b5a;
 }
-.title-info .more .image {
-  width: 48rpx;
-  height: 48rpx;
+.big-actions { flex-direction: row; justify-content: space-between; margin-bottom: 20px;
 }
-/*每日推荐*/
-.day-recommend {
-  width: 100%;
-  padding: 0 30rpx;
-  margin-bottom: 20rpx;
+.action-box { flex: 1; background-color: #fdf6e6; border-radius: 8px; padding: 10px; margin: 0 5px; height: 80px; justify-content: space-between; position: relative;
 }
-.day-recommend .recommend-info {
-  width: 100%;
-  height: 420rpx;
-  background-color: #ffffff;
-  border-radius: 20rpx;
+.action-sub { font-size: 11px; color: #997f5d;
 }
-.day-recommend .recommend-info .goods-list {
-  display: flex;
-  flex-direction: row;
-  width: 100%;
-  height: 320rpx;
-  padding: 0 20rpx;
+.action-main { flex-direction: row; justify-content: space-between; align-items: flex-end;
 }
-.day-recommend .recommend-info .goods-list .list {
-  width: 200rpx;
-  height: 100%;
-  margin-right: 24rpx;
+.action-title { font-size: 24px; font-weight: bold; color: #333; font-family: serif;
 }
-.day-recommend .recommend-info .goods-list .list .pic {
-  width: 200rpx;
-  height: 200rpx;
-  border-radius: 10rpx;
+.action-icon { font-size: 30px;
 }
-.day-recommend .recommend-info .goods-list .list .title {
-  display: flex;
+.badge-tag { position: absolute; top: 0; right: 0; background-color: #ff6b00; padding: 2px 4px; border-top-right-radius: 8px; border-bottom-left-radius: 8px;
 }
-.day-recommend .recommend-info .goods-list .list .title .text {
-  width: 100%;
-  height: 70rpx;
-  lines: 2;
-  text-overflow: ellipsis;
-  font-size: 28rpx;
-  color: #333333;
+.badge-text { color: #fff; font-size: 10px;
 }
-.day-recommend .recommend-info .goods-list .list .price {
-  display: flex;
-  flex-direction: row;
-  align-items: flex-end;
+.sub-actions { flex-direction: row; justify-content: space-around; padding-top: 10px;
 }
-.day-recommend .recommend-info .goods-list .list .price .min {
-  font-size: 20rpx;
-  font-weight: bold;
-  color: #fe9a5c;
-  margin-bottom: 4rpx;
+.sub-item { align-items: center;
 }
-.day-recommend .recommend-info .goods-list .list .price .max {
-  font-size: 30rpx;
-  font-weight: bold;
-  color: #fe9a5c;
+.sub-icon-cloud { font-size: 24px; color: #e0e0e0; margin-bottom: 5px;
 }
-/*猜你喜欢*/
-.guess-like {
-  width: 100%;
-  padding: 0 30rpx;
-  margin-bottom: 30rpx;
-  background-color: #ffffff;
+.sub-title { font-size: 14px; font-weight: bold; color: #333;
 }
-.guess-like .goods-list {
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  width: 100%;
+.sub-desc { font-size: 10px; color: #999; margin-top: 2px;
 }
-.guess-like .goods-list .list {
-  width: 334rpx;
-  margin-bottom: 20rpx;
+
+  /* --- 红色区域 (修改为透明) --- */
+.red-section {
+    /* 移除背景颜色，改为透明 */
+    background-color: transparent; 
+    padding: 15px;
+    padding-top: 20px;
 }
-.guess-like .goods-list .list .pic {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  height: 334rpx;
+
+  /* (保持原有的 red-section 内部样式不变...) */
+.banner-row { flex-direction: row; justify-content: space-between; margin-bottom: 15px;
 }
-.guess-like .goods-list .list .pic .image {
-  width: 334rpx;
-  height: 334rpx;
-  border-radius: 10rpx;
+.banner-item { flex: 1; height: 70px; border-radius: 8px; margin: 0 4px; padding: 10px; justify-content: center; overflow: hidden;
 }
-.guess-like .goods-list .list .title {
-  display: flex;
-  margin-top: 10rpx;
+.black-gold { background-color: #2b2b2b;
 }
-.guess-like .goods-list .list .title .text {
-  lines: 2;
-  text-overflow: ellipsis;
-  width: 334rpx;
-  height: 70rpx;
-  font-size: 28rpx;
-  color: #333333;
+.red-gold { background-color: #e64a45; border-width: 1px; border-color: #ffcccc;
 }
-.guess-like .goods-list .list .price {
-  display: flex;
-  flex-direction: row;
-  align-items: flex-end;
+.vip-text { color: #f0c080; font-size: 20px; font-style: italic; font-weight: bold;
 }
-.guess-like .goods-list .list .price .min {
-  font-size: 22rpx;
-  font-weight: bold;
-  color: #fe9a5c;
-  margin-bottom: 4rpx;
+.vip-sub { color: #f0c080; font-size: 10px;
 }
-.guess-like .goods-list .list .price .max {
-  font-size: 36rpx;
-  font-weight: bold;
-  color: #fe9a5c;
+.member-title { color: #fff; font-size: 16px; font-weight: bold;
+}
+.packet-text-sm { color: #d93025; font-size: 10px; font-weight: bold;
+}
+.packet-img-placeholder { align-self: flex-end; background-color: #fff; padding: 2px 5px; border-radius: 10px; margin-top: 5px;
+}
+.info-card { background-color: #ad8356; height: 100px; border-radius: 8px; margin-bottom: 10px; flex-direction: row; overflow: hidden;
+}
+.info-text-area { flex: 1; padding: 15px; justify-content: center;
+}
+.info-title { font-size: 20px; color: #fff; font-weight: bold; margin-bottom: 5px; text-shadow: 0 2px 2px rgba(0,0,0,0.2);
+}
+.info-sub { font-size: 12px; color: #eee; margin-bottom: 8px;
+}
+.info-btn { background-color: rgba(255,255,255,0.2); align-self: flex-start; padding: 2px 10px; border-radius: 12px; border-width: 1px; border-color: rgba(255,255,255,0.5);
+}
+.info-btn-text { color: #fff; font-size: 10px;
+}
+.info-img-area { width: 120px; justify-content: center; align-items: center;
+}
+.food-emoji { font-size: 60px;
 }

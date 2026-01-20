@@ -63,7 +63,7 @@
 
 						// 把 code 发给你后端
 						uni.request({
-							url: 'https://wdxwhdglzx.jzzw-tech.cn/api/wechat/openid',
+							url: 'https://jmzt.cxxyonline.cn/api/wechat/openid',
 							method: 'POST',
 							header: {
 								'content-type': 'application/json'

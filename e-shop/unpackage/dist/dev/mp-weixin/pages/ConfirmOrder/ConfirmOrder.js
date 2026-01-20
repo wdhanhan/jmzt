@@ -248,7 +248,7 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
     h: common_vendor.o(($event) => $data.studentSchool = $event.detail.value),
     i: $data.studentGrade,
     j: common_vendor.o(($event) => $data.studentGrade = $event.detail.value),
-    k: common_assets._imports_0$1,
+    k: common_assets._imports_0,
     l: common_vendor.f($data.items, (item, index, i0) => {
       return {
         a: item.image || "",

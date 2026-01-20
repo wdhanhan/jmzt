@@ -6953,13 +6953,13 @@ function populateParameters(fromRes, toRes) {
   const hostLanguage = (language || "").replace(/_/g, "-");
   const parameters = {
     appId: "__UNI__A471C0C",
-    appName: "喵购",
+    appName: "饺满灶台",
     appVersion: "1.0.0",
     appVersionCode: "100",
     appLanguage: getAppLanguage(hostLanguage),
-    uniCompileVersion: "4.85",
-    uniCompilerVersion: "4.85",
-    uniRuntimeVersion: "4.85",
+    uniCompileVersion: "4.87",
+    uniCompilerVersion: "4.87",
+    uniRuntimeVersion: "4.87",
     uniPlatform: "mp-weixin",
     deviceBrand,
     deviceModel: model,
@@ -6987,8 +6987,8 @@ function populateParameters(fromRes, toRes) {
   };
   {
     try {
-      parameters.uniCompilerVersionCode = parseFloat("4.85");
-      parameters.uniRuntimeVersionCode = parseFloat("4.85");
+      parameters.uniCompilerVersionCode = parseFloat("4.87");
+      parameters.uniRuntimeVersionCode = parseFloat("4.87");
     } catch (error) {
     }
   }
@@ -7109,20 +7109,20 @@ const getAppBaseInfo = {
       hostSDKVersion: SDKVersion,
       hostTheme: theme,
       appId: "__UNI__A471C0C",
-      appName: "喵购",
+      appName: "饺满灶台",
       appVersion: "1.0.0",
       appVersionCode: "100",
       appLanguage: getAppLanguage(hostLanguage),
       isUniAppX: true,
       uniPlatform: "mp-weixin",
-      uniCompileVersion: "4.85",
-      uniCompilerVersion: "4.85",
-      uniRuntimeVersion: "4.85"
+      uniCompileVersion: "4.87",
+      uniCompilerVersion: "4.87",
+      uniRuntimeVersion: "4.87"
     };
     {
       try {
-        parameters.uniCompilerVersionCode = parseFloat("4.85");
-        parameters.uniRuntimeVersionCode = parseFloat("4.85");
+        parameters.uniCompilerVersionCode = parseFloat("4.87");
+        parameters.uniRuntimeVersionCode = parseFloat("4.87");
       } catch (error) {
       }
     }
@@ -7899,9 +7899,9 @@ function isConsoleWritable() {
   return isWritable;
 }
 function initRuntimeSocketService() {
-  const hosts = "192.168.137.1,192.168.1.5,127.0.0.1";
+  const hosts = "192.168.1.22,127.0.0.1";
   const port = "8090";
-  const id = "mp-weixin_i-YYPq";
+  const id = "mp-weixin_7F_tje";
   const lazy = typeof swan !== "undefined";
   let restoreError = lazy ? () => {
   } : initOnError();
@@ -9586,6 +9586,20 @@ function __awaiter(thisArg, _arguments, P, generator) {
     step((generator = generator.apply(thisArg, _arguments || [])).next());
   });
 }
+function __values(o2) {
+  var s = typeof Symbol === "function" && Symbol.iterator, m = s && o2[s], i = 0;
+  if (m)
+    return m.call(o2);
+  if (o2 && typeof o2.length === "number")
+    return {
+      next: function() {
+        if (o2 && i >= o2.length)
+          o2 = void 0;
+        return { value: o2 && o2[i++], done: !o2 };
+      }
+    };
+  throw new TypeError(s ? "Object is not iterable." : "Symbol.iterator is not defined.");
+}
 function __read(o2, n2) {
   var m = typeof Symbol === "function" && o2[Symbol.iterator];
   if (!m)
@@ -9613,7 +9627,9 @@ typeof SuppressedError === "function" ? SuppressedError : function(error, suppre
 };
 exports.__awaiter = __awaiter;
 exports.__read = __read;
+exports.__values = __values;
 exports._export_sfc = _export_sfc;
+exports.computed = computed;
 exports.createSSRApp = createSSRApp;
 exports.defineComponent = defineComponent;
 exports.e = e;
@@ -9622,9 +9638,12 @@ exports.gei = gei;
 exports.index = index;
 exports.n = n;
 exports.o = o;
+exports.onMounted = onMounted;
 exports.p = p;
+exports.ref = ref;
 exports.resolveComponent = resolveComponent;
 exports.sei = sei;
 exports.sr = sr;
 exports.t = t;
+exports.unref = unref;
 //# sourceMappingURL=../../.sourcemap/mp-weixin/common/vendor.js.map

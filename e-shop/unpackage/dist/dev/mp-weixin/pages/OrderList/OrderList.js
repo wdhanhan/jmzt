@@ -254,15 +254,13 @@ const _sfc_main = common_vendor.defineComponent({
 function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
   "raw js";
   return common_vendor.e({
-    a: common_assets._imports_0$3,
-    b: common_vendor.o((...args) => $options.onBack && $options.onBack(...args)),
-    c: common_assets._imports_1$3,
-    d: common_vendor.o((...args) => $options.onSearch && $options.onSearch(...args)),
-    e: $data.keyword,
-    f: common_vendor.o(($event) => $data.keyword = $event.detail.value),
-    g: common_vendor.o((...args) => $options.onSearch && $options.onSearch(...args)),
-    h: $data.statusBarHeight + "px",
-    i: common_vendor.f($data.tabList, (tab, index, i0) => {
+    a: common_assets._imports_1$3,
+    b: common_vendor.o((...args) => $options.onSearch && $options.onSearch(...args)),
+    c: $data.keyword,
+    d: common_vendor.o(($event) => $data.keyword = $event.detail.value),
+    e: common_vendor.o((...args) => $options.onSearch && $options.onSearch(...args)),
+    f: $data.statusBarHeight + "px",
+    g: common_vendor.f($data.tabList, (tab, index, i0) => {
       return {
         a: common_vendor.t(tab.title),
         b: common_vendor.n({
@@ -275,11 +273,11 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
         e: common_vendor.o(($event) => $options.changeTab(index), index)
       };
     }),
-    j: $data.loading
+    h: $data.loading
   }, $data.loading ? {} : $options.filteredOrders.length === 0 ? {
-    l: common_assets._imports_2$5
+    j: common_assets._imports_1$8
   } : {
-    m: common_vendor.f($options.filteredOrders, (order, index, i0) => {
+    k: common_vendor.f($options.filteredOrders, (order, index, i0) => {
       return common_vendor.e({
         a: common_vendor.t(order.order_no),
         b: common_vendor.t($options.formatStatus(order.status)),
@@ -322,8 +320,8 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
       });
     })
   }, {
-    k: $options.filteredOrders.length === 0,
-    n: common_vendor.sei(common_vendor.gei(_ctx, ""), "scroll-view")
+    i: $options.filteredOrders.length === 0,
+    l: common_vendor.sei(common_vendor.gei(_ctx, ""), "scroll-view")
   });
 }
 const MiniProgramPage = /* @__PURE__ */ common_vendor._export_sfc(_sfc_main, [["render", _sfc_render]]);

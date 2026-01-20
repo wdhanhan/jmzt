@@ -51,19 +51,19 @@ const _sfc_main = common_vendor.defineComponent({
 function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
   "raw js";
   return {
-    a: common_assets._imports_0$12,
+    a: common_assets._imports_0$11,
     b: $props.flagStr === "home",
-    c: common_assets._imports_1$13,
+    c: common_assets._imports_1$14,
     d: $props.flagStr !== "home",
     e: $props.flagStr === "home" ? 1 : "",
     f: common_vendor.o(($event) => $options.onToNav("home")),
-    g: common_assets._imports_2$9,
+    g: common_assets._imports_2$8,
     h: $props.flagStr === "goods",
     i: common_assets._imports_3$4,
     j: $props.flagStr !== "goods",
     k: $props.flagStr === "goods" ? 1 : "",
     l: common_vendor.o(($event) => $options.onToNav("goods")),
-    m: common_assets._imports_4$5,
+    m: common_assets._imports_4$4,
     n: $props.flagStr === "class",
     o: common_assets._imports_5$3,
     p: $props.flagStr !== "class",

@@ -205,7 +205,7 @@ if (!Array) {
 function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
   "raw js";
   return common_vendor.e({
-    a: common_assets._imports_0$11,
+    a: common_assets._imports_0$10,
     b: common_vendor.o((...args) => $options.close && $options.close(...args)),
     c: $options.displayPic,
     d: common_vendor.t($props.info.name),
@@ -230,10 +230,10 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
     }),
     h: !$props.info.skus || $props.info.skus.length === 0
   }, !$props.info.skus || $props.info.skus.length === 0 ? {} : {}, {
-    i: common_assets._imports_1$12,
+    i: common_assets._imports_1$13,
     j: common_vendor.o(($event) => $options.changeQty(-1)),
     k: common_vendor.t($data.quantity),
-    l: common_assets._imports_2$8,
+    l: common_assets._imports_2$7,
     m: common_vendor.o(($event) => $options.changeQty(1)),
     n: $data.btnType === "cart"
   }, $data.btnType === "cart" ? {
@@ -244,7 +244,7 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
     q: common_vendor.o((...args) => $options.onBuy && $options.onBuy(...args))
   } : {}, {
     r: $data.statusBarBottom + 20 + "px",
-    s: common_vendor.sr("CatPopup", "fa66e77a-0"),
+    s: common_vendor.sr("CatPopup", "dcd9a93c-0"),
     t: common_vendor.gei(_ctx, ""),
     v: common_vendor.p({
       mode: "bottom",

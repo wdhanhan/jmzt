@@ -51,7 +51,7 @@ if (!Array) {
 function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
   "raw js";
   return {
-    a: common_assets._imports_0$6,
+    a: common_assets._imports_0$5,
     b: common_vendor.t($data.shopName),
     c: common_assets._imports_1$1,
     d: common_assets._imports_1$7,

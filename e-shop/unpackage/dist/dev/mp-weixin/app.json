@@ -31,7 +31,11 @@
     "pages/message/message",
     "pages/GoodsEvaluate/GoodsEvaluate",
     "pages/AfterSale/AfterSale",
-    "pages/login/login"
+    "pages/login/login",
+    "pages/a/a",
+    "pages/chongzhi/chongzhi",
+    "pages/vip/vip",
+    "pages/brandnews/brandnews"
   ],
   "window": {
     "navigationBarTextStyle": "black",
@@ -59,10 +63,10 @@
         "text": "分类"
       },
       {
-        "pagePath": "pages/cart/cart",
+        "pagePath": "pages/OrderList/OrderList",
         "iconPath": "static/images/nav/cart.png",
         "selectedIconPath": "static/images/nav/cart_ac.png",
-        "text": "购物车"
+        "text": "我的订单"
       },
       {
         "pagePath": "pages/my/my",

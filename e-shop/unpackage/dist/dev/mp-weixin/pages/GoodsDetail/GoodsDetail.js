@@ -96,7 +96,7 @@ if (!Array) {
 function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
   "raw js";
   return {
-    a: common_assets._imports_0$4,
+    a: common_assets._imports_0$3,
     b: common_vendor.o((...args) => $options.onBack && $options.onBack(...args)),
     c: $data.headCut === 0 ? 1 : "",
     d: common_vendor.o(($event) => $options.onScrollView(0)),
@@ -111,10 +111,10 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
     m: $data.statusBarHeight + 50 + "px",
     n: $data.statusBarHeight + "px",
     o: $data.pageScrollTop,
-    p: common_assets._imports_0$5,
+    p: common_assets._imports_0$4,
     q: $data.pageScrollTop <= 0,
     r: common_vendor.o((...args) => $options.onBack && $options.onBack(...args)),
-    s: common_assets._imports_4$2,
+    s: common_assets._imports_4$1,
     t: common_assets._imports_2$3,
     v: $data.pageScrollTop <= 0,
     w: $data.statusBarHeight + 50 + "px",
@@ -142,7 +142,7 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
         b: img
       };
     }),
-    G: common_vendor.sei("r0-1acfae86", "view", "goodsDetail"),
+    G: common_vendor.sei("r0-69941dc7", "view", "goodsDetail"),
     H: $data.statusBarHeight + 50 + "px",
     I: $data.scrollTop,
     J: common_vendor.o((...args) => $options.onPageScroll && $options.onPageScroll(...args)),
@@ -150,7 +150,7 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
     L: common_vendor.o((...args) => $options.onCallService && $options.onCallService(...args)),
     M: common_vendor.o(($event) => $options.openPopup("cart")),
     N: common_vendor.o(($event) => $options.openPopup("buy")),
-    O: common_vendor.sr("AttrPopup", "1acfae86-0"),
+    O: common_vendor.sr("AttrPopup", "69941dc7-0"),
     P: common_vendor.p({
       info: $data.info
     }),

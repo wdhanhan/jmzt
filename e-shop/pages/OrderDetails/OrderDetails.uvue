@@ -165,7 +165,7 @@
 </template>
 
 <script>
-const API_BASE = 'https://wdxwhdglzx.jzzw-tech.cn';
+const API_BASE = 'https://jmzt.cxxyonline.cn';
 
 export default {
   data() {

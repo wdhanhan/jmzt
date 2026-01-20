@@ -5,9 +5,9 @@
   >
     <!-- 顶部搜索栏 -->
     <view class="head-info" :style="{ paddingTop: statusBarHeight + 'px' }">
-      <view class="back" @click="onBack">
+<!--      <view class="back" @click="onBack">
         <image class="back-icon" src="/static/images/icon/back_icon.png"></image>
-      </view>
+      </view> -->
       <view class="search">
         <image class="search-icon" src="/static/images/icon/fdj_icon.png"></image>
         <input

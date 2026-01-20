@@ -1,20 +1,24 @@
 <template>
   <view class="page-container">
+    <swiper class="bg-swiper" :indicator-dots="false" :autoplay="true" :interval="3000" :duration="1000" :circular="true">
+      <swiper-item v-for="(img, index) in bgImages" :key="index">
+        <image :src="img" class="bg-image" mode="aspectFill"></image>
+      </swiper-item>
+    </swiper>
+    
+    <view class="bg-mask"></view>
+
     <view class="status-bar-placeholder"></view>
 
     <scroll-view class="main-scroll" direction="vertical" :show-scrollbar="false">
       
       <view class="hero-section">
-        <view class="capsule-bar">
-          <text class="capsule-dots">••• | ⊙</text>
-        </view>
-
-        <view class="hero-text-group">
+        <view class="hero-text-group" @click="onJump('/pages/card/detail')">
           <view class="hero-title-row">
             <text class="hero-big-num">9.9</text>
             <text class="hero-small-unit">元</text>
           </view>
-          <text class="hero-sub-title">袁气卡</text>
+          <text class="hero-sub-title">饺友卡</text>
           <view class="hero-tag">
             <text class="hero-tag-text">天天最高省40元</text>
           </view>
@@ -24,24 +28,24 @@
           </view>
         </view>
 
-        <view class="center-slogan">
+<!--        <view class="center-slogan">
           <text class="slogan-text">最快</text>
           <text class="slogan-text">一单回本</text>
-        </view>
+        </view> -->
 
-        <view class="float-packet">
+        <view class="float-packet" @click="onJump('/pages/activity/newuser')">
           <text class="packet-text">领20元</text>
           <text class="packet-sub">新人券包</text>
         </view>
       </view>
 
       <view class="core-card">
-        <view class="user-row">
+        <view class="user-row" @click="onJump('/pages/user/profile')">
           <view class="user-left">
             <view class="avatar-circle">
               <text class="avatar-icon">☁️</text>
             </view>
-            <text class="user-name">Hi 有袁人</text>
+            <text class="user-name">Hi 饺友</text>
           </view>
           <view class="user-right">
             <text class="user-stat">余额 0</text>
@@ -52,14 +56,14 @@
         </view>
 
         <view class="big-actions">
-          <view class="action-box">
+          <view class="action-box" @click="onJump('/pages/classify/classify')">
             <text class="action-sub">在线点餐不用等</text>
             <view class="action-main">
               <text class="action-title">点餐</text>
               <text class="action-icon">🍲</text>
             </view>
           </view>
-          <view class="action-box">
+          <view class="action-box" @click="onJump('/pages/welfare/index')">
             <text class="action-sub">奉上一手优惠</text>
             <view class="action-main">
               <text class="action-title">福利</text>
@@ -72,20 +76,20 @@
         </view>
 
         <view class="sub-actions">
-          <view class="sub-item">
+          <view class="sub-item" @click="onJump('/pages/card/month')">
             <text class="sub-icon-cloud">☁️</text>
             <text class="sub-title">超值月卡</text>
             <text class="sub-desc">最高可省1200元</text>
           </view>
-          <view class="sub-item">
+          <view class="sub-item" @click="onJump('/pages/member/rights')">
             <text class="sub-icon-cloud">☁️</text>
             <text class="sub-title">权益升级</text>
             <text class="sub-desc">会员6大专属权益</text>
           </view>
-          <view class="sub-item">
+          <view class="sub-item" @click="onJump('/pages/gift/card')">
             <text class="sub-icon-cloud">☁️</text>
             <text class="sub-title">袁礼卡</text>
-            <text class="sub-desc">送TA心意,礼赠美好</text>
+            <text class="sub-desc">送TA心意</text>
           </view>
         </view>
       </view>
@@ -93,11 +97,11 @@
       <view class="red-section">
         
         <view class="banner-row">
-          <view class="banner-item black-gold">
+          <view class="banner-item black-gold" @click="onJump('/pages/vip/vip')">
             <text class="vip-text">VIP</text>
             <text class="vip-sub">定制礼品卡</text>
           </view>
-          <view class="banner-item red-gold">
+          <view class="banner-item red-gold" @click="onJump('/pages/member/welfare')">
             <text class="member-title">会员福利升级</text>
             <view class="packet-img-placeholder">
               <text class="packet-text-sm">领20元</text>
@@ -105,7 +109,7 @@
           </view>
         </view>
 
-        <view class="info-card">
+        <view class="info-card" @click="onJump('/pages/news/food')">
           <view class="info-text-area">
             <text class="info-title">爆品资讯</text>
             <text class="info-sub">不知道今天吃什么?</text>
@@ -118,7 +122,7 @@
           </view>
         </view>
 
-        <view class="info-card">
+        <view class="info-card" @click="onJump('/pages/brandnews/brandnews')">
           <view class="info-text-area">
             <text class="info-title">品牌资讯</text>
             <view class="info-btn">
@@ -134,435 +138,209 @@
       </view>
     </scroll-view>
 
-
   </view>
 </template>
 
 <script setup lang="uts">
-  // 简单的数据绑定
-  const currentTab = ref(0)
+  // 背景图片数组
+ //  const bgImages = ref([
+ //    //'https://images.unsplash.com/photo-1512632500702-466200040970?q=80&w=1000&auto=format&fit=crop', // 示例图1 (喜庆/食物)
+ //    'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?q=80&w=1000&auto=format&fit=crop', // 示例图2 (食物)
+ //    'https://images.unsplash.com/photo-1504674900247-0877df9cc836?q=80&w=1000&auto=format&fit=crop',  // 示例图3
+	// /static/images/home-pic-1.avif
+	// 	/static/images/home-pic-1.avif
+ //  ])
+ const bgImages = ref([
+     '/static/images/home-pic-1.avif',
+     '/static/images/home-pic-2.avif' // 假设你第二张图叫 pic-2，如果只有一张就只留一个
+   ])
+
+  // 通用跳转事件
+const onJump = (url : string) => {
+    console.log(`[Router] 启动跳转协议，目标路径: ${url}`);
+
+    uni.navigateTo({
+      url: url,
+      fail: (err) => {
+        // 如果报错提示是 Tabbar 页面，执行 switchTab
+        if (err.errMsg.includes("tabbar")) {
+          console.log('[Router] 命中根路由，执行 switchTab');
+          uni.switchTab({ url: url });
+        } else {
+          // 其他错误（如路径写错了）进行弹窗报错
+          uni.showToast({
+            title: '链路异常: ' + url,
+            icon: 'none'
+          });
+          console.error('[Router] 跳转彻底失败:', err);
+        }
+      }
+    });
+  }
+
+  const smartNavigate = (url : string) => {
+    console.log(`[Router] 尝试连接到路径: ${url}`);
+  
+    uni.navigateTo({
+      url: url,
+      fail: (err) => {
+        // 错误审计：如果是 tabbar 页面报错，则执行协议升级
+        if (err.errMsg.includes("can not navigateTo a tabbar page")) {
+          console.warn(`[Router] 检测到目标为 Tabbar 节点，切换至 switchTab 模式`);
+          uni.switchTab({
+            url: url,
+            success: () => {
+               console.log(`[Router] Tabbar 握手成功`);
+            },
+            fail: (switchErr) => {
+               console.error(`[Router] 物理链路断开: 路径不存在或配置错误`, switchErr);
+            }
+          });
+        } else {
+          console.error(`[Router] 系统性跳转失败:`, err);
+        }
+      }
+    });
+  };
+
 </script>
+
 
 <style>
   /* 全局容器 */
   .page-container {
     flex: 1;
-    background-color: #d93025; /* 页面底部背景色 */
+    /* 去掉原来的红色背景 */
+    /* background-color: #d93025; */ 
     display: flex;
     flex-direction: column;
     height: 100%;
+    position: relative; /* 确保子元素绝对定位相对于此 */
+  }
+
+  /* --- 新增：背景轮播样式 --- */
+  .bg-swiper {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0; /* 在最底层 */
+  }
+  .bg-image {
+    width: 100%;
+    height: 100%;
+  }
+  /* 可选：遮罩层，防止背景图太花影响文字阅读 */
+  .bg-mask {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(255, 255, 255, 0.2); /* 20%白色遮罩，可自行调整颜色 */
+    z-index: 1;
+    pointer-events: none; /* 让点击穿透遮罩 */
   }
 
   .status-bar-placeholder {
-    height: 44px; /* 模拟状态栏高度 */
-    background-color: #e8dcc4; /* 与顶部背景融合 */
+    height: 44px;
+    /* 背景设为透明，让轮播图透出来 */
+    background-color: transparent; 
+    z-index: 2;
   }
 
   .main-scroll {
     flex: 1;
+    z-index: 2; /* 内容层级高于背景 */
   }
 
   /* --- 顶部 Hero 区域 --- */
   .hero-section {
     height: 380px;
-    background-image: linear-gradient(to bottom, #e8dcc4, #f5eadd, #ffffff);
+    /* 移除原来的渐变色背景 */
+    background-color: transparent; 
     padding: 10px 20px;
     position: relative;
     overflow: hidden;
   }
 
-  .capsule-bar {
-    flex-direction: row;
-    justify-content: flex-end;
-    margin-bottom: 20px;
-  }
-  .capsule-dots {
-    border-radius: 15px;
-    border-width: 1px;
-    border-style: solid;
-    border-color: #333;
-    padding: 2px 8px;
-    font-size: 12px;
-  }
+  /* (保持原有的 hero 内部文字样式不变...) */
+  .hero-text-group { margin-top: 10px; }
+  .hero-title-row { flex-direction: row; align-items: flex-end; }
+  .hero-big-num { font-size: 60px; font-weight: 900; color: #4a3b2a; line-height: 60px; }
+  .hero-small-unit { font-size: 20px; color: #4a3b2a; margin-bottom: 10px; font-weight: bold; }
+  .hero-sub-title { font-size: 24px; font-weight: bold; color: #4a3b2a; margin-top: -5px; }
+  .hero-tag { background-color: #fff; border-radius: 4px; align-self: flex-start; padding: 2px 6px; margin-top: 5px; border-width: 1px; border-color: #4a3b2a; }
+  .hero-tag-text { font-size: 10px; color: #4a3b2a; }
+  .rotate-tag { position: absolute; top: 65px; left: 110px; background-color: #fff; border-width: 1px; border-color: #d4a770; padding: 2px 5px; transform: rotate(15deg); }
+  .rotate-tag-text { font-size: 12px; color: #4a3b2a; font-weight: bold; }
+  
+  .center-slogan { position: absolute; top: 150px; left: 0; right: 0; align-items: center; transform: rotate(-10deg); }
+  .slogan-text { font-size: 30px; font-weight: 900; color: #8c6a46; opacity: 0.2; }
 
-  .hero-text-group {
-    margin-top: 10px;
-  }
-  .hero-title-row {
-    flex-direction: row;
-    align-items: flex-end;
-  }
-  .hero-big-num {
-    font-size: 60px;
-    font-weight: 900;
-    color: #4a3b2a;
-    line-height: 60px;
-  }
-  .hero-small-unit {
-    font-size: 20px;
-    color: #4a3b2a;
-    margin-bottom: 10px;
-    font-weight: bold;
-  }
-  .hero-sub-title {
-    font-size: 24px;
-    font-weight: bold;
-    color: #4a3b2a;
-    margin-top: -5px;
-  }
-  .hero-tag {
-    background-color: #fff;
-    border-radius: 4px;
-    align-self: flex-start;
-    padding: 2px 6px;
-    margin-top: 5px;
-    border-width: 1px;
-    border-color: #4a3b2a;
-  }
-  .hero-tag-text {
-    font-size: 10px;
-    color: #4a3b2a;
-  }
-
-  .rotate-tag {
-    position: absolute;
-    top: 65px;
-    left: 110px;
-    background-color: #fff;
-    border-width: 1px;
-    border-color: #d4a770;
-    padding: 2px 5px;
-    transform: rotate(15deg);
-  }
-  .rotate-tag-text {
-    font-size: 12px;
-    color: #4a3b2a;
-    font-weight: bold;
-  }
-
-  .center-slogan {
-    position: absolute;
-    top: 150px;
-    left: 0;
-    right: 0;
-    align-items: center;
-    transform: rotate(-10deg);
-  }
-  .slogan-text {
-    font-size: 30px;
-    font-weight: 900;
-    color: #8c6a46;
-    opacity: 0.2; /* 水印效果 */
-  }
-
-  .float-packet {
-    position: absolute;
-    right: 10px;
-    top: 180px;
-    width: 70px;
-    height: 70px;
-    background-color: #f7d6a8;
-    border-radius: 35px;
-    justify-content: center;
-    align-items: center;
-    border-width: 2px;
-    border-color: #fff;
-    z-index: 5;
-  }
-  .packet-text {
-    color: #d93025;
-    font-weight: bold;
-    font-size: 12px;
-  }
-  .packet-sub {
-    color: #d93025;
-    font-size: 10px;
-  }
+  .float-packet { position: absolute; right: 10px; top: 180px; width: 70px; height: 70px; background-color: #f7d6a8; border-radius: 35px; justify-content: center; align-items: center; border-width: 2px; border-color: #fff; z-index: 5; }
+  .packet-text { color: #d93025; font-weight: bold; font-size: 12px; }
+  .packet-sub { color: #d93025; font-size: 10px; }
 
   /* --- 白色核心卡片 --- */
   .core-card {
-    margin: -80px 15px 0 15px; /* 负 margin 实现叠加效果 */
-    background-color: #ffffff;
+    margin: -80px 15px 0 15px;
+    background-color: #ffffff; /* 保持白色背景，使其在复杂的图片背景上可见 */
     border-radius: 12px;
     padding: 15px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
     z-index: 10;
   }
 
-  .user-row {
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
-  }
-  .user-left {
-    flex-direction: row;
-    align-items: center;
-  }
-  .avatar-circle {
-    width: 30px;
-    height: 30px;
-    background-color: #eee;
-    border-radius: 15px;
-    justify-content: center;
-    align-items: center;
-    margin-right: 8px;
-  }
-  .user-name {
-    font-size: 14px;
-    font-weight: bold;
-    color: #046b5a; /* 墨绿色 */
-  }
-  .user-right {
-    flex-direction: row;
-    align-items: center;
-  }
-  .user-stat {
-    font-size: 11px;
-    color: #046b5a;
-    margin-left: 8px;
-  }
-  .qr-mini-icon {
-    font-size: 16px;
-    margin-left: 8px;
-    color: #046b5a;
-  }
+  /* (保持原有的 core-card 内部样式不变...) */
+  .user-row { flex-direction: row; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+  .user-left { flex-direction: row; align-items: center; }
+  .avatar-circle { width: 30px; height: 30px; background-color: #eee; border-radius: 15px; justify-content: center; align-items: center; margin-right: 8px; }
+  .user-name { font-size: 14px; font-weight: bold; color: #046b5a; }
+  .user-right { flex-direction: row; align-items: center; }
+  .user-stat { font-size: 11px; color: #046b5a; margin-left: 8px; }
+  .qr-mini-icon { font-size: 16px; margin-left: 8px; color: #046b5a; }
+  .big-actions { flex-direction: row; justify-content: space-between; margin-bottom: 20px; }
+  .action-box { flex: 1; background-color: #fdf6e6; border-radius: 8px; padding: 10px; margin: 0 5px; height: 80px; justify-content: space-between; position: relative; }
+  .action-sub { font-size: 11px; color: #997f5d; }
+  .action-main { flex-direction: row; justify-content: space-between; align-items: flex-end; }
+  .action-title { font-size: 24px; font-weight: bold; color: #333; font-family: serif; }
+  .action-icon { font-size: 30px; }
+  .badge-tag { position: absolute; top: 0; right: 0; background-color: #ff6b00; padding: 2px 4px; border-top-right-radius: 8px; border-bottom-left-radius: 8px; }
+  .badge-text { color: #fff; font-size: 10px; }
+  .sub-actions { flex-direction: row; justify-content: space-around; padding-top: 10px; }
+  .sub-item { align-items: center; }
+  .sub-icon-cloud { font-size: 24px; color: #e0e0e0; margin-bottom: 5px; }
+  .sub-title { font-size: 14px; font-weight: bold; color: #333; }
+  .sub-desc { font-size: 10px; color: #999; margin-top: 2px; }
 
-  /* 两个大按钮 */
-  .big-actions {
-    flex-direction: row;
-    justify-content: space-between;
-    margin-bottom: 20px;
-  }
-  .action-box {
-    flex: 1;
-    background-color: #fdf6e6; /* 米黄色背景 */
-    border-radius: 8px;
-    padding: 10px;
-    margin: 0 5px;
-    height: 80px;
-    justify-content: space-between;
-    position: relative;
-  }
-  .action-sub {
-    font-size: 11px;
-    color: #997f5d;
-  }
-  .action-main {
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: flex-end;
-  }
-  .action-title {
-    font-size: 24px;
-    font-weight: bold;
-    color: #333;
-    font-family: serif; /* 模拟那个书法字体风格 */
-  }
-  .action-icon {
-    font-size: 30px;
-  }
-  .badge-tag {
-    position: absolute;
-    top: 0;
-    right: 0;
-    background-color: #ff6b00;
-    padding: 2px 4px;
-    border-top-right-radius: 8px;
-    border-bottom-left-radius: 8px;
-  }
-  .badge-text {
-    color: #fff;
-    font-size: 10px;
-  }
-
-  /* 三个小权益 */
-  .sub-actions {
-    flex-direction: row;
-    justify-content: space-around;
-    padding-top: 10px;
-  }
-  .sub-item {
-    align-items: center;
-  }
-  .sub-icon-cloud {
-    font-size: 24px;
-    color: #e0e0e0;
-    margin-bottom: 5px;
-  }
-  .sub-title {
-    font-size: 14px;
-    font-weight: bold;
-    color: #333;
-  }
-  .sub-desc {
-    font-size: 10px;
-    color: #999;
-    margin-top: 2px;
-  }
-
-  /* --- 红色区域 --- */
+  /* --- 红色区域 (修改为透明) --- */
   .red-section {
-    background-color: #d93025; /* 鲜艳的红色背景 */
+    /* 移除背景颜色，改为透明 */
+    background-color: transparent; 
     padding: 15px;
     padding-top: 20px;
   }
 
-  .banner-row {
-    flex-direction: row;
-    justify-content: space-between;
-    margin-bottom: 15px;
-  }
-  .banner-item {
-    flex: 1;
-    height: 70px;
-    border-radius: 8px;
-    margin: 0 4px;
-    padding: 10px;
-    justify-content: center;
-    overflow: hidden;
-  }
-  .black-gold {
-    background-color: #2b2b2b;
-  }
-  .red-gold {
-    background-color: #e64a45;
-    border-width: 1px;
-    border-color: #ffcccc;
-  }
-  .vip-text {
-    color: #f0c080;
-    font-size: 20px;
-    font-style: italic;
-    font-weight: bold;
-  }
-  .vip-sub {
-    color: #f0c080;
-    font-size: 10px;
-  }
-  .member-title {
-    color: #fff;
-    font-size: 16px;
-    font-weight: bold;
-  }
-  .packet-text-sm {
-    color: #d93025;
-    font-size: 10px;
-    font-weight: bold;
-  }
-  .packet-img-placeholder {
-    align-self: flex-end;
-    background-color: #fff;
-    padding: 2px 5px;
-    border-radius: 10px;
-    margin-top: 5px;
-  }
-
-  /* 大图卡片 */
-  .info-card {
-    background-color: #ad8356; /* 棕金色背景 */
-    height: 100px;
-    border-radius: 8px;
-    margin-bottom: 10px;
-    flex-direction: row;
-    overflow: hidden;
-  }
-  .info-text-area {
-    flex: 1;
-    padding: 15px;
-    justify-content: center;
-  }
-  .info-title {
-    font-size: 20px;
-    color: #fff; /* 实际上是发光的淡黄色 */
-    font-weight: bold;
-    margin-bottom: 5px;
-    text-shadow: 0 2px 2px rgba(0,0,0,0.2);
-  }
-  .info-sub {
-    font-size: 12px;
-    color: #eee;
-    margin-bottom: 8px;
-  }
-  .info-btn {
-    background-color: rgba(255,255,255,0.2);
-    align-self: flex-start;
-    padding: 2px 10px;
-    border-radius: 12px;
-    border-width: 1px;
-    border-color: rgba(255,255,255,0.5);
-  }
-  .info-btn-text {
-    color: #fff;
-    font-size: 10px;
-  }
-  .info-img-area {
-    width: 120px;
-    justify-content: center;
-    align-items: center;
-  }
-  .food-emoji {
-    font-size: 60px;
-  }
-
-  /* --- 底部 TabBar --- */
-  .tab-bar {
-    height: 60px;
-    background-color: transparent;
-    position: relative;
-    flex-direction: row;
-    align-items: flex-end;
-  }
-  .tab-bg {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    height: 50px;
-    background-color: #fff;
-    border-top: 1px solid #eee;
-  }
-  
-  .tab-item {
-    flex: 1;
-    height: 50px;
-    justify-content: center;
-    align-items: center;
-    z-index: 2;
-  }
-  .tab-item-placeholder {
-    flex: 1; /* 占位给中间按钮 */
-  }
-  .tab-icon {
-    font-size: 20px;
-    color: #999;
-  }
-  .tab-text {
-    font-size: 10px;
-    color: #999;
-    margin-top: 2px;
-  }
-  .active-text {
-    color: #b58c42; /* 选中的金色 */
-  }
-
-  /* 中间凸起按钮 */
-  .mid-scan-btn {
-    position: absolute;
-    left: 50%;
-    bottom: 15px;
-    transform: translateX(-50%); /* 水平居中 */
-    width: 50px;
-    height: 50px;
-    background-color: #fff;
-    border-radius: 25px;
-    box-shadow: 0 -2px 5px rgba(0,0,0,0.1);
-    justify-content: center;
-    align-items: center;
-    z-index: 10;
-  }
-  .scan-icon {
-    font-size: 24px;
-    color: #333;
-  }
+  /* (保持原有的 red-section 内部样式不变...) */
+  .banner-row { flex-direction: row; justify-content: space-between; margin-bottom: 15px; }
+  .banner-item { flex: 1; height: 70px; border-radius: 8px; margin: 0 4px; padding: 10px; justify-content: center; overflow: hidden; }
+  .black-gold { background-color: #2b2b2b; }
+  .red-gold { background-color: #e64a45; border-width: 1px; border-color: #ffcccc; }
+  .vip-text { color: #f0c080; font-size: 20px; font-style: italic; font-weight: bold; }
+  .vip-sub { color: #f0c080; font-size: 10px; }
+  .member-title { color: #fff; font-size: 16px; font-weight: bold; }
+  .packet-text-sm { color: #d93025; font-size: 10px; font-weight: bold; }
+  .packet-img-placeholder { align-self: flex-end; background-color: #fff; padding: 2px 5px; border-radius: 10px; margin-top: 5px; }
+  .info-card { background-color: #ad8356; height: 100px; border-radius: 8px; margin-bottom: 10px; flex-direction: row; overflow: hidden; }
+  .info-text-area { flex: 1; padding: 15px; justify-content: center; }
+  .info-title { font-size: 20px; color: #fff; font-weight: bold; margin-bottom: 5px; text-shadow: 0 2px 2px rgba(0,0,0,0.2); }
+  .info-sub { font-size: 12px; color: #eee; margin-bottom: 8px; }
+  .info-btn { background-color: rgba(255,255,255,0.2); align-self: flex-start; padding: 2px 10px; border-radius: 12px; border-width: 1px; border-color: rgba(255,255,255,0.5); }
+  .info-btn-text { color: #fff; font-size: 10px; }
+  .info-img-area { width: 120px; justify-content: center; align-items: center; }
+  .food-emoji { font-size: 60px; }
 </style>
