@@ -5,7 +5,83 @@ const cors = require('cors');
 const axios = require('axios');
 
 const app = express();
-app.use(cors());
+
+// ================== 完善的跨域配置 ==================
+// 允许的域名列表（小程序域名）
+const allowedOrigins = [
+  'https://jmzt.cxxyonline.cn',
+  'http://jmzt.cxxyonline.cn',
+  'https://115.159.6.27:5205',
+  'http://115.159.6.27:5205',
+  'http://localhost:5205',
+  'http://localhost:3000',
+  'http://127.0.0.1:5205',
+  'http://127.0.0.1:3000'
+];
+
+// CORS 配置
+const corsOptions = {
+  origin: function (origin, callback) {
+    // 允许没有 origin 的请求（如 Postman、curl、小程序某些情况）
+    if (!origin) {
+      return callback(null, true);
+    }
+    
+    // 检查是否在允许列表中，或者允许所有来源（开发环境）
+    if (allowedOrigins.includes(origin) || process.env.NODE_ENV !== 'production') {
+      callback(null, true);
+    } else {
+      // 生产环境也允许所有来源（确保兼容性）
+      callback(null, true);
+    }
+  },
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept', 'Origin', 'Referer'],
+  exposedHeaders: ['Content-Length', 'Content-Type'],
+  optionsSuccessStatus: 200,
+  preflightContinue: false,
+  maxAge: 86400 // 24小时，减少预检请求
+};
+
+// 自定义CORS中间件（优先处理，防止与nginx重复配置）
+app.use((req, res, next) => {
+  // 获取请求的 Origin
+  const origin = req.headers.origin || req.headers.referer?.split('/').slice(0, 3).join('/');
+  
+  // 设置 CORS 响应头
+  if (origin) {
+    // 验证 origin 是否在允许列表中，或者允许所有
+    if (allowedOrigins.includes(origin) || process.env.NODE_ENV !== 'production') {
+      res.setHeader('Access-Control-Allow-Origin', origin);
+      res.setHeader('Access-Control-Allow-Credentials', 'true');
+    } else {
+      // 生产环境也允许所有来源
+      res.setHeader('Access-Control-Allow-Origin', origin);
+      res.setHeader('Access-Control-Allow-Credentials', 'true');
+    }
+  } else {
+    // 如果没有 origin，允许所有（兼容小程序某些情况）
+    res.setHeader('Access-Control-Allow-Origin', '*');
+  }
+  
+  // 设置其他 CORS 头
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With, Accept, Origin, Referer');
+  res.setHeader('Access-Control-Max-Age', '86400');
+  res.setHeader('Access-Control-Expose-Headers', 'Content-Length, Content-Type');
+  
+  // 处理预检请求（OPTIONS）
+  if (req.method === 'OPTIONS') {
+    return res.status(200).end();
+  }
+  
+  next();
+});
+
+// 使用 cors 中间件作为备用
+app.use(cors(corsOptions));
+
 app.use(bodyParser.json());
 
 const db = mysql.createPool({
@@ -21,6 +97,30 @@ const db = mysql.createPool({
 const PORT = 8088; // 按你实际需要改
 const WECHAT_APPID = 'wx2ee0ec34076f93e6';
 const WECHAT_SECRET = 'ec9df976dd69a8d78fadd5d03ff9ae4f';
+
+// 确保小程序用户在 xcx_users 表中存在：不存在则插入，存在则更新 updated_at
+function ensureUserExistsByOpenid(openid) {
+  return new Promise((resolve, reject) => {
+    if (!openid) return resolve(null);
+
+    const upsertSql = `
+      INSERT INTO xcx_users (openid)
+      VALUES (?)
+      ON DUPLICATE KEY UPDATE
+        updated_at = NOW()
+    `;
+
+    db.query(upsertSql, [openid], (err) => {
+      if (err) return reject(err);
+
+      const selectSql = `SELECT id, openid, nickname, avatar, mobile FROM xcx_users WHERE openid = ? LIMIT 1`;
+      db.query(selectSql, [openid], (err2, rows) => {
+        if (err2) return reject(err2);
+        resolve(rows && rows.length ? rows[0] : null);
+      });
+    });
+  });
+}
 
 
 // ================== 获取微信小程序用户 openid ==================
@@ -57,14 +157,35 @@ app.post('/api/wechat/openid', async (req, res) => {
       });
     }
 
-    // 正常：返回 openid / session_key 给前端
+    if (!data.openid) {
+      return res.status(500).json({
+        code: 500,
+        message: '微信接口未返回 openid',
+        data,
+      });
+    }
+
+    // 关键逻辑：确保 openid 在用户表中存在（不存在则新增）
+    let user = null;
+    try {
+      user = await ensureUserExistsByOpenid(data.openid);
+    } catch (dbErr) {
+      console.error('写入/查询 xcx_users 失败：', dbErr);
+      return res.status(500).json({
+        code: 500,
+        message: '用户初始化失败',
+      });
+    }
+
+    // 正常：返回 openid / session_key 给前端（并附带用户信息）
     return res.json({
       code: 200,
       message: '获取 openid 成功',
       data: {
         openid: data.openid,
         session_key: data.session_key,
-        unionid: data.unionid || null
+        unionid: data.unionid || null,
+        user
       }
     });
   } catch (err) {
