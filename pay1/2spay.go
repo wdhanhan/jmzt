@@ -160,7 +160,7 @@ http.HandleFunc("/callback", func(w http.ResponseWriter, r *http.Request) {
         b, _ := json.Marshal(payload)
 
         resp, err := http.Post(
-            "https://wdxwhdglzx.jzzw-tech.cn/api/pay/wechat/notify",
+            "https://jmzt.cxxyonline.cn/api/pay/wechat/notify",
             "application/json",
             bytes.NewReader(b),
         )

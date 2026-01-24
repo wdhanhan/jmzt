@@ -96,6 +96,7 @@ const db = mysql.createPool({
 
 const PORT = 8088; // 按你实际需要改
 const WECHAT_APPID = 'wx2ee0ec34076f93e6';
+const WECHAT_MCHID = '1738346388';
 const WECHAT_SECRET = 'ec9df976dd69a8d78fadd5d03ff9ae4f';
 
 // 确保小程序用户在 xcx_users 表中存在：不存在则插入，存在则更新 updated_at
@@ -645,14 +646,16 @@ app.put('/api/products/update/:id', (req, res) => {
  * ✅ 查询所有商品及SKU（带多图 JSON 解析）
  */
 app.get('/api/products/list', (req, res) => {
-  const sql = `
-    SELECT p.id AS product_id, p.name, p.description, p.category_id, p.images, p.limit_purchase,
-           s.id AS sku_id, s.sku_name, s.attr1, s.attr2, s.attr3, s.attr4,
-           s.price, s.stock, s.limit_qty, s.image
-    FROM products p
-    LEFT JOIN product_skus s ON p.id = s.product_id
-    ORDER BY p.id DESC
-  `;
+// 修改前：ORDER BY p.id DESC (最新的在前面)
+// 修改后：ORDER BY p.id ASC  (最早的在前面)
+const sql = `
+  SELECT p.id AS product_id, p.name, p.description, p.category_id, p.images, p.limit_purchase,
+         s.id AS sku_id, s.sku_name, s.attr1, s.attr2, s.attr3, s.attr4,
+         s.price, s.stock, s.limit_qty, s.image
+  FROM products p
+  LEFT JOIN product_skus s ON p.id = s.product_id
+  ORDER BY p.id ASC
+`;
 
   db.query(sql, (err, rows) => {
     if (err) {
@@ -1347,6 +1350,8 @@ app.post('/api/orders/create', (req, res) => {
 
     // ⚠️ 列顺序要跟表结构对应：
     // user_name, id_card_no, student_school, student_grade, mobile, ...
+    const orderType = Number(req.body.order_type) || 0; // 订单类型：0=普通订单，1=充值订单
+    
     const sql = `
       INSERT INTO orders (
         order_no,
@@ -1359,8 +1364,9 @@ app.post('/api/orders/create', (req, res) => {
         total_amount,
         pay_amount,
         status,
+        order_type,
         items_snapshot
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `;
 
     const params = [
@@ -1374,6 +1380,7 @@ app.post('/api/orders/create', (req, res) => {
       totalAmount,
       payAmount,
       0,               // 0 = 待支付
+      orderType,       // order_type
       itemsSnapshot
     ];
 
@@ -1643,6 +1650,192 @@ app.get("/api/carousel/:id", (req, res) => {
 
 
 /**
+ * ✅ 创建订单并获取支付参数
+ * POST /api/pay/create
+ * 
+ * body 示例：
+ * {
+ *   "openid": "xxx",
+ *   "amount": 0.01,        // 金额（元）
+ *   "order_type": 1,        // 订单类型：0=普通订单，1=充值订单
+ *   "description": "充值",  // 订单描述
+ *   "items": []             // 可选：商品列表（普通订单需要）
+ * }
+ */
+app.post('/api/pay/create', async (req, res) => {
+  const { openid, amount, order_type = 0, description, items = [] } = req.body || {};
+
+  if (!openid) {
+    return res.status(400).json({ code: 400, message: 'openid 不能为空' });
+  }
+
+  if (!amount || Number(amount) <= 0) {
+    return res.status(400).json({ code: 400, message: '金额必须大于0' });
+  }
+
+  const payAmount = Number(amount);
+  const orderType = Number(order_type) || 0; // 0=普通订单，1=充值订单
+
+  // 生成订单号
+  const now = new Date();
+  const pad2 = n => (n < 10 ? '0' + n : '' + n);
+  const dateStr = now.getFullYear().toString()
+    + pad2(now.getMonth() + 1)
+    + pad2(now.getDate());
+  const orderNo = 'ORD' + dateStr + now.getTime().toString().slice(-6);
+
+  // 创建订单
+  const itemsSnapshot = items.length > 0 ? JSON.stringify(items) : null;
+  
+  const insertOrderSql = `
+    INSERT INTO orders (
+      order_no,
+      user_id,
+      user_name,
+      id_card_no,
+      mobile,
+      total_amount,
+      pay_amount,
+      status,
+      order_type,
+      items_snapshot
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+  `;
+
+  // 充值订单不需要姓名、身份证等信息，使用默认值
+  const orderParams = [
+    orderNo,
+    openid,
+    '充值用户',  // user_name（充值订单可以简化）
+    '',          // id_card_no
+    '',          // mobile
+    payAmount,   // total_amount
+    payAmount,   // pay_amount
+    0,           // status: 待支付
+    orderType,   // order_type
+    itemsSnapshot
+  ];
+
+  db.query(insertOrderSql, orderParams, async (err, result) => {
+    if (err) {
+      console.error('创建订单失败:', err);
+      return res.status(500).json({ code: 500, message: '创建订单失败' });
+    }
+
+    const orderId = result.insertId;
+
+    // 调用支付服务获取支付参数
+    try {
+      // 回调地址
+      const notifyUrl = `https://jmzt.cxxyonline.cn/api/pay/wechat/notify`;
+      
+      const payResponse = await axios.post('https://jmpay.cxxyonline.cn/', {
+        appid: WECHAT_APPID,
+        mchid: WECHAT_MCHID,
+        description: description || `订单支付-${orderNo}`,
+        outTradeNo: orderNo,
+        total: Math.round(payAmount * 100), // 转换为分
+        openid: openid,
+        attach: `order_type=${orderType}`,
+        notify_url: notifyUrl  // 传递回调地址
+      }, {
+        timeout: 10000
+      });
+      
+      console.log('📞 调用支付服务，回调地址:', notifyUrl);
+
+      if (payResponse.status !== 200 || !payResponse.data) {
+        return res.status(500).json({ code: 500, message: '获取支付参数失败' });
+      }
+
+      // 返回支付参数和订单信息
+      res.json({
+        code: 200,
+        message: '创建订单成功',
+        data: {
+          orderId,
+          orderNo,
+          payParams: payResponse.data, // 支付参数（timeStamp, nonceStr, package, paySign等）
+          amount: payAmount,
+          orderType
+        }
+      });
+    } catch (payErr) {
+      console.error('调用支付服务失败:', payErr);
+      // 即使支付服务调用失败，订单已创建，返回订单信息
+      res.status(500).json({
+        code: 500,
+        message: '获取支付参数失败',
+        data: {
+          orderId,
+          orderNo,
+          amount: payAmount
+        }
+      });
+    }
+  });
+});
+
+/**
+ * ✅ 测试回调接口是否可访问
+ * GET /api/pay/wechat/notify/test
+ */
+app.get('/api/pay/wechat/notify/test', (req, res) => {
+  console.log('✅ 回调接口测试成功，接口可访问');
+  res.json({
+    code: 200,
+    message: '回调接口可访问',
+    timestamp: new Date().toISOString()
+  });
+});
+
+/**
+ * ✅ 手动触发回调（用于处理未收到回调的订单）
+ * POST /api/pay/wechat/notify/manual
+ * body: { orderNo: "ORDxxx" }  // 只传订单号，会自动查询订单信息并处理
+ */
+app.post('/api/pay/wechat/notify/manual', (req, res) => {
+  const { orderNo } = req.body || {};
+  
+  if (!orderNo) {
+    return res.status(400).json({ code: 400, message: 'orderNo 不能为空' });
+  }
+
+  console.log('🔧 手动触发回调处理，订单号:', orderNo);
+
+  // 先查询订单信息
+  const selectSql = `SELECT order_no, pay_amount, status FROM orders WHERE order_no = ? LIMIT 1`;
+  db.query(selectSql, [orderNo], (err, rows) => {
+    if (err || !rows || rows.length === 0) {
+      return res.status(404).json({ code: 404, message: '订单不存在' });
+    }
+
+    const order = rows[0];
+    if (order.status === 1) {
+      return res.json({ code: 200, message: '订单已是已支付状态，无需处理' });
+    }
+
+    // 构造回调数据，手动触发
+    const mockBody = {
+      orderNo: order.order_no,
+      transaction_id: `MANUAL_${Date.now()}`, // 手动触发的交易号
+      total: Math.round(Number(order.pay_amount) * 100) // 转换为分
+    };
+
+    // 构造请求对象
+    const mockReq = {
+      body: mockBody,
+      method: 'POST',
+      path: '/api/pay/wechat/notify'
+    };
+
+    console.log('📞 手动触发回调，数据:', mockBody);
+    // 调用回调处理函数
+    return handlePaymentNotify(mockReq, res);
+  });
+});
+
+/**
  * ✅ 微信支付结果回调（由 Go 支付服务转发过来）
  * POST /api/pay/wechat/notify
  *
@@ -1653,17 +1846,27 @@ app.get("/api/carousel/:id", (req, res) => {
  *   "total": 100   // 单位：分，可选
  * }
  */
-app.post('/api/pay/wechat/notify', (req, res) => {
+// 提取回调处理逻辑为独立函数，方便手动触发和正常回调使用
+function handlePaymentNotify(req, res) {
+  // 详细记录回调请求信息
+  console.log('========================================');
+  console.log('👉 收到支付回调请求');
+  console.log('请求方法:', req.method || 'POST');
+  console.log('请求路径:', req.path || '/api/pay/wechat/notify');
+  console.log('请求体:', JSON.stringify(req.body, null, 2));
+  console.log('========================================');
+
   const { orderNo, transaction_id, total } = req.body || {};
 
   if (!orderNo || !transaction_id) {
+    console.error('❌ 回调参数不完整:', { orderNo, transaction_id, total });
     return res.status(400).json({
       code: 400,
       message: 'orderNo 或 transaction_id 不能为空',
     });
   }
 
-  console.log('👉 收到支付成功回调:', { orderNo, transaction_id, total });
+  console.log('✅ 回调参数验证通过:', { orderNo, transaction_id, total });
 
   // 获取数据库连接
   db.getConnection((err, connection) => {
@@ -1682,7 +1885,7 @@ app.post('/api/pay/wechat/notify', (req, res) => {
 
       // 1️⃣ 查询订单，并锁定行（FOR UPDATE）
       const selectSql = `
-        SELECT id, status, pay_amount, items_snapshot
+        SELECT id, status, pay_amount, items_snapshot, user_id, order_type
         FROM orders
         WHERE order_no = ?
         FOR UPDATE
@@ -1718,7 +1921,7 @@ app.post('/api/pay/wechat/notify', (req, res) => {
               });
             }
             connection.release();
-            return res.json({ code: 200, message: '已处理(幂等)', data: { orderId: order.id } });
+            return res.status(200).json({ code: 200, message: 'SUCCESS', data: { orderId: order.id } });
           });
         }
 
@@ -1768,27 +1971,77 @@ app.post('/api/pay/wechat/notify', (req, res) => {
               });
             }
 
-            connection.commit((errCommit) => {
-              if (errCommit) {
-                console.error('提交事务失败:', errCommit);
-                return connection.rollback(() => {
-                  connection.release();
-                  res.status(500).json({ code: 500, message: '提交事务失败' });
-                });
-              }
+            // ✅ 根据订单类型判断是否需要增加用户余额
+            // order_type: 0=普通订单（不增加余额），1=充值订单（增加余额）
+            const shouldAddBalance = order.order_type === 1 && order.user_id;
+            
+            if (shouldAddBalance) {
+              const updateBalanceSql = `
+                UPDATE xcx_users
+                SET balance = balance + ?,
+                    updated_at = NOW()
+                WHERE openid = ?
+              `;
+              connection.query(updateBalanceSql, [order.pay_amount, order.user_id], (errBalance) => {
+                if (errBalance) {
+                  console.error('增加用户余额失败:', errBalance);
+                  // 余额更新失败不影响订单状态，只记录日志
+                  console.warn('⚠️ 订单支付成功但余额更新失败，订单号:', orderNo, '用户:', order.user_id);
+                } else {
+                  console.log('✅ 用户余额已增加:', order.user_id, '金额:', order.pay_amount);
+                }
 
-              console.log('✅ 订单支付成功已处理完成:', orderNo);
-              connection.release();
-              res.json({
-                code: 200,
-                message: '订单支付处理成功',
-                data: {
-                  orderId: order.id,
-                  orderNo,
-                  transaction_id,
-                },
+                // 无论余额更新成功与否，都提交事务
+                connection.commit((errCommit) => {
+                  if (errCommit) {
+                    console.error('提交事务失败:', errCommit);
+                    return connection.rollback(() => {
+                      connection.release();
+                      res.status(500).json({ code: 500, message: '提交事务失败' });
+                    });
+                  }
+
+                  console.log('✅ 订单支付成功已处理完成:', orderNo);
+                  connection.release();
+                  
+                  // 返回成功响应（支付服务可能需要特定的响应格式）
+                  res.status(200).json({
+                    code: 200,
+                    message: 'SUCCESS',  // 支付服务可能期望这个格式
+                    data: {
+                      orderId: order.id,
+                      orderNo,
+                      transaction_id,
+                    },
+                  });
+                });
               });
-            });
+            } else {
+              // 普通订单或没有user_id，直接提交事务
+              connection.commit((errCommit) => {
+                if (errCommit) {
+                  console.error('提交事务失败:', errCommit);
+                  return connection.rollback(() => {
+                    connection.release();
+                    res.status(500).json({ code: 500, message: '提交事务失败' });
+                  });
+                }
+
+                console.log('✅ 订单支付成功已处理完成:', orderNo, order.order_type === 1 ? '(充值订单)' : '(普通订单)');
+                connection.release();
+                
+                // 返回成功响应
+                res.status(200).json({
+                  code: 200,
+                  message: 'SUCCESS',  // 支付服务可能期望这个格式
+                  data: {
+                    orderId: order.id,
+                    orderNo,
+                    transaction_id,
+                  },
+                });
+              });
+            }
           });
         };
 
@@ -1876,6 +2129,11 @@ app.post('/api/pay/wechat/notify', (req, res) => {
       });
     });
   });
+}
+
+// 正常回调接口
+app.post('/api/pay/wechat/notify', (req, res) => {
+  handlePaymentNotify(req, res);
 });
 
 
@@ -1901,10 +2159,12 @@ app.get('/api/order/detail', (req, res) => {
       total_amount,
       pay_amount,
       status,
+      order_type,
       refund_status,
       refund_amount,
       refund_time,
       audit_status,
+      wx_transaction_id,
       created_at,
       pay_time,
       items_snapshot
