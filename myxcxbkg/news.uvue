@@ -1,0 +1,281 @@
+<template>
+  <view class="news-page">
+    <!-- 顶部标题区 -->
+    <view class="header">
+      <text class="title-main">劲爆资讯</text>
+      <text class="title-sub">一口下去，全是云吞的新闻</text>
+    </view>
+
+    <!-- 热门推荐 Banner -->
+    <view class="hot-banner">
+      <view class="hot-left">
+        <text class="hot-tag">今日爆款</text>
+        <text class="hot-title">鲜肉云吞 1 元尝鲜</text>
+        <text class="hot-desc">门店现包 · 6 小时售空 · 限时秒杀档期内有效</text>
+        <view class="hot-meta">
+          <text class="meta-item">🔥 销量破 1200 份</text>
+          <text class="meta-item">⏰ 午晚高峰必排队</text>
+        </view>
+      </view>
+      <view class="hot-right">
+        <view class="hot-circle">
+          <text class="hot-emoji">🥟</text>
+        </view>
+        <text class="hot-badge">云吞情报局</text>
+      </view>
+    </view>
+
+    <!-- 资讯列表 -->
+    <scroll-view scroll-y="true" class="list-scroll">
+      <view
+        v-for="item in articles"
+        :key="item.id"
+        class="news-card"
+        @click="openDetail(item)"
+      >
+        <view class="news-tag-row">
+          <text class="news-tag" v-for="tag in item.tags" :key="tag">{{ tag }}</text>
+        </view>
+        <view class="news-main-row">
+          <view class="news-text">
+            <text class="news-title">{{ item.title }}</text>
+            <text class="news-desc">{{ item.desc }}</text>
+            <view class="news-meta-row">
+              <text class="meta-left">{{ item.time }}</text>
+              <text class="meta-right">{{ item.store }}</text>
+            </view>
+          </view>
+          <view class="news-pic">
+            <text class="news-emoji">{{ item.emoji }}</text>
+          </view>
+        </view>
+      </view>
+
+      <view class="bottom-tip">
+        <text class="tip-text">— 已经到底啦 · 更多云吞情报敬请期待 —</text>
+      </view>
+    </scroll-view>
+  </view>
+</template>
+
+<script setup>
+import { ref } from 'vue';
+
+const articles = ref([
+  {
+    id: 1,
+    title: '招牌鲜肉云吞，为什么总是第一名？',
+    desc: '每天现拌馅，猪后腿肉和前夹肉 7:3 黄金配比，门店现包不过夜，只为这一口的筋道与鲜香。',
+    time: '今天 · 11:20 刚出炉',
+    store: '鼓楼西大街店 · 后厨直报',
+    tags: ['#招牌必点', '#现包现煮'],
+    emoji: '🥟'
+  },
+  {
+    id: 2,
+    title: '新品「鲜虾皇云吞」登场，虾仁大到看得见',
+    desc: '整只虾仁直塞云吞里，咬开就能看到虾肉纤维，配上自制骨汤，老饺友都说：这是认真搞事情。',
+    time: '本周上新 · 限时 7 天',
+    store: '回龙观西大街店 · 试吃专员',
+    tags: ['#新品尝鲜', '#虾肉控必看'],
+    emoji: '🦐'
+  },
+  {
+    id: 3,
+    title: '凌晨 4 点的云吞铺，只为你早上的那一碗',
+    desc: '和面、醒发、剁馅、下剂……每一粒云吞都要经过 8 道工序，第一锅汤 7 点准时起锅，只服务早起的你。',
+    time: '幕后故事 · 制作花絮',
+    store: '中央厨房 · 生产线',
+    tags: ['#幕后故事', '#认真包好每一顿'],
+    emoji: '🌙'
+  },
+  {
+    id: 4,
+    title: '「三鲜云吞」配方升级，鲜味多了一层',
+    desc: '在原有鲜肉+鲜虾+香菇的基础上，增加 6 小时慢熬老鸡汤，汤底升级后，回头客满意度提升 23%。',
+    time: '配方升级 · 已全门店上线',
+    store: '研发部 · 产品经理',
+    tags: ['#配方升级', '#汤底更鲜'],
+    emoji: '🍲'
+  }
+]);
+
+const openDetail = (item) => {
+  uni.showToast({
+    title: '更多详情敬请期待～',
+    icon: 'none'
+  });
+};
+</script>
+
+<style>
+.news-page {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 12px 16px 20px;
+  background-color: #fff9f3;
+}
+
+.header {
+  padding: 6px 0 10px;
+}
+.title-main {
+  font-size: 20px;
+  font-weight: 800;
+  color: #d93025;
+}
+.title-sub {
+  margin-top: 4px;
+  font-size: 12px;
+  color: #8c5a32;
+}
+
+.hot-banner {
+  margin-top: 10px;
+  background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+  border-radius: 12px;
+  padding: 10px 12px;
+  flex-direction: row;
+  display: flex;
+  align-items: center;
+}
+.hot-left {
+  flex: 1;
+}
+.hot-tag {
+  font-size: 11px;
+  color: #b44b1b;
+  background-color: #fff3e0;
+  padding: 2px 6px;
+  border-radius: 10px;
+}
+.hot-title {
+  margin-top: 6px;
+  font-size: 16px;
+  font-weight: 700;
+  color: #5b311a;
+}
+.hot-desc {
+  margin-top: 4px;
+  font-size: 11px;
+  color: #6d4c41;
+}
+.hot-meta {
+  margin-top: 6px;
+  flex-direction: row;
+  display: flex;
+  flex-wrap: wrap;
+}
+.meta-item {
+  font-size: 10px;
+  color: #5d4037;
+  margin-right: 8px;
+}
+.hot-right {
+  width: 80px;
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+}
+.hot-circle {
+  width: 52px;
+  height: 52px;
+  border-radius: 26px;
+  background-color: rgba(255, 255, 255, 0.85);
+  align-items: center;
+  justify-content: center;
+  display: flex;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+}
+.hot-emoji {
+  font-size: 30px;
+}
+.hot-badge {
+  margin-top: 6px;
+  font-size: 11px;
+  color: #6d4c41;
+}
+
+.list-scroll {
+  margin-top: 12px;
+  flex: 1;
+}
+
+.news-card {
+  background-color: #ffffff;
+  border-radius: 10px;
+  padding: 10px 10px;
+  margin-bottom: 10px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+}
+.news-tag-row {
+  flex-direction: row;
+  display: flex;
+  flex-wrap: wrap;
+  margin-bottom: 4px;
+}
+.news-tag {
+  font-size: 10px;
+  color: #d84315;
+  background-color: #fff3e0;
+  padding: 1px 5px;
+  border-radius: 8px;
+  margin-right: 6px;
+  margin-bottom: 2px;
+}
+.news-main-row {
+  flex-direction: row;
+  display: flex;
+}
+.news-text {
+  flex: 1;
+  padding-right: 6px;
+}
+.news-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: #3e2723;
+}
+.news-desc {
+  margin-top: 4px;
+  font-size: 11px;
+  color: #6d4c41;
+  line-height: 1.4;
+}
+.news-meta-row {
+  margin-top: 6px;
+  flex-direction: row;
+  justify-content: space-between;
+  display: flex;
+}
+.meta-left {
+  font-size: 10px;
+  color: #a1887f;
+}
+.meta-right {
+  font-size: 10px;
+  color: #795548;
+}
+.news-pic {
+  width: 60px;
+  align-items: center;
+  justify-content: center;
+  display: flex;
+}
+.news-emoji {
+  font-size: 32px;
+}
+
+.bottom-tip {
+  padding: 8px 0 16px;
+  align-items: center;
+  justify-content: center;
+  display: flex;
+}
+.tip-text {
+  font-size: 11px;
+  color: #b0a29a;
+}
+</style>
+

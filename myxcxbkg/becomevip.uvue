@@ -1,0 +1,456 @@
+<template>
+  <view class="vip-dashboard">
+    
+    <view class="header-section">
+      <view class="brand-row">
+        <view class="logo-text">MEMBERSHIP</view>
+        <view class="crown-icon">
+          <uni-icons type="vip-filled" size="24" color="#F0D3A6"></uni-icons>
+        </view>
+      </view>
+      <text class="slogan">升级会员 · 尊享 4 大特权 · 积分翻倍</text>
+    </view>
+
+    <view class="grid-container">
+      
+      <view class="card silver" @click="goToPay('light_month')" :class="{ disabled: submitting }">
+        <view class="card-header">
+          <text class="title">轻月卡</text>
+          <text class="badge">纯资格费</text>
+        </view>
+        <view class="price-row">
+          <text class="unit">¥</text>4.9
+          <text class="sub">/30天</text>
+        </view>
+        <view class="benefit-list">
+          <text>• 激活首单1元吃</text>
+          <text>• 含6张3元券</text>
+          <text>• 1.5倍积分</text>
+        </view>
+        <view class="btn">{{ submitting && currentPayType === 'light_month' ? '支付中...' : '立即开通' }}</view>
+      </view>
+
+      <view class="card gold recommend" @click="goToPay('heavy_month')" :class="{ disabled: submitting }">
+        <view class="tag-float">店长推荐</view>
+        <view class="card-header">
+          <text class="title">重月卡</text>
+          <text class="badge">充值即送</text>
+        </view>
+        <view class="price-row">
+          <text class="unit">充</text>99
+          <text class="sub">得99</text>
+        </view>
+        <view class="benefit-list highlight">
+          <text>★ 账户余额99元</text>
+          <text>• 6张3元券</text>
+          <text>• 1.5倍积分</text>
+        </view>
+        <view class="btn fill">{{ submitting && currentPayType === 'heavy_month' ? '支付中...' : '立即充值' }}</view>
+      </view>
+
+      <view class="card purple" @click="goToPay('times_year')" :class="{ disabled: submitting }">
+        <view class="card-header">
+          <text class="title">分次年卡</text>
+          <text class="badge">分12次返</text>
+        </view>
+        <view class="price-row">
+          <text class="unit">¥</text>68
+          <text class="sub">/年</text>
+        </view>
+        <view class="benefit-list">
+          <text>• 余额分次到账</text>
+          <text>• 12张5元券</text>
+          <text>• 2倍积分+生日礼</text>
+        </view>
+        <view class="btn">{{ submitting && currentPayType === 'times_year' ? '支付中...' : '支付开通' }}</view>
+      </view>
+
+      <view class="card platinum recommend" @click="goToPay('free_year')" :class="{ disabled: submitting }">
+        <view class="tag-float">至尊优选</view>
+        <view class="card-header">
+          <text class="title">自由年卡</text>
+          <text class="badge">充值即送</text>
+        </view>
+        <view class="price-row">
+          <text class="unit">充</text>199
+          <text class="sub">得199</text>
+        </view>
+        <view class="benefit-list highlight">
+          <text>★ 账户余额199元</text>
+          <text>• 12张5元券</text>
+          <text>• 2倍积分+生日礼</text>
+        </view>
+        <view class="btn fill">{{ submitting && currentPayType === 'free_year' ? '支付中...' : '立即充值' }}</view>
+      </view>
+
+    </view>
+
+    <view class="footer-bar">
+      <view class="tip-item">
+        <uni-icons type="checkbox-filled" color="#666" size="14"></uni-icons>
+        <text>极速到账</text>
+      </view>
+      <view class="tip-item">
+        <uni-icons type="checkbox-filled" color="#666" size="14"></uni-icons>
+        <text>官方直充</text>
+      </view>
+      <view class="tip-item">
+        <uni-icons type="checkbox-filled" color="#666" size="14"></uni-icons>
+        <text>安全保障</text>
+      </view>
+    </view>
+
+  </view>
+</template>
+
+<script lang="ts">
+  // 基础配置
+  const API_BASE = 'https://jmzt.cxxyonline.cn' // 后端API地址
+
+  // 定义产品配置
+  const productConfig = {
+    light_month: { 
+      price: 4.9, 
+      desc: '轻月卡 (纯资格费)',
+      vipLevel: 1,
+      days: 30,
+      balance: 0
+    },
+    heavy_month: { 
+      price: 99, 
+      desc: '重月卡 (充值99送会员)',
+      vipLevel: 1,
+      days: 30,
+      balance: 99
+    },
+    times_year: { 
+      price: 68, 
+      desc: '分次年卡 (余额分12次返)',
+      vipLevel: 2,
+      days: 365,
+      balance: 0
+    },
+    free_year: { 
+      price: 199, 
+      desc: '自由年卡 (充值199送会员)',
+      vipLevel: 2,
+      days: 365,
+      balance: 199
+    }
+  }
+
+  export default {
+    data() {
+      return {
+        submitting: false,
+        currentPayType: '' as string
+      }
+    },
+    methods: {
+      /**
+       * 处理VIP支付
+       */
+      goToPay(type: string) {
+        if (this.submitting) return
+        
+        const item = productConfig[type]
+        if (!item) return
+
+        const openid = uni.getStorageSync('openid')
+        if (!openid) {
+          return this.showErr('未获取到 OpenID，请确保已登录')
+        }
+
+        this.submitting = true
+        this.currentPayType = type
+
+        console.log('--- 开始VIP支付流程 ---', type)
+
+        // 1. 先调用后端创建订单接口
+        uni.request({
+          url: `${API_BASE}/api/pay/create`,
+          method: 'POST',
+          data: {
+            openid: openid,
+            amount: item.price,
+            order_type: 2, // 2=VIP订单（会更新VIP状态）
+            description: item.desc,
+            attach: JSON.stringify({
+              vip_type: type,
+              vip_level: item.vipLevel,
+              vip_days: item.days,
+              balance: item.balance
+            })
+          },
+          success: (res: any) => {
+            if (res.statusCode !== 200 || res.data.code !== 200) {
+              this.showErr(res.data?.message || '创建订单失败')
+              this.submitting = false
+              return
+            }
+
+            const { payParams, orderNo } = res.data.data
+            console.log('订单创建成功，订单号:', orderNo)
+
+            if (!payParams) {
+              this.showErr('获取支付参数失败')
+              this.submitting = false
+              return
+            }
+
+            // 2. 调起微信原生支付界面
+            uni.requestPayment({
+              // #ifdef MP-WEIXIN
+              timeStamp: String(payParams.timeStamp),
+              nonceStr: payParams.nonceStr,
+              package: payParams.package,
+              signType: 'RSA',
+              paySign: payParams.paySign,
+              // #endif
+              success: () => {
+                console.log('支付成功，开始查询订单状态，订单号:', orderNo)
+                // 支付成功后，主动查询订单状态
+                this.checkOrderStatus(orderNo, 0)
+              },
+              fail: (err) => {
+                console.log('支付取消或失败:', err)
+                uni.showToast({ title: '已取消', icon: 'none' })
+                this.submitting = false
+              }
+            } as any)
+          },
+          fail: (err) => {
+            console.error('创建订单请求失败:', err)
+            this.showErr('网络连接失败，请检查域名白名单')
+            this.submitting = false
+          }
+        })
+      },
+      /**
+       * 查询订单状态（轮询）
+       */
+      checkOrderStatus(orderNo: string, retryCount: number = 0) {
+        const maxRetries = 10
+        const retryInterval = 2000
+
+        if (retryCount >= maxRetries) {
+          uni.showModal({
+            title: '提示',
+            content: '订单状态查询超时，请稍后查看订单详情',
+            showCancel: false
+          })
+          this.submitting = false
+          return
+        }
+
+        uni.request({
+          url: `${API_BASE}/api/order/detail`,
+          method: 'GET',
+          data: {
+            order_no: orderNo
+          },
+          success: (res: any) => {
+            if (res.statusCode === 200 && res.data.code === 200) {
+              const order = res.data.data
+              console.log('订单状态查询结果:', order.status, order)
+
+              if (order.status === 1) {
+                // 订单已支付
+                uni.showToast({ title: '支付成功', icon: 'success' })
+                setTimeout(() => {
+                  uni.navigateBack()
+                }, 1500)
+                this.submitting = false
+              } else if (order.status === 0) {
+                // 订单还是待支付状态，继续轮询
+                setTimeout(() => {
+                  this.checkOrderStatus(orderNo, retryCount + 1)
+                }, retryInterval)
+              } else {
+                uni.showToast({ title: '订单状态异常', icon: 'none' })
+                this.submitting = false
+              }
+            } else {
+              setTimeout(() => {
+                this.checkOrderStatus(orderNo, retryCount + 1)
+              }, retryInterval)
+            }
+          },
+          fail: (err) => {
+            console.error('查询订单状态请求失败:', err)
+            setTimeout(() => {
+              this.checkOrderStatus(orderNo, retryCount + 1)
+            }, retryInterval)
+          }
+        })
+      },
+      showErr(msg: string) {
+        uni.showModal({ title: '提示', content: msg, showCancel: false })
+      }
+    }
+  }
+</script>
+
+<style lang="scss">
+/* 全局容器：深邃黑金风格 */
+.vip-dashboard {
+  height: 100vh;
+  width: 100vw;
+  background: radial-gradient(circle at top right, #2b3040 0%, #141414 100%);
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  overflow: hidden; /* 禁止页面滚动 */
+  color: #fff;
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+/* 1. 头部 */
+.header-section {
+  flex: 0 0 14%;
+  padding: 40rpx 40rpx 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+
+  .brand-row {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 10rpx;
+    .logo-text {
+      font-family: 'Helvetica Neue', sans-serif;
+      font-size: 44rpx; font-weight: 900; letter-spacing: 2rpx;
+      background: linear-gradient(90deg, #F0D3A6, #C6A266);
+      -webkit-background-clip: text; color: transparent;
+    }
+  }
+  .slogan { font-size: 24rpx; color: rgba(255,255,255,0.4); letter-spacing: 1rpx; }
+}
+
+/* 2. Grid 宫格布局 (核心) */
+.grid-container {
+  flex: 1;
+  display: grid;
+  grid-template-columns: 1fr 1fr; /* 两列等宽 */
+  grid-template-rows: 1fr 1fr;    /* 两行等高 */
+  gap: 24rpx;
+  padding: 20rpx 30rpx 30rpx;
+}
+
+  /* 卡片通用样式 */
+  .card {
+    border-radius: 28rpx;
+    padding: 30rpx 24rpx;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    position: relative;
+    transition: all 0.2s;
+    border: 1rpx solid rgba(255,255,255,0.08);
+    
+    /* 按下微缩效果 */
+    &:active:not(.disabled) { transform: scale(0.98); }
+    
+    /* 禁用状态 */
+    &.disabled {
+      opacity: 0.6;
+      pointer-events: none;
+    }
+
+  /* 头部 */
+  .card-header {
+    display: flex; justify-content: space-between; align-items: flex-start;
+    .title { font-size: 30rpx; font-weight: bold; color: rgba(255,255,255,0.9); }
+    .badge { 
+      font-size: 18rpx; padding: 4rpx 10rpx; border-radius: 8rpx; 
+      border: 1rpx solid rgba(255,255,255,0.2); opacity: 0.8;
+    }
+  }
+
+  /* 价格区 */
+  .price-row {
+    margin: 16rpx 0;
+    .unit { font-size: 24rpx; margin-right: 4rpx; opacity: 0.8; }
+    font-size: 52rpx; font-weight: bold; font-family: 'DIN', sans-serif;
+    .sub { font-size: 22rpx; margin-left: 6rpx; opacity: 0.6; font-weight: normal; }
+  }
+
+  /* 权益列表 */
+  .benefit-list {
+    flex: 1;
+    display: flex; flex-direction: column; gap: 8rpx;
+    text { font-size: 22rpx; opacity: 0.6; line-height: 1.4; }
+    
+    &.highlight text:first-child {
+      color: #fff; font-weight: bold; opacity: 1;
+      margin-bottom: 4rpx;
+    }
+  }
+
+  /* 按钮 */
+  .btn {
+    height: 64rpx; display: flex; align-items: center; justify-content: center;
+    border-radius: 32rpx; font-size: 24rpx; font-weight: bold; margin-top: 16rpx;
+    background: rgba(255,255,255,0.05); color: rgba(255,255,255,0.8);
+    
+    &.fill { color: #141414; } /* 实心按钮文字色 */
+  }
+
+  /* 推荐角标 */
+  .tag-float {
+    position: absolute; top: 0; right: 0;
+    padding: 6rpx 16rpx; font-size: 18rpx; font-weight: bold;
+    border-radius: 0 28rpx 0 16rpx; z-index: 1;
+  }
+}
+
+/* --- 四种卡片皮肤 --- */
+
+/* 1. 银灰 (入门) */
+.silver {
+  background: linear-gradient(135deg, #2A2D35 0%, #202228 100%);
+}
+
+/* 2. 黑金 (推荐) */
+.gold {
+  background: linear-gradient(135deg, #3D352B 0%, #29221B 100%);
+  border-color: rgba(240, 211, 166, 0.3);
+  
+  .title { color: #F0D3A6; }
+  .price-row { color: #F0D3A6; }
+  .tag-float { background: #F0D3A6; color: #3D352B; }
+  .btn.fill { background: linear-gradient(90deg, #F0D3A6, #C6A266); }
+}
+
+/* 3. 幻紫 (家庭) */
+.purple {
+  background: linear-gradient(135deg, #2E2A3D 0%, #221F2D 100%);
+  
+  .title { color: #D4C4FF; }
+  .price-row { color: #D4C4FF; }
+  .btn { background: rgba(212, 196, 255, 0.1); color: #D4C4FF; }
+}
+
+/* 4. 铂金 (至尊) */
+.platinum {
+  background: linear-gradient(135deg, #3A3F47 0%, #24282F 100%);
+  border-color: rgba(165, 222, 255, 0.3);
+
+  .title { color: #A5DEFF; }
+  .price-row { color: #A5DEFF; }
+  .tag-float { background: #A5DEFF; color: #1E2B38; }
+  .btn.fill { background: linear-gradient(90deg, #A5DEFF, #6ABFFF); }
+}
+
+/* 底部栏 */
+.footer-bar {
+  flex: 0 0 6%;
+  display: flex; justify-content: center; gap: 40rpx;
+  align-items: center;
+  border-top: 1rpx solid rgba(255,255,255,0.05);
+  
+  .tip-item {
+    display: flex; align-items: center; gap: 8rpx;
+    text { font-size: 20rpx; color: #666; }
+  }
+}
+</style>

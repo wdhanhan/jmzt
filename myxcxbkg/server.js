@@ -1663,7 +1663,7 @@ app.get("/api/carousel/:id", (req, res) => {
  * }
  */
 app.post('/api/pay/create', async (req, res) => {
-  const { openid, amount, order_type = 0, description, items = [] } = req.body || {};
+  const { openid, amount, order_type = 0, description, items = [], attach } = req.body || {};
 
   if (!openid) {
     return res.status(400).json({ code: 400, message: 'openid 不能为空' });
@@ -1674,7 +1674,7 @@ app.post('/api/pay/create', async (req, res) => {
   }
 
   const payAmount = Number(amount);
-  const orderType = Number(order_type) || 0; // 0=普通订单，1=充值订单
+  const orderType = Number(order_type) || 0; // 0=普通订单，1=充值订单，2=VIP订单
 
   // 生成订单号
   const now = new Date();
@@ -1685,7 +1685,15 @@ app.post('/api/pay/create', async (req, res) => {
   const orderNo = 'ORD' + dateStr + now.getTime().toString().slice(-6);
 
   // 创建订单
-  const itemsSnapshot = items.length > 0 ? JSON.stringify(items) : null;
+  // 如果有 attach 信息（VIP订单），将其存储到 items_snapshot 中
+  let itemsSnapshot = null;
+  if (attach) {
+    // VIP订单：将 attach 信息存储到 items_snapshot
+    itemsSnapshot = typeof attach === 'string' ? attach : JSON.stringify(attach);
+  } else if (items.length > 0) {
+    // 普通订单：存储商品信息
+    itemsSnapshot = JSON.stringify(items);
+  }
   
   const insertOrderSql = `
     INSERT INTO orders (
@@ -1736,7 +1744,7 @@ app.post('/api/pay/create', async (req, res) => {
         outTradeNo: orderNo,
         total: Math.round(payAmount * 100), // 转换为分
         openid: openid,
-        attach: `order_type=${orderType}`,
+        attach: attach ? (typeof attach === 'string' ? attach : JSON.stringify(attach)) : `order_type=${orderType}`,
         notify_url: notifyUrl  // 传递回调地址
       }, {
         timeout: 10000
@@ -1935,21 +1943,22 @@ function handlePaymentNotify(req, res) {
           }
         }
 
-        // 解析 items_snapshot，得到要扣库存的 SKU 列表
+        // 解析 items_snapshot，得到要扣库存的 SKU 列表（仅普通订单需要）
         let items = [];
-        try {
-          if (order.items_snapshot) {
+        if (order.order_type === 0 && order.items_snapshot) {
+          // 普通订单：解析商品列表
+          try {
             const parsed = JSON.parse(order.items_snapshot);
             if (Array.isArray(parsed)) {
               items = parsed;
             }
+          } catch (e) {
+            console.error('解析 items_snapshot 失败:', e, order.items_snapshot);
+            return connection.rollback(() => {
+              connection.release();
+              res.status(500).json({ code: 500, message: '解析订单商品失败' });
+            });
           }
-        } catch (e) {
-          console.error('解析 items_snapshot 失败:', e, order.items_snapshot);
-          return connection.rollback(() => {
-            connection.release();
-            res.status(500).json({ code: 500, message: '解析订单商品失败' });
-          });
         }
 
         // 如果订单里没有商品，就只更新状态
@@ -1971,11 +1980,87 @@ function handlePaymentNotify(req, res) {
               });
             }
 
-            // ✅ 根据订单类型判断是否需要增加用户余额
-            // order_type: 0=普通订单（不增加余额），1=充值订单（增加余额）
+            // ✅ 根据订单类型处理不同的业务逻辑
+            // order_type: 0=普通订单，1=充值订单（增加余额），2=VIP订单（更新VIP状态）
             const shouldAddBalance = order.order_type === 1 && order.user_id;
+            const isVipOrder = order.order_type === 2 && order.user_id;
             
-            if (shouldAddBalance) {
+            // 解析VIP信息（如果是VIP订单）
+            // VIP信息存储在 items_snapshot 中（JSON格式）
+            let vipInfo = null;
+            if (isVipOrder && order.items_snapshot) {
+              try {
+                let parsed = order.items_snapshot;
+                // 如果是字符串，先解析
+                if (typeof parsed === 'string') {
+                  parsed = JSON.parse(parsed);
+                }
+                // 检查是否是VIP信息对象
+                if (parsed && (parsed.vip_type || parsed.vip_level)) {
+                  vipInfo = parsed;
+                  console.log('✅ 解析到VIP信息:', vipInfo);
+                }
+              } catch (e) {
+                console.warn('⚠️ 解析VIP信息失败:', e, order.items_snapshot);
+              }
+            }
+
+            // 处理VIP订单或充值订单
+            if (isVipOrder && vipInfo) {
+              // VIP订单：更新VIP状态和到期时间，可能还要增加余额
+              const vipLevel = Number(vipInfo.vip_level) || 1;
+              const vipDays = Number(vipInfo.vip_days) || 30;
+              const balanceAmount = Number(vipInfo.balance) || 0;
+              
+              // 更新VIP状态和到期时间
+              // 如果VIP已过期或不存在，从当前时间开始计算；如果未过期，则延长到期时间
+              // 同时更新VIP等级（取较大值）和增加余额
+              const updateVipSql = `
+                UPDATE xcx_users
+                SET vip_level = GREATEST(COALESCE(vip_level, 0), ?),
+                    vip_expires_at = CASE 
+                      WHEN vip_expires_at IS NULL OR vip_expires_at < NOW() THEN DATE_ADD(NOW(), INTERVAL ? DAY)
+                      ELSE DATE_ADD(vip_expires_at, INTERVAL ? DAY)
+                    END,
+                    balance = balance + ?,
+                    updated_at = NOW()
+                WHERE openid = ?
+              `;
+              
+              connection.query(updateVipSql, [vipLevel, vipDays, vipDays, balanceAmount, order.user_id], (errVip) => {
+                if (errVip) {
+                  console.error('更新VIP状态失败:', errVip);
+                  console.warn('⚠️ 订单支付成功但VIP更新失败，订单号:', orderNo, '用户:', order.user_id);
+                } else {
+                  console.log('✅ VIP状态已更新:', order.user_id, '等级:', vipLevel, '天数:', vipDays, '余额:', balanceAmount);
+                }
+
+                // 无论VIP更新成功与否，都提交事务
+                connection.commit((errCommit) => {
+                  if (errCommit) {
+                    console.error('提交事务失败:', errCommit);
+                    return connection.rollback(() => {
+                      connection.release();
+                      res.status(500).json({ code: 500, message: '提交事务失败' });
+                    });
+                  }
+
+                  console.log('✅ VIP订单支付成功已处理完成:', orderNo);
+                  connection.release();
+                  
+                  res.status(200).json({
+                    code: 200,
+                    message: 'SUCCESS',
+                    data: {
+                      orderId: order.id,
+                      orderNo,
+                      transaction_id,
+                    },
+                  });
+                });
+              });
+            } else if (shouldAddBalance) {
+              // 充值订单：只增加余额
               const updateBalanceSql = `
                 UPDATE xcx_users
                 SET balance = balance + ?,
@@ -1985,13 +2070,11 @@ function handlePaymentNotify(req, res) {
               connection.query(updateBalanceSql, [order.pay_amount, order.user_id], (errBalance) => {
                 if (errBalance) {
                   console.error('增加用户余额失败:', errBalance);
-                  // 余额更新失败不影响订单状态，只记录日志
                   console.warn('⚠️ 订单支付成功但余额更新失败，订单号:', orderNo, '用户:', order.user_id);
                 } else {
                   console.log('✅ 用户余额已增加:', order.user_id, '金额:', order.pay_amount);
                 }
 
-                // 无论余额更新成功与否，都提交事务
                 connection.commit((errCommit) => {
                   if (errCommit) {
                     console.error('提交事务失败:', errCommit);
@@ -2004,10 +2087,9 @@ function handlePaymentNotify(req, res) {
                   console.log('✅ 订单支付成功已处理完成:', orderNo);
                   connection.release();
                   
-                  // 返回成功响应（支付服务可能需要特定的响应格式）
                   res.status(200).json({
                     code: 200,
-                    message: 'SUCCESS',  // 支付服务可能期望这个格式
+                    message: 'SUCCESS',
                     data: {
                       orderId: order.id,
                       orderNo,
@@ -2030,10 +2112,9 @@ function handlePaymentNotify(req, res) {
                 console.log('✅ 订单支付成功已处理完成:', orderNo, order.order_type === 1 ? '(充值订单)' : '(普通订单)');
                 connection.release();
                 
-                // 返回成功响应
                 res.status(200).json({
                   code: 200,
-                  message: 'SUCCESS',  // 支付服务可能期望这个格式
+                  message: 'SUCCESS',
                   data: {
                     orderId: order.id,
                     orderNo,
@@ -2978,6 +3059,128 @@ app.get('/api/user/info', (req, res) => {
     return res.json({
       code: 200,
       data: rows[0]
+    });
+  });
+});
+
+/**
+ * ✅ 获取用户VIP信息
+ * GET /api/user/vip?openid=xxx
+ * 
+ * 返回：
+ * {
+ *   code: 200,
+ *   data: {
+ *     vip_level: 0,           // VIP等级 0=普通 1=白银 2=黄金
+ *     vip_type: 'none',        // VIP类型: 'none'|'light_month'|'heavy_month'|'times_year'|'free_year'
+ *     vip_expires_at: null,    // VIP过期时间
+ *     is_vip_valid: false,     // VIP是否有效（未过期）
+ *     balance: 0.00,           // 账户余额
+ *     points: 0                // 积分（暂时返回0，如果后续有积分系统再添加）
+ *   }
+ * }
+ */
+app.get('/api/user/vip', (req, res) => {
+  const { openid } = req.query;
+
+  if (!openid) {
+    return res.json({ code: 400, msg: "openid 必传" });
+  }
+
+  // 1. 查询用户基本信息
+  const userSql = `
+    SELECT 
+      vip_level,
+      vip_expires_at,
+      balance
+    FROM xcx_users 
+    WHERE openid = ? 
+    LIMIT 1
+  `;
+
+  db.query(userSql, [openid], (err, rows) => {
+    if (err) {
+      console.error("查询用户VIP信息失败:", err);
+      return res.json({ code: 500, msg: "服务器异常" });
+    }
+
+    if (!rows || rows.length === 0) {
+      return res.json({ code: 404, msg: "用户不存在" });
+    }
+
+    const user = rows[0];
+    const vipLevel = Number(user.vip_level) || 0;
+    const vipExpiresAt = user.vip_expires_at;
+    
+    // 判断VIP是否有效（未过期）
+    let isVipValid = false;
+    if (vipExpiresAt) {
+      const expiresTime = new Date(vipExpiresAt).getTime();
+      const now = Date.now();
+      isVipValid = expiresTime > now && vipLevel > 0;
+    }
+
+    // 2. 查询最近的VIP订单，确定具体的VIP类型
+    const orderSql = `
+      SELECT items_snapshot
+      FROM orders
+      WHERE user_id = ?
+        AND order_type = 2
+        AND status = 1
+      ORDER BY pay_time DESC
+      LIMIT 1
+    `;
+
+    db.query(orderSql, [openid], (err2, orderRows) => {
+      if (err2) {
+        console.error("查询VIP订单失败:", err2);
+        // 即使查询订单失败，也返回基本信息
+      }
+
+      let vipType = 'none';
+      
+      // 如果VIP有效，尝试从订单中获取具体类型
+      if (isVipValid && orderRows && orderRows.length > 0) {
+        try {
+          const itemsSnapshot = orderRows[0].items_snapshot;
+          if (itemsSnapshot) {
+            const vipInfo = typeof itemsSnapshot === 'string' 
+              ? JSON.parse(itemsSnapshot) 
+              : itemsSnapshot;
+            
+            if (vipInfo && vipInfo.vip_type) {
+              vipType = vipInfo.vip_type; // light_month, heavy_month, times_year, free_year
+            } else {
+              // 如果没有具体类型，根据等级推断
+              if (vipLevel === 1) {
+                vipType = 'month_card'; // 月卡（通用）
+              } else if (vipLevel === 2) {
+                vipType = 'year_card'; // 年卡（通用）
+              }
+            }
+          }
+        } catch (e) {
+          console.warn("解析VIP订单信息失败:", e);
+          // 解析失败，根据等级推断
+          if (vipLevel === 1) {
+            vipType = 'month_card';
+          } else if (vipLevel === 2) {
+            vipType = 'year_card';
+          }
+        }
+      }
+
+      return res.json({
+        code: 200,
+        data: {
+          vip_level: vipLevel,
+          vip_type: vipType,
+          vip_expires_at: vipExpiresAt,
+          is_vip_valid: isVipValid,
+          balance: Number(user.balance) || 0,
+          points: 0  // 积分暂时返回0，如果后续有积分系统再添加字段
+        }
+      });
     });
   });
 });

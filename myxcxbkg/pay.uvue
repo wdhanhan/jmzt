@@ -2,50 +2,81 @@
   <view class="cashier-page">
     <view :style="{ height: statusBarHeight + 'px' }"></view>
     
-    <view class="nav-title">支付测试</view>
+    <view class="nav-title">账户充值</view>
 
     <view class="bill-card">
       <view class="brand-area">
         <view class="icon-box">
-          <uni-icons type="paperplane-filled" size="30" color="#07c160"></uni-icons>
+          <uni-icons type="wallet-filled" size="30" color="#07c160"></uni-icons>
         </view>
-        <text class="shop-name">支付链路 · 环境测试</text>
+        <text class="shop-name">账户余额充值</text>
       </view>
 
       <view class="amount-area">
         <text class="currency">￥</text>
-        <text class="num">0</text>
-        <text class="dec">.01</text>
+        <text class="num">{{ amountDisplay.integer }}</text>
+        <text class="dec">.{{ amountDisplay.decimal }}</text>
       </view>
-      
-      <view class="status-tag">测试模式</view>
+
+      <view class="divider"></view>
+
+      <!-- 快捷金额选择 -->
+      <view class="quick-amount-section">
+        <text class="section-title">快捷选择</text>
+        <view class="quick-amount-list">
+          <view 
+            v-for="(item, index) in quickAmounts" 
+            :key="index"
+            class="quick-amount-item"
+            :class="{ active: selectedQuickIndex === index }"
+            @click="selectQuickAmount(item, index)"
+          >
+            <text>{{ item }}元</text>
+          </view>
+        </view>
+      </view>
+
+      <!-- 自定义金额输入 -->
+      <view class="custom-amount-section">
+        <text class="section-title">自定义金额</text>
+        <view class="input-wrapper">
+          <text class="input-prefix">￥</text>
+          <input 
+            class="amount-input"
+            type="digit"
+            v-model="customAmount"
+            placeholder="请输入充值金额"
+            @input="onAmountInput"
+            @blur="onAmountBlur"
+          />
+        </view>
+        <view class="amount-tips">
+          <text>最低充值金额：{{ minAmount }}元，最高：{{ maxAmount }}元</text>
+        </view>
+      </view>
 
       <view class="divider"></view>
 
       <view class="detail-list">
         <view class="row">
-          <text class="label">测试项目</text>
-          <text class="val highlight">微信支付接口联调</text>
-        </view>
-        <view class="row">
-          <text class="label">支付金额</text>
-          <text class="val">0.01 元</text>
+          <text class="label">充值金额</text>
+          <text class="val highlight">￥{{ formatAmount(amount) }}</text>
         </view>
         <view class="row">
           <text class="label">当前账号</text>
-          <text class="val">{{ mobile || '测试用户' }}</text>
+          <text class="val">{{ mobile || '未登录' }}</text>
         </view>
       </view>
     </view>
 
     <view class="action-area">
-      <button class="pay-btn" hover-class="btn-hover" @click="handlePay" :disabled="submitting">
+      <button class="pay-btn" hover-class="btn-hover" @click="handlePay" :disabled="submitting || !isAmountValid">
         <uni-icons v-if="!submitting" type="weixin" size="24" color="#fff" style="margin-right:10rpx"></uni-icons>
-        <text>{{ submitting ? '正在调起支付...' : '立即支付 0.01 元' }}</text>
+        <text>{{ submitting ? '正在调起支付...' : `立即支付 ￥${formatAmount(amount)}` }}</text>
       </button>
       <view class="safe-tips">
         <uni-icons type="locked-filled" size="12" color="#ccc"></uni-icons>
-        <text>支付成功后，资金将进入商户账户</text>
+        <text>支付成功后，金额将充值到您的账户余额</text>
       </view>
     </view>
   </view>
@@ -61,8 +92,27 @@
         statusBarHeight: 0,
         submitting: false,
         mobile: uni.getStorageSync('mobile') || '',
-        amount: 0.01, // 固定测试金额
-        payDesc: '支付联调测试-0.01',
+        amount: 10, // 默认金额
+        customAmount: '', // 自定义金额输入
+        selectedQuickIndex: 0, // 选中的快捷金额索引
+        quickAmounts: [10, 50, 100, 200, 500], // 快捷金额选项
+        minAmount: 0.01, // 最小充值金额
+        maxAmount: 10000, // 最大充值金额
+      }
+    },
+    computed: {
+      // 金额显示格式（整数和小数部分分开）
+      amountDisplay() {
+        const amountStr = this.amount.toFixed(2)
+        const parts = amountStr.split('.')
+        return {
+          integer: parts[0],
+          decimal: parts[1] || '00'
+        }
+      },
+      // 金额是否有效
+      isAmountValid() {
+        return this.amount >= this.minAmount && this.amount <= this.maxAmount
       }
     },
     onLoad() {
@@ -71,9 +121,57 @@
     },
     methods: {
       /**
+       * 选择快捷金额
+       */
+      selectQuickAmount(amount: number, index: number) {
+        this.amount = amount
+        this.selectedQuickIndex = index
+        this.customAmount = ''
+      },
+      /**
+       * 金额输入处理
+       */
+      onAmountInput(e: any) {
+        const value = e.detail.value || ''
+        this.customAmount = value
+        if (value) {
+          const num = parseFloat(value)
+          if (!isNaN(num) && num > 0) {
+            this.amount = num
+            this.selectedQuickIndex = -1 // 取消快捷选择
+          }
+        }
+      },
+      /**
+       * 金额输入失焦处理（验证和格式化）
+       */
+      onAmountBlur() {
+        if (this.customAmount) {
+          let num = parseFloat(this.customAmount)
+          if (isNaN(num) || num < this.minAmount) {
+            num = this.minAmount
+            this.customAmount = num.toString()
+          } else if (num > this.maxAmount) {
+            num = this.maxAmount
+            this.customAmount = num.toString()
+          }
+          this.amount = num
+        }
+      },
+      /**
+       * 格式化金额显示
+       */
+      formatAmount(amount: number): string {
+        return amount.toFixed(2)
+      },
+      /**
        * ✅ 支付流程：先创建订单，再发起支付
        */
       handlePay() {
+        // 验证金额
+        if (!this.isAmountValid) {
+          return this.showErr(`充值金额必须在 ${this.minAmount}元 到 ${this.maxAmount}元 之间`)
+        }
         if (this.submitting) return
         
         const openid = uni.getStorageSync('openid')
@@ -91,9 +189,9 @@
           method: 'POST',
           data: {
             openid: openid,
-            amount: this.amount, // 0.01元
+            amount: this.amount,
             order_type: 1, // 1=充值订单（会增加余额），0=普通订单（不增加余额）
-            description: this.payDesc
+            description: `账户充值-${this.formatAmount(this.amount)}元`
           },
           success: (res: any) => {
             if (res.statusCode !== 200 || res.data.code !== 200) {
@@ -211,99 +309,255 @@
 
 <style lang="scss">
   .cashier-page {
-    min-height: 100vh;
-    background-color: #F6F7F9;
-    padding: 0 40rpx;
+    height: 100vh;
+    background: linear-gradient(180deg, #f0f9ff 0%, #f6f7f9 100%);
+    padding: 0 30rpx 20rpx;
     display: flex;
     flex-direction: column;
+    overflow: hidden;
   }
 
   .nav-title {
     text-align: center;
-    font-size: 34rpx;
-    font-weight: bold;
-    color: #333;
-    padding: 30rpx 0 50rpx;
+    font-size: 32rpx;
+    font-weight: 600;
+    color: #1a1a1a;
+    padding: 20rpx 0 15rpx;
+    letter-spacing: 1rpx;
+    flex-shrink: 0;
   }
 
   .bill-card {
     background: #fff;
-    border-radius: 32rpx;
-    padding: 60rpx 40rpx;
+    border-radius: 20rpx;
+    padding: 30rpx 25rpx;
     display: flex;
     flex-direction: column;
     align-items: center;
+    box-shadow: 0 8rpx 32rpx rgba(0, 0, 0, 0.06);
+    margin-bottom: 15rpx;
+    flex: 1;
+    overflow-y: auto;
 
     .brand-area {
       display: flex;
       flex-direction: column;
       align-items: center;
-      margin-bottom: 30rpx;
+      margin-bottom: 20rpx;
       .icon-box {
-        width: 100rpx; height: 100rpx;
-        background: rgba(7, 193, 96, 0.08);
+        width: 80rpx; 
+        height: 80rpx;
+        background: linear-gradient(135deg, rgba(7, 193, 96, 0.15) 0%, rgba(7, 193, 96, 0.08) 100%);
         border-radius: 50%;
-        display: flex; align-items: center; justify-content: center;
-        margin-bottom: 20rpx;
+        display: flex; 
+        align-items: center; 
+        justify-content: center;
+        margin-bottom: 12rpx;
+        box-shadow: 0 4rpx 16rpx rgba(7, 193, 96, 0.2);
       }
-      .shop-name { font-size: 28rpx; color: #666; }
+      .shop-name { 
+        font-size: 26rpx; 
+        color: #333;
+        font-weight: 500;
+        letter-spacing: 0.5rpx;
+      }
     }
 
     .amount-area {
       display: flex;
       align-items: baseline;
-      color: #333;
-      margin-bottom: 10rpx;
-      .currency { font-size: 44rpx; font-weight: bold; margin-right: 4rpx; }
-      .num { font-size: 90rpx; font-weight: bold; }
-      .dec { font-size: 44rpx; font-weight: bold; }
-    }
-
-    .status-tag {
-      font-size: 22rpx; color: #07c160; background: rgba(7, 193, 96, 0.1);
-      padding: 4rpx 16rpx; border-radius: 8rpx; margin-bottom: 50rpx;
+      color: #1a1a1a;
+      margin-bottom: 15rpx;
+      .currency { 
+        font-size: 36rpx; 
+        font-weight: 600; 
+        margin-right: 4rpx;
+        color: #07c160;
+      }
+      .num { 
+        font-size: 72rpx; 
+        font-weight: 700;
+        background: linear-gradient(135deg, #07c160 0%, #05a050 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        letter-spacing: -2rpx;
+      }
+      .dec { 
+        font-size: 36rpx; 
+        font-weight: 600;
+        color: #666;
+      }
     }
 
     .divider {
-      width: 100%; height: 1px; border-top: 2rpx dashed #eee;
-      position: relative; margin-bottom: 40rpx;
-      &::before, &::after {
-        content: ''; position: absolute; top: -12rpx;
-        width: 24rpx; height: 24rpx; background: #F6F7F9; border-radius: 50%;
-      }
-      &::before { left: -52rpx; }
-      &::after { right: -52rpx; }
+      width: 100%; 
+      height: 1rpx; 
+      background: linear-gradient(90deg, transparent 0%, #e5e5e5 20%, #e5e5e5 80%, transparent 100%);
+      margin: 20rpx 0;
+      position: relative;
     }
 
     .detail-list {
       width: 100%;
+      background: #fafafa;
+      border-radius: 12rpx;
+      padding: 20rpx;
+      margin-top: 15rpx;
       .row {
-        display: flex; justify-content: space-between; margin-bottom: 24rpx;
-        .label { font-size: 28rpx; color: #999; }
-        .val { font-size: 28rpx; color: #333; }
-        .highlight { color: #07c160; font-weight: bold; }
+        display: flex; 
+        justify-content: space-between; 
+        align-items: center;
+        margin-bottom: 12rpx;
+        &:last-child {
+          margin-bottom: 0;
+        }
+        .label { 
+          font-size: 24rpx; 
+          color: #999;
+          font-weight: 400;
+        }
+        .val { 
+          font-size: 26rpx; 
+          color: #333;
+          font-weight: 500;
+        }
+        .highlight { 
+          color: #07c160; 
+          font-weight: 600;
+          font-size: 28rpx;
+        }
+      }
+    }
+
+    .quick-amount-section {
+      width: 100%;
+      margin-bottom: 25rpx;
+      .section-title {
+        font-size: 24rpx;
+        color: #333;
+        margin-bottom: 16rpx;
+        display: block;
+        font-weight: 500;
+      }
+      .quick-amount-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12rpx;
+        .quick-amount-item {
+          flex: 1;
+          min-width: 110rpx;
+          height: 64rpx;
+          background: #f8f9fa;
+          border-radius: 12rpx;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 26rpx;
+          color: #333;
+          font-weight: 500;
+          border: 2rpx solid transparent;
+          transition: all 0.3s ease;
+          box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.04);
+          &:active {
+            transform: scale(0.95);
+          }
+          &.active {
+            background: linear-gradient(135deg, #07c160 0%, #05a050 100%);
+            color: #fff;
+            font-weight: 600;
+            border-color: #07c160;
+            box-shadow: 0 4rpx 16rpx rgba(7, 193, 96, 0.3);
+          }
+        }
+      }
+    }
+
+    .custom-amount-section {
+      width: 100%;
+      margin-bottom: 20rpx;
+      .section-title {
+        font-size: 24rpx;
+        color: #333;
+        margin-bottom: 16rpx;
+        display: block;
+        font-weight: 500;
+      }
+      .input-wrapper {
+        display: flex;
+        align-items: center;
+        background: #f8f9fa;
+        border-radius: 12rpx;
+        padding: 0 24rpx;
+        height: 72rpx;
+        border: 2rpx solid #e5e5e5;
+        transition: all 0.3s;
+        &:focus-within {
+          border-color: #07c160;
+          background: #fff;
+          box-shadow: 0 0 0 4rpx rgba(7, 193, 96, 0.1);
+        }
+        .input-prefix {
+          font-size: 30rpx;
+          color: #07c160;
+          font-weight: 600;
+          margin-right: 10rpx;
+        }
+        .amount-input {
+          flex: 1;
+          font-size: 28rpx;
+          color: #333;
+          height: 100%;
+          font-weight: 500;
+        }
+      }
+      .amount-tips {
+        margin-top: 12rpx;
+        padding-left: 8rpx;
+        text {
+          font-size: 20rpx;
+          color: #999;
+        }
       }
     }
   }
 
   .action-area {
-    margin-top: 80rpx;
+    flex-shrink: 0;
+    padding-bottom: 20rpx;
     .pay-btn {
-      background-color: #07c160;
+      background: linear-gradient(135deg, #07c160 0%, #05a050 100%);
       color: #fff;
-      font-size: 32rpx;
-      font-weight: bold;
-      height: 100rpx;
-      border-radius: 50rpx;
-      display: flex; align-items: center; justify-content: center;
-      box-shadow: 0 16rpx 30rpx rgba(7, 193, 96, 0.15);
+      font-size: 30rpx;
+      font-weight: 600;
+      height: 88rpx;
+      border-radius: 44rpx;
+      display: flex; 
+      align-items: center; 
+      justify-content: center;
+      box-shadow: 0 8rpx 24rpx rgba(7, 193, 96, 0.3);
+      letter-spacing: 1rpx;
+      transition: all 0.3s;
       &::after { border: none; }
+      &[disabled] {
+        opacity: 0.6;
+        box-shadow: 0 4rpx 12rpx rgba(7, 193, 96, 0.2);
+      }
     }
-    .btn-hover { opacity: 0.85; transform: scale(0.98); }
+    .btn-hover { 
+      opacity: 0.9; 
+      transform: scale(0.98);
+      box-shadow: 0 4rpx 16rpx rgba(7, 193, 96, 0.25);
+    }
     .safe-tips {
-      margin-top: 30rpx;
-      display: flex; justify-content: center; align-items: center; gap: 8rpx;
-      text { font-size: 22rpx; color: #bbb; }
+      margin-top: 16rpx;
+      display: flex; 
+      justify-content: center; 
+      align-items: center; 
+      gap: 8rpx;
+      text { 
+        font-size: 20rpx; 
+        color: #999;
+      }
     }
   }
 </style>

@@ -1,0 +1,1321 @@
+<template>
+  <view class="ordering-page">
+    <view class="header">
+      <view class="store-selector" @click="openStoreList">
+        <view class="store-row">
+          <text class="store-name">⭐ {{ currentStore.name }} ></text>
+          <text class="delivery-tag">到店自取</text>
+        </view>
+        <view class="store-meta">
+          <text class="distance">📍 距您 {{ currentStore.distance }}m</text>
+          <text class="promo-text"> | 折扣商品8.8折起</text>
+        </view>
+      </view>
+      <view class="banner-placeholder">
+        <text class="banner-text">会员福利升级 | 鲜肉云吞立减</text>
+      </view>
+    </view>
+
+    <view class="tab-bar">
+      <view 
+        class="tab-item" 
+        :class="{ active: activeTab === 'fresh' }"
+        @click="activeTab = 'fresh'"
+      >
+        <text class="tab-text" :class="{ 'text-active': activeTab === 'fresh' }">生鲜自提</text>
+        <view v-if="activeTab === 'fresh'" class="indicator"></view>
+      </view>
+      <view 
+        class="tab-item" 
+        :class="{ active: activeTab === 'cooked' }"
+        @click="activeTab = 'cooked'"
+      >
+        <text class="tab-text" :class="{ 'text-active': activeTab === 'cooked' }">熟食 / 外卖</text>
+        <view v-if="activeTab === 'cooked'" class="indicator"></view>
+      </view>
+    </view>
+
+    <view v-if="activeTab === 'fresh'" class="main-content">
+      <scroll-view class="sidebar" scroll-y="true" :show-scrollbar="false">
+        <view 
+          v-for="(group, index) in groupedData" 
+          :key="group.id"
+          class="cat-item"
+          :class="{ 'cat-active': activeCategoryId === group.id }"
+          @click="scrollToCategory(group.id)"
+        >
+          <text class="cat-text" :class="{ 'cat-text-active': activeCategoryId === group.id }">{{ group.name }}</text>
+          <view class="count-badge" v-if="getCategoryCount(group) > 0">
+            <text class="badge-text">{{ getCategoryCount(group) }}</text>
+          </view>
+        </view>
+      </scroll-view>
+
+      <scroll-view 
+        class="product-scroll-view" 
+        scroll-y="true" 
+        :scroll-into-view="scrollIntoViewId"
+        @scroll="onRightScroll"
+        scroll-with-animation="true"
+      >
+        <view v-if="loading" class="loading-state">
+          <text class="loading-text">数据加载中...</text>
+        </view>
+        
+        <view 
+          v-else
+          v-for="group in groupedData" 
+          :key="group.id"
+          :id="'cat-' + group.id" 
+          class="category-section"
+        >
+          <text class="section-title">{{ group.name }}</text>
+
+          <view class="product-card" v-for="p in group.products" :key="p.id">
+            <view class="product-img-box">
+               <image v-if="getProductImage(p)" :src="getProductImage(p)" mode="aspectFill" class="p-img" />
+               <text v-else class="no-img-text">暂无图</text>
+            </view>
+            <view class="product-info">
+              <text class="p-name">{{ p.name }}</text>
+              <text class="p-desc">{{ p.description }}</text>
+              <view class="price-row">
+                <view class="price-main">
+                  <text class="currency">¥</text>
+                  <text class="price-val">{{ getUserPayPrice(p) }}</text>
+                  <text class="unit">起</text>
+                </view>
+                <view v-if="getProductCartCount(p) > 0" class="product-stepper">
+                  <view class="stepper-btn stepper-minus" @click="removeOneFromProduct(p)">
+                    <text class="stepper-text">-</text>
+                  </view>
+                  <text class="stepper-count">{{ getProductCartCount(p) }}</text>
+                  <view class="stepper-btn stepper-plus" @click="addOneFromProduct(p)">
+                    <text class="stepper-text">+</text>
+                  </view>
+                </view>
+                <view v-else class="add-btn" @click="handleAddClick(p)">
+                  <text class="add-btn-text">{{ p.skus && p.skus.length > 1 ? '选规格' : '+' }}</text>
+                </view>
+              </view>
+              <view class="vip-price-line">
+                <text class="vip-price-item">
+                  原价 ¥{{ getShowPrice(p) }}
+                </text>
+                <text
+                  class="vip-price-item"
+                  :class="{ 'vip-active': effectiveVipLevel === 1 }"
+                >
+                  月卡 ¥{{ getMonthVipPrice(p) }}
+                </text>
+                <text
+                  class="vip-price-item"
+                  :class="{ 'vip-active': effectiveVipLevel === 2 }"
+                >
+                  年卡 ¥{{ getYearVipPrice(p) }}
+                </text>
+              </view>
+            </view>
+          </view>
+        </view>
+        <view class="spacer"></view>
+      </scroll-view>
+    </view>
+
+    <view v-else class="delivery-notice-page">
+      <view class="notice-card">
+        <text class="notice-icon">🛵</text>
+        <text class="notice-title">本店暂无堂食/熟食自提</text>
+        <text class="notice-desc">为了保证最佳口感，熟食外卖请移步专业平台下单</text>
+        
+        <view class="platform-btns">
+          <button class="mt-btn" @click="openApp('meituan')">去美团外卖下单</button>
+          <button class="ele-btn" @click="openApp('eleme')">去饿了么下单</button>
+        </view>
+        <text class="sub-tip">温馨提示：生鲜云吞可切换回“生鲜自提”页购买</text>
+      </view>
+    </view>
+
+    <view v-if="activeTab === 'fresh'" class="footer-cart">
+      <view class="cart-icon-wrapper" :class="{ shake: cartAnim }" @click="toggleCartDrawer">
+        <text class="cart-icon">🛒</text>
+        <view class="badge" v-if="cartTotalCount > 0">
+          <text class="badge-num">{{ cartTotalCount }}</text>
+        </view>
+      </view>
+      <view class="cart-info" @click="toggleCartDrawer">
+        <text class="total-price" v-if="cartTotalCount > 0">¥{{ cartTotalVipPrice.toFixed(2) }}</text>
+        <text class="empty-tip" v-else>未选购商品</text>
+      </view>
+      <view
+        class="checkout-btn"
+        :class="{ 'checkout-active': cartTotalCount > 0 }"
+        @click="goCheckout"
+      >
+        <text class="checkout-text">{{ cartTotalCount > 0 ? '去结算' : '¥0 起送' }}</text>
+      </view>
+    </view>
+
+    <!-- 购物车已选列表（底部展开） -->
+    <view
+      v-if="activeTab === 'fresh' && showCartDrawer"
+      class="cart-drawer-mask"
+      @click="closeCartDrawer"
+    >
+      <view class="cart-drawer" @click.stop>
+        <view class="cart-drawer-header">
+          <text class="cart-drawer-title">已选商品</text>
+          <view class="cart-drawer-actions">
+            <text class="cart-clear" @click="clearCart">清空</text>
+          </view>
+        </view>
+
+        <scroll-view scroll-y="true" class="cart-drawer-body" :style="{ height: cartDrawerBodyHeight + 'px' }">
+          <view v-if="cartDisplayList.length === 0" class="cart-empty">
+            <text class="cart-empty-text">暂无已选商品</text>
+          </view>
+          <view v-else>
+            <view class="cart-line" v-for="line in cartDisplayList" :key="line.key">
+              <view class="cart-line-left">
+                <text class="cart-line-name">{{ line.name }}</text>
+                <text class="cart-line-sku" v-if="line.skuName">{{ line.skuName }}</text>
+              </view>
+              <view class="cart-line-right">
+                <text class="cart-line-price">¥{{ getCartLineTotalPrice(line).toFixed(2) }}</text>
+                <view class="cart-line-stepper">
+                  <view class="stepper-btn stepper-minus" @click="removeOneFromCart(line)">
+                    <text class="stepper-text">-</text>
+                  </view>
+                  <text class="stepper-count">{{ line.count }}</text>
+                  <view class="stepper-btn stepper-plus" @click="addOneFromCartLine(line)">
+                    <text class="stepper-text">+</text>
+                  </view>
+                </view>
+              </view>
+            </view>
+          </view>
+          <view class="cart-drawer-spacer"></view>
+        </scroll-view>
+      </view>
+    </view>
+
+    <view class="sku-modal-mask" v-if="showSkuModal" @click="closeSkuModal">
+      <view class="sku-modal" @click.stop>
+        <view class="sku-header">
+          <text class="sku-title">{{ currentProduct.name }}</text>
+          <view class="close-btn-wrap" @click="closeSkuModal">
+             <text class="close-text">×</text>
+          </view>
+        </view>
+        
+        <scroll-view scroll-y="true" class="sku-body">
+          <text class="sku-label">规格选择：</text>
+          <view class="sku-options">
+            <view 
+              v-for="sku in currentProduct.skus" 
+              :key="sku.sku_id"
+              class="sku-chip"
+              :class="{ 'sku-selected': selectedSku && selectedSku.sku_id === sku.sku_id }"
+              @click="selectSku(sku)"
+            >
+              <text class="chip-text" :class="{ 'chip-text-selected': selectedSku && selectedSku.sku_id === sku.sku_id }">
+                {{ formatSkuName(sku) }}
+              </text>
+            </view>
+          </view>
+        </scroll-view>
+
+        <view class="sku-footer">
+          <view class="price-box">
+            <text class="symbol">¥</text>
+            <text class="num">{{ selectedSku ? selectedSku.price : getShowPrice(currentProduct) }}</text>
+          </view>
+          <button 
+            class="confirm-btn" 
+            :disabled="!selectedSku" 
+            @click="confirmAddSku"
+          >
+            加入购物车
+          </button>
+        </view>
+      </view>
+    </view>
+
+    <view class="store-list-mask" v-if="showStoreList" @click="showStoreList = false">
+      <view class="store-list-modal" @click.stop>
+        <view class="list-header">
+          <text class="list-title">选择门店</text>
+          <text class="list-close" @click="showStoreList = false">×</text>
+        </view>
+        <scroll-view scroll-y="true" class="list-body">
+          <view 
+            class="store-item" 
+            v-for="store in mockStores" 
+            :key="store.id"
+            @click="selectStore(store)"
+          >
+            <view class="s-info">
+              <text class="s-name" :class="{ 's-name-active': store.id === currentStore.id }">{{ store.name }}</text>
+              <text class="s-addr">{{ store.address }}</text>
+            </view>
+            <text class="s-dist">{{ store.distance }}m</text>
+          </view>
+        </scroll-view>
+      </view>
+    </view>
+
+  </view>
+</template>
+
+<script setup>
+// 注意：uni-app x (uvue) 对类型要求严格，这里使用 web 兼容写法。
+// 如果是纯 uts 环境，需要定义 interface。
+import { ref, computed, onMounted } from 'vue';
+
+const API_BASE = "https://jmzt.cxxyonline.cn";
+
+// 会员折扣配置（可根据运营需求调整）
+const VIP_MONTH_DISCOUNT = 0.95; // 月卡 95 折
+const VIP_YEAR_DISCOUNT = 0.90;  // 年卡 9 折
+
+// --- State ---
+const activeTab = ref('fresh');
+const showStoreList = ref(false);
+const scrollIntoViewId = ref('');
+
+const mockStores = [
+  { id: 1, name: "北京市昌平区鼓楼西大街店", address: "鼓楼西大街14号", distance: 490 },
+  { id: 2, name: "回龙观西大街店", address: "回龙观西大街118号", distance: 1200 },
+  { id: 3, name: "天通苑华联店", address: "天通中苑2区", distance: 5400 },
+];
+const currentStore = ref(mockStores[0]);
+
+const categories = ref([]);
+const products = ref([]);
+const loading = ref(true);
+const activeCategoryId = ref(null);
+
+const userVip = ref({
+  vip_level: 0,
+  vip_type: 'none',
+  is_vip_valid: false
+});
+
+const cart = ref([]);
+const cartAnim = ref(false);
+const showCartDrawer = ref(false);
+const cartDrawerBodyHeight = ref(400); // 购物车抽屉内容区域高度
+
+const showSkuModal = ref(false);
+const currentProduct = ref({});
+const selectedSku = ref(null);
+
+// --- Methods ---
+
+onMounted(async () => {
+  // uvue 中推荐使用 uni.request
+  await Promise.all([loadCategories(), loadProducts()]);
+  loading.value = false;
+  // 加载当前用户的 VIP 信息
+  loadUserVipInfo();
+});
+
+const loadCategories = () => {
+  return new Promise((resolve) => {
+    uni.request({
+      url: `${API_BASE}/api/categories/list`,
+      success: (res) => {
+        if(res.statusCode === 200 && res.data.code === 200) {
+          categories.value = res.data.data || [];
+        }
+        resolve();
+      },
+      fail: () => resolve()
+    });
+  });
+};
+
+const loadProducts = () => {
+  return new Promise((resolve) => {
+    uni.request({
+      url: `${API_BASE}/api/products/list`,
+      success: (res) => {
+        if(res.statusCode === 200 && res.data.code === 200) {
+          products.value = res.data.data || [];
+        }
+        resolve();
+      },
+      fail: () => resolve()
+    });
+  });
+};
+
+// 加载当前用户的 VIP 信息
+const loadUserVipInfo = () => {
+  const openid = uni.getStorageSync('openid');
+  if (!openid) {
+    console.log('未获取到 openid，跳过VIP信息加载');
+    return;
+  }
+
+  uni.request({
+    url: `${API_BASE}/api/user/vip`,
+    method: 'GET',
+    data: { openid },
+    success: (res) => {
+      if (res.statusCode === 200 && res.data.code === 200 && res.data.data) {
+        userVip.value = res.data.data;
+        console.log('用户VIP信息加载成功:', userVip.value);
+      } else {
+        console.warn('获取VIP信息失败:', res.data && (res.data.msg || res.data.message));
+      }
+    },
+    fail: (err) => {
+      console.error('获取VIP信息请求失败:', err);
+    }
+  });
+};
+
+const groupedData = computed(() => {
+  if (!categories.value.length || !products.value.length) return [];
+  return categories.value.map(cat => {
+    const items = products.value.filter(p => p.category_id === cat.id);
+    return { ...cat, products: items };
+  }).filter(group => group.products.length > 0);
+});
+
+// 有效的 VIP 等级（仅在未过期时生效）
+const effectiveVipLevel = computed(() => {
+  if (!userVip.value || !userVip.value.is_vip_valid) return 0;
+  return Number(userVip.value.vip_level) || 0;
+});
+
+// 左侧点击 -> 右侧滚动
+const scrollToCategory = (id) => {
+  activeCategoryId.value = id;
+  // scroll-view 的 scroll-into-view 机制
+  scrollIntoViewId.value = 'cat-' + id;
+};
+
+// 右侧滚动 -> 左侧高亮
+// uvue/uni-app 中无法像 web 那样直接操作 DOM ref，需要依赖 api 或 估算
+// 这里简化：暂时不实现精确的滚动监听反选（因为 uni-app x 获取布局信息需要 createSelectorQuery）
+// 如果需要实现，通常做法是：onReady时计算所有 section 的 top 值存起来，然后在 onScroll 对比 scrollTop
+const onRightScroll = (e) => {
+  // 简单实现：如果用户自己在划，清空 scrollIntoViewId 防止冲突
+  scrollIntoViewId.value = '';
+};
+
+// 辅助函数
+const getProductImage = (p) => {
+  if (p.images && p.images.length) {
+    try {
+      const imgs = typeof p.images === 'string' ? JSON.parse(p.images) : p.images;
+      return imgs[0];
+    } catch(e) { return null; }
+  }
+  return null;
+};
+
+const getShowPrice = (p) => {
+  if (p.skus && p.skus.length > 0) return parseFloat(p.skus[0].price);
+  return 0;
+};
+
+// 根据原价和 VIP 等级计算会员价
+const calcVipPrice = (basePrice, level) => {
+  const p = Number(basePrice) || 0;
+  if (!p) return 0;
+  let factor = 1;
+  if (level === 1) {
+    factor = VIP_MONTH_DISCOUNT;
+  } else if (level === 2) {
+    factor = VIP_YEAR_DISCOUNT;
+  }
+  const result = p * factor;
+  return Math.round(result * 100) / 100;
+};
+
+// 月卡会员价
+const getMonthVipPrice = (product) => {
+  const base = getShowPrice(product);
+  return calcVipPrice(base, 1);
+};
+
+// 年卡会员价
+const getYearVipPrice = (product) => {
+  const base = getShowPrice(product);
+  return calcVipPrice(base, 2);
+};
+
+// 当前用户实际支付单价（根据 VIP 等级）
+const getUserPayPrice = (product) => {
+  const base = getShowPrice(product);
+  if (effectiveVipLevel.value === 1) {
+    return getMonthVipPrice(product);
+  }
+  if (effectiveVipLevel.value === 2) {
+    return getYearVipPrice(product);
+  }
+  return base;
+};
+
+const formatSkuName = (sku) => {
+  const attrs = [sku.attr1, sku.attr2, sku.attr3, sku.attr4].filter(a => a);
+  return attrs.length > 0 ? attrs.join(' | ') : sku.sku_name;
+};
+
+const handleAddClick = (product) => {
+  if (product.skus && product.skus.length > 1) {
+    openSkuModal(product);
+  } else if (product.skus && product.skus.length === 1) {
+    addToCart(product, product.skus[0]);
+  } else {
+    uni.showToast({ title: '暂无规格', icon: 'none' });
+  }
+};
+
+const openSkuModal = (product) => {
+  currentProduct.value = product;
+  selectedSku.value = product.skus[0];
+  showSkuModal.value = true;
+};
+const closeSkuModal = () => { showSkuModal.value = false; };
+const selectSku = (sku) => { selectedSku.value = sku; };
+const confirmAddSku = () => {
+  if (!selectedSku.value) return;
+  addToCart(currentProduct.value, selectedSku.value);
+  closeSkuModal();
+};
+
+const addToCart = (product, sku) => {
+  cart.value.push({
+    productId: product.id,
+    name: product.name,
+    skuId: sku.sku_id,
+    skuName: sku.sku_name,
+    price: parseFloat(sku.price)
+  });
+  cartAnim.value = true;
+  setTimeout(() => cartAnim.value = false, 300);
+  uni.showToast({ title: '已加入', icon: 'none' });
+};
+
+const cartTotalCount = computed(() => cart.value.length);
+// 原价总额（如后续需要展示可用），当前底部显示采用 VIP 后价格
+const cartTotalPrice = computed(() => cart.value.reduce((sum, item) => sum + item.price, 0));
+const cartDisplayList = computed(() => {
+  const map = new Map();
+  for (const item of cart.value) {
+    const key = `${item.productId}__${item.skuId}`;
+    const existing = map.get(key);
+    if (existing) {
+      existing.count += 1;
+    } else {
+      map.set(key, { ...item, key, count: 1 });
+    }
+  }
+  return Array.from(map.values());
+});
+
+// 单个购物车行的单价（根据当前 VIP 等级折扣）
+const getCartLineUnitPrice = (line) => {
+  return calcVipPrice(line.price, effectiveVipLevel.value);
+};
+
+// 单个购物车行的总价（单价 * 数量）
+const getCartLineTotalPrice = (line) => {
+  const unit = getCartLineUnitPrice(line);
+  return unit * line.count;
+};
+
+// 购物车总价（使用当前 VIP 折扣后的价格）
+const cartTotalVipPrice = computed(() => {
+  return cartDisplayList.value.reduce((sum, line) => {
+    return sum + getCartLineTotalPrice(line);
+  }, 0);
+});
+
+const toggleCartDrawer = () => {
+  if (cartTotalCount.value <= 0) {
+    uni.showToast({ title: '未选购商品', icon: 'none' });
+    return;
+  }
+  showCartDrawer.value = !showCartDrawer.value;
+  // 计算购物车抽屉内容区域高度
+  if (showCartDrawer.value) {
+    uni.getSystemInfo({
+      success: (res) => {
+        // 60vh 转换为实际像素，但最大不超过屏幕高度的60%
+        cartDrawerBodyHeight.value = Math.min(res.windowHeight * 0.6 - 50, res.windowHeight * 0.6);
+      }
+    });
+  }
+};
+const closeCartDrawer = () => { showCartDrawer.value = false; };
+const clearCart = () => {
+  cart.value = [];
+  showCartDrawer.value = false;
+};
+const removeOneFromCart = (line) => {
+  const idx = cart.value.findIndex(i => i.productId === line.productId && i.skuId === line.skuId);
+  if (idx >= 0) cart.value.splice(idx, 1);
+  if (cart.value.length === 0) showCartDrawer.value = false;
+};
+const addOneFromCartLine = (line) => {
+  // 直接复用现有结构：增加一条相同 sku 的记录
+  cart.value.push({
+    productId: line.productId,
+    name: line.name,
+    skuId: line.skuId,
+    skuName: line.skuName,
+    price: parseFloat(line.price)
+  });
+  cartAnim.value = true;
+  setTimeout(() => cartAnim.value = false, 300);
+};
+const getCategoryCount = (group) => {
+  const pIds = group.products.map(p => p.id);
+  return cart.value.filter(c => pIds.includes(c.productId)).length;
+};
+
+// 获取商品在购物车中的数量（所有SKU的总和）
+const getProductCartCount = (product) => {
+  return cart.value.filter(c => c.productId === product.id).length;
+};
+
+// 从商品卡片减少一个（默认SKU）
+const removeOneFromProduct = (product) => {
+  if (!product.skus || product.skus.length === 0) return;
+  const defaultSku = product.skus[0];
+  const idx = cart.value.findIndex(i => i.productId === product.id && i.skuId === defaultSku.sku_id);
+  if (idx >= 0) cart.value.splice(idx, 1);
+};
+
+// 从商品卡片增加一个（默认SKU）
+const addOneFromProduct = (product) => {
+  if (!product.skus || product.skus.length === 0) return;
+  const defaultSku = product.skus[0];
+  cart.value.push({
+    productId: product.id,
+    name: product.name,
+    skuId: defaultSku.sku_id,
+    skuName: defaultSku.sku_name,
+    price: parseFloat(defaultSku.price)
+  });
+  cartAnim.value = true;
+  setTimeout(() => cartAnim.value = false, 300);
+};
+
+const openStoreList = () => { showStoreList.value = true; };
+const selectStore = (store) => {
+  currentStore.value = store;
+  showStoreList.value = false;
+  // uni.showLoading(); loadProducts()...
+};
+
+const openApp = (app) => {
+  uni.showToast({ title: `正在打开${app === 'meituan' ? '美团' : '饿了么'}...`, icon: 'none' });
+};
+
+// 跳转到确认支付页，携带购物车数据
+const goCheckout = () => {
+  if (cartTotalCount.value <= 0) {
+    uni.showToast({ title: '未选购商品', icon: 'none' });
+    return;
+  }
+
+  // 将购物车明细整理成确认页需要的结构
+  const items = cartDisplayList.value.map((line) => ({
+    product_id: line.productId,
+    product_name: line.name,
+    sku_id: line.skuId,
+    sku_name: line.skuName,
+    quantity: line.count,
+    price: getCartLineUnitPrice(line),
+    image: '' // 如有图片字段可在此补充
+  }));
+
+  // 写入本地缓存，确认页从这里读取
+  uni.setStorageSync('checkoutPayload', {
+    items,
+    originAmount: cartTotalVipPrice.value
+  });
+
+  // 跳转到确认页，路径按你的 pages.json 实际配置调整
+  uni.navigateTo({
+    url: '/pages/orderconfirm/orderconfirm'
+  });
+};
+
+</script>
+
+<style>
+/* uvue 中 style 默认 scoped 且 flex */
+.ordering-page {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  background-color: #ffffff;
+}
+
+/* 头部 */
+.header {
+  padding: 10px 15px 0;
+  background-color: #fff;
+  display: flex;
+  flex-direction: column;
+}
+.store-selector {
+  margin-bottom: 10px;
+}
+.store-row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+.store-name {
+  font-size: 18px;
+  font-weight: bold;
+  color: #333;
+  margin-right: 8px;
+}
+.delivery-tag {
+  background-color: #333;
+  color: #fff;
+  font-size: 10px;
+  padding: 2px 4px;
+  border-radius: 4px;
+}
+.store-meta {
+  display: flex;
+  flex-direction: row;
+  margin-top: 4px;
+}
+.distance {
+  font-size: 12px;
+  color: #999;
+}
+.promo-text {
+  font-size: 12px;
+  color: #E63122;
+}
+
+.banner-placeholder {
+  height: 60px;
+  background-color: #fff5e6;
+  border-radius: 8px;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.banner-text {
+  color: #d35400;
+  font-size: 14px;
+  font-weight: bold;
+}
+
+/* Tab */
+.tab-bar {
+  display: flex;
+  flex-direction: row;
+  border-bottom-width: 1px;
+  border-bottom-style: solid;
+  border-bottom-color: #eee;
+  background-color: #fff;
+  height: 44px;
+}
+.tab-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+.tab-text {
+  font-size: 14px;
+  color: #666;
+}
+.text-active {
+  color: #333;
+  font-weight: bold;
+  font-size: 15px;
+}
+.indicator {
+  position: absolute;
+  bottom: 0;
+  width: 20px;
+  height: 3px;
+  background-color: #E63122;
+  border-radius: 2px;
+}
+
+/* 主内容 */
+.main-content {
+  flex: 1;
+  display: flex;
+  flex-direction: row;
+  overflow: hidden;
+}
+
+/* 左侧栏 */
+.sidebar {
+  width: 90px;
+  background-color: #f7f8fa;
+  height: 100%;
+}
+.cat-item {
+  padding: 15px 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  position: relative;
+  background-color: #f7f8fa;
+}
+.cat-active {
+  background-color: #fff;
+}
+/* uvue 不支持伪类实现左边框，用 border-left 模拟或 View */
+.cat-text {
+  font-size: 12px;
+  color: #666;
+}
+.cat-text-active {
+  color: #333;
+  font-weight: bold;
+}
+.count-badge {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  background-color: #E63122;
+  border-radius: 7px;
+  min-width: 14px;
+  height: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.badge-text {
+  color: #fff;
+  font-size: 9px;
+}
+
+/* 右侧栏 */
+.product-scroll-view {
+  flex: 1;
+  background-color: #fff;
+  padding: 0 10px;
+  height: 100%;
+}
+.category-section {
+  padding-top: 15px;
+}
+.section-title {
+  font-size: 13px;
+  color: #333;
+  font-weight: bold;
+  margin-bottom: 10px;
+  display: block;
+}
+
+.product-card {
+  display: flex;
+  flex-direction: row;
+  margin-bottom: 25px;
+}
+.product-img-box {
+  width: 90px;
+  height: 90px;
+  border-radius: 8px;
+  overflow: hidden;
+  background-color: #f9f9f9;
+  margin-right: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.p-img {
+  width: 90px;
+  height: 90px;
+}
+.no-img-text {
+  font-size: 10px;
+  color: #ccc;
+}
+.product-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+.p-name {
+  font-size: 15px;
+  font-weight: bold;
+  color: #333;
+}
+.p-desc {
+  font-size: 11px;
+  color: #999;
+  lines: 1; /* uvue 限制行数 */
+  text-overflow: ellipsis;
+  overflow: hidden;
+  margin-top: 4px;
+}
+.price-row {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: flex-end;
+}
+.price-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+.price-main {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-end;
+}
+.vip-price-line {
+  margin-top: 4px;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+}
+.vip-price-item {
+  font-size: 10px;
+  color: #999;
+  margin-right: 8px;
+}
+.vip-active {
+  color: #E63122;
+  font-weight: bold;
+}
+.currency {
+  font-size: 12px;
+  color: #E63122;
+  margin-bottom: 2px;
+}
+.price-val {
+  font-size: 18px;
+  color: #E63122;
+  font-weight: bold;
+}
+.unit {
+  font-size: 10px;
+  color: #999;
+  margin-left: 2px;
+  margin-bottom: 2px;
+}
+.add-btn {
+  background-color: #E63122;
+  border-radius: 12px;
+  padding: 4px 10px;
+}
+.add-btn-text {
+  color: #fff;
+  font-size: 12px;
+  font-weight: bold;
+}
+.spacer {
+  height: 140px;
+}
+
+/* 底部购物车 */
+.footer-cart {
+  height: 50px;
+  background-color: #fff;
+  border-top-width: 1px;
+  border-top-style: solid;
+  border-top-color: #eee;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 0 15px;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 200;
+  overflow: visible;
+}
+.cart-icon-wrapper {
+  width: 44px;
+  height: 44px;
+  background-color: #333;
+  border-radius: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  top: -10px;
+  overflow: visible;
+}
+.cart-icon {
+  color: #fff;
+  font-size: 20px;
+}
+.badge {
+  position: absolute;
+  top: -2px;
+  right: -2px;
+  background-color: #E63122;
+  border-radius: 8px;
+  padding: 1px 4px;
+  border-width: 1px;
+  border-color: #fff;
+  border-style: solid;
+}
+.badge-num {
+  color: #fff;
+  font-size: 9px;
+}
+.cart-info {
+  flex: 1;
+  margin-left: 15px;
+  display: flex;
+  flex-direction: column;
+}
+.total-price {
+  font-size: 18px;
+  font-weight: bold;
+  color: #333;
+}
+.empty-tip {
+  font-size: 12px;
+  color: #999;
+}
+.checkout-btn {
+  background-color: #ccc;
+  padding: 8px 20px;
+  border-radius: 20px;
+}
+.checkout-active {
+  background-color: #E63122;
+}
+.checkout-text {
+  color: #fff;
+  font-size: 14px;
+  font-weight: bold;
+}
+
+/* 购物车底部抽屉 */
+.cart-drawer-mask {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background-color: rgba(0,0,0,0.35);
+  z-index: 120;
+}
+.cart-drawer {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 50px; /* 给底部购物车条留空间 */
+  background-color: #fff;
+  border-top-left-radius: 12px;
+  border-top-right-radius: 12px;
+  max-height: 60vh;
+  display: flex;
+  flex-direction: column;
+}
+.cart-drawer-header {
+  padding: 12px 15px;
+  border-bottom-width: 1px;
+  border-bottom-style: solid;
+  border-bottom-color: #f0f0f0;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+.cart-drawer-title {
+  font-size: 14px;
+  color: #333;
+  font-weight: bold;
+}
+.cart-clear {
+  font-size: 12px;
+  color: #999;
+}
+.cart-drawer-body {
+  padding: 0 15px;
+  flex: 1;
+  overflow-y: auto;
+}
+.cart-empty {
+  padding: 30px 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.cart-empty-text {
+  font-size: 12px;
+  color: #999;
+}
+.cart-line {
+  padding: 12px 0;
+  border-bottom-width: 1px;
+  border-bottom-style: solid;
+  border-bottom-color: #f5f5f5;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+.cart-line-left {
+  flex: 1;
+  margin-right: 10px;
+  display: flex;
+  flex-direction: column;
+}
+.cart-line-name {
+  font-size: 13px;
+  color: #333;
+  font-weight: 500;
+}
+.cart-line-sku {
+  font-size: 11px;
+  color: #999;
+  margin-top: 2px;
+}
+.cart-line-right {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+.cart-line-price {
+  font-size: 13px;
+  color: #E63122;
+  font-weight: bold;
+  margin-right: 12px;
+}
+.cart-line-stepper {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+.stepper-btn {
+  width: 24px;
+  height: 24px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.stepper-minus {
+  border-width: 1px;
+  border-style: solid;
+  border-color: #ddd;
+  background-color: #fff;
+}
+.stepper-plus {
+  background-color: #E63122;
+}
+.stepper-text {
+  font-size: 16px;
+  color: #333;
+  font-weight: bold;
+}
+.stepper-plus .stepper-text {
+  color: #fff;
+}
+.stepper-count {
+  width: 24px;
+  text-align: center;
+  font-size: 12px;
+  color: #333;
+}
+.cart-drawer-spacer {
+  height: 10px;
+}
+
+/* 商品卡片中的数量选择器 */
+.product-stepper {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+.product-stepper .stepper-btn {
+  width: 24px;
+  height: 24px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.product-stepper .stepper-minus {
+  border-width: 1px;
+  border-style: solid;
+  border-color: #ddd;
+  background-color: #fff;
+}
+.product-stepper .stepper-plus {
+  background-color: #E63122;
+}
+.product-stepper .stepper-text {
+  font-size: 16px;
+  color: #333;
+  font-weight: bold;
+}
+.product-stepper .stepper-plus .stepper-text {
+  color: #fff;
+}
+.product-stepper .stepper-count {
+  width: 24px;
+  text-align: center;
+  font-size: 12px;
+  color: #333;
+  margin: 0 4px;
+}
+
+/* 提示页 */
+.delivery-notice-page {
+  flex: 1;
+  background-color: #f5f5f5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+.notice-card {
+  background-color: #fff;
+  width: 100%;
+  padding: 30px 20px;
+  border-radius: 12px;
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+}
+.notice-icon { font-size: 40px; margin-bottom: 20px; }
+.notice-title { font-size: 16px; font-weight: bold; color: #333; margin-bottom: 10px; }
+.notice-desc { font-size: 13px; color: #666; margin-bottom: 20px; text-align: center; }
+.platform-btns { width: 100%; display: flex; flex-direction: column; gap: 10px; }
+.mt-btn { background-color: #FFD101; color: #333; border-radius: 8px; font-size: 14px; margin-bottom: 10px;}
+.ele-btn { background-color: #0080FF; color: #fff; border-radius: 8px; font-size: 14px; }
+.sub-tip { font-size: 11px; color: #999; margin-top: 20px; }
+
+/* 弹窗蒙层 */
+.sku-modal-mask, .store-list-mask {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background-color: rgba(0,0,0,0.5);
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.sku-modal {
+  width: 280px;
+  background-color: #fff;
+  border-radius: 12px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+.sku-header {
+  padding: 15px;
+  border-bottom-width: 1px;
+  border-bottom-style: solid;
+  border-bottom-color: #eee;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+.sku-title { font-size: 16px; font-weight: bold; flex: 1; }
+.close-text { font-size: 24px; color: #ccc; }
+
+.sku-body {
+  padding: 15px;
+  max-height: 200px;
+}
+.sku-label { font-size: 12px; color: #666; margin-bottom: 8px; }
+.sku-options { display: flex; flex-direction: row; flex-wrap: wrap; }
+.sku-chip {
+  padding: 6px 12px;
+  background-color: #f5f5f5;
+  border-radius: 4px;
+  margin-right: 8px;
+  margin-bottom: 8px;
+  border-width: 1px;
+  border-style: solid;
+  border-color: transparent;
+}
+.sku-selected {
+  background-color: #FFF0EF;
+  border-color: #E63122;
+}
+.chip-text { font-size: 12px; color: #333; }
+.chip-text-selected { color: #E63122; }
+
+.sku-footer {
+  padding: 12px 15px;
+  background-color: #fff;
+  border-top-width: 1px;
+  border-top-style: solid;
+  border-top-color: #f5f5f5;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+.price-box { display: flex; flex-direction: row; align-items: flex-end; }
+.symbol { font-size: 12px; color: #E63122; margin-bottom: 4px; }
+.num { font-size: 20px; color: #E63122; font-weight: bold; }
+.confirm-btn {
+  background-color: #E63122;
+  color: #fff;
+  font-size: 12px;
+  border-radius: 20px;
+  padding: 0 15px;
+  height: 30px;
+  line-height: 30px;
+}
+
+/* 店铺列表弹窗 (底部滑出) */
+.store-list-mask {
+  align-items: flex-end;
+}
+.store-list-modal {
+  width: 100%;
+  background-color: #fff;
+  border-top-left-radius: 12px;
+  border-top-right-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  max-height: 400px;
+}
+.list-header {
+  padding: 15px;
+  border-bottom-width: 1px;
+  border-bottom-color: #eee;
+  border-bottom-style: solid;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  position: relative;
+}
+.list-title { font-size: 16px; font-weight: bold; }
+.list-close { position: absolute; right: 15px; font-size: 20px; color: #999; }
+.list-body { padding: 0 15px 20px; }
+.store-item {
+  padding: 15px 0;
+  border-bottom-width: 1px;
+  border-bottom-color: #f5f5f5;
+  border-bottom-style: solid;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+.s-info { display: flex; flex-direction: column; }
+.s-name { font-size: 15px; font-weight: bold; color: #333; margin-bottom: 4px; }
+.s-name-active { color: #E63122; }
+.s-addr { font-size: 12px; color: #999; }
+.s-dist { font-size: 12px; color: #666; }
+</style>

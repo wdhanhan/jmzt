@@ -1,0 +1,398 @@
+<template>
+  <view class="page-container">
+    <swiper class="bg-swiper" :indicator-dots="false" :autoplay="true" :interval="3000" :duration="1000" :circular="true">
+      <swiper-item v-for="(img, index) in bgImages" :key="index">
+        <image :src="img" class="bg-image" mode="aspectFill"></image>
+      </swiper-item>
+    </swiper>
+    
+    <view class="bg-mask"></view>
+
+    <view class="status-bar-placeholder"></view>
+
+    <scroll-view class="main-scroll" direction="vertical" :show-scrollbar="false">
+      
+      <view class="hero-section">
+        <view class="hero-text-group" @click="onJump('/pages/card/detail')">
+          <view class="hero-title-row">
+            <text class="hero-big-num">9.9</text>
+            <text class="hero-small-unit">元</text>
+          </view>
+          <text class="hero-sub-title">饺友卡</text>
+          <view class="hero-tag">
+            <text class="hero-tag-text">天天最高省40元</text>
+          </view>
+          
+          <view class="rotate-tag">
+             <text class="rotate-tag-text">30天</text>
+          </view>
+        </view>
+
+<!--        <view class="center-slogan">
+          <text class="slogan-text">最快</text>
+          <text class="slogan-text">一单回本</text>
+        </view> -->
+
+        <view class="float-packet" @click="onJump('/pages/activity/newuser')">
+          <text class="packet-text">领20元</text>
+          <text class="packet-sub">新人券包</text>
+        </view>
+      </view>
+
+      <view class="core-card">
+        <view class="user-row" @click="onJump('/pages/user/profile')">
+          <view class="user-left">
+            <view class="avatar-circle">
+              <text class="avatar-icon">☁️</text>
+            </view>
+            <text class="user-name">Hi 饺友</text>
+          </view>
+          <view class="user-right">
+            <text class="user-stat">余额 {{ userInfo.balance || 0 }}</text>
+            <text class="user-stat">积分 {{ userInfo.points || 0 }}</text>
+            <text v-if="userInfo.is_vip_valid" class="user-stat vip-badge">VIP{{ userInfo.vip_level }}</text>
+            <text class="qr-mini-icon">🏁</text>
+          </view>
+        </view>
+
+        <view class="big-actions">
+          <view class="action-box" @click="onJump('/pages/classify/classify')">
+            <text class="action-sub">在线点餐不用等</text>
+            <view class="action-main">
+              <text class="action-title">点餐</text>
+              <text class="action-icon">🍲</text>
+            </view>
+          </view>
+          <view class="action-box" @click="onJump('/pages/welfare/index')">
+            <text class="action-sub">奉上一手优惠</text>
+            <view class="action-main">
+              <text class="action-title">福利</text>
+              <text class="action-icon">🎫</text>
+            </view>
+            <view class="badge-tag">
+              <text class="badge-text">最新活动</text>
+            </view>
+          </view>
+        </view>
+
+        <view class="sub-actions">
+          <view class="sub-item" @click="onJump('/pages/card/month')">
+            <text class="sub-icon-cloud">☁️</text>
+            <text class="sub-title">超值月卡</text>
+            <text class="sub-desc">最高可省1200元</text>
+          </view>
+          <view class="sub-item" @click="onJump('/pages/member/rights')">
+            <text class="sub-icon-cloud">☁️</text>
+            <text class="sub-title">权益升级</text>
+            <text class="sub-desc">会员6大专属权益</text>
+          </view>
+          <view class="sub-item" @click="onJump('/pages/gift/card')">
+            <text class="sub-icon-cloud">☁️</text>
+            <text class="sub-title">袁礼卡</text>
+            <text class="sub-desc">送TA心意</text>
+          </view>
+        </view>
+      </view>
+
+      <view class="red-section">
+        
+        <view class="banner-row">
+          <view class="banner-item black-gold" @click="onJump('/pages/vip/vip')">
+            <text class="vip-text">VIP</text>
+            <text class="vip-sub">定制礼品卡</text>
+          </view>
+          <view class="banner-item red-gold" @click="onJump('/pages/member/welfare')">
+            <text class="member-title">会员福利升级</text>
+            <view class="packet-img-placeholder">
+              <text class="packet-text-sm">领20元</text>
+            </view>
+          </view>
+        </view>
+
+        <view class="info-card" @click="onJump('/pages/news/food')">
+          <view class="info-text-area">
+            <text class="info-title">爆品资讯</text>
+            <text class="info-sub">不知道今天吃什么?</text>
+            <view class="info-btn">
+              <text class="info-btn-text">点击查看</text>
+            </view>
+          </view>
+          <view class="info-img-area">
+             <text class="food-emoji">🥟</text>
+          </view>
+        </view>
+
+        <view class="info-card" @click="onJump('/pages/brandnews/brandnews')">
+          <view class="info-text-area">
+            <text class="info-title">品牌资讯</text>
+            <view class="info-btn">
+              <text class="info-btn-text">点击查看</text>
+            </view>
+          </view>
+          <view class="info-img-area">
+             <text class="food-emoji">🖐️🥩</text>
+          </view>
+        </view>
+
+        <view style="height: 100px;"></view>
+      </view>
+    </scroll-view>
+
+  </view>
+</template>
+
+<script setup lang="uts">
+  // 基础配置
+  const API_BASE = 'https://jmzt.cxxyonline.cn'
+
+  // 背景图片数组
+  const bgImages = ref([
+    '/static/images/home-pic-1.avif',
+    '/static/images/home-pic-2.avif'
+  ])
+
+  // 用户信息
+  const userInfo = ref({
+    balance: 0,
+    points: 0,
+    vip_level: 0,
+    vip_type: 'none',
+    is_vip_valid: false
+  })
+
+  /**
+   * 加载用户VIP信息
+   */
+  const loadUserVipInfo = () => {
+    const openid = uni.getStorageSync('openid')
+    if (!openid) {
+      console.log('未获取到 openid，跳过VIP信息加载')
+      return
+    }
+
+    uni.request({
+      url: `${API_BASE}/api/user/vip`,
+      method: 'GET',
+      data: {
+        openid: openid
+      },
+      success: (res: any) => {
+        if (res.statusCode === 200 && res.data.code === 200) {
+          userInfo.value = res.data.data
+          console.log('用户VIP信息加载成功:', userInfo.value)
+        } else {
+          console.warn('获取VIP信息失败:', res.data?.msg)
+        }
+      },
+      fail: (err) => {
+        console.error('获取VIP信息请求失败:', err)
+      }
+    })
+  }
+
+  // 页面加载时获取用户VIP信息
+  onLoad(() => {
+    loadUserVipInfo()
+  })
+
+  // 页面显示时刷新用户信息
+  onShow(() => {
+    loadUserVipInfo()
+  })
+
+  // 通用跳转事件
+  const onJump = (url : string) => {
+    console.log(`[Router] 启动跳转协议，目标路径: ${url}`);
+
+    uni.navigateTo({
+      url: url,
+      fail: (err) => {
+        // 如果报错提示是 Tabbar 页面，执行 switchTab
+        if (err.errMsg.includes("tabbar")) {
+          console.log('[Router] 命中根路由，执行 switchTab');
+          uni.switchTab({ url: url });
+        } else {
+          // 其他错误（如路径写错了）进行弹窗报错
+          uni.showToast({
+            title: '链路异常: ' + url,
+            icon: 'none'
+          });
+          console.error('[Router] 跳转彻底失败:', err);
+        }
+      }
+    });
+  }
+
+  const smartNavigate = (url : string) => {
+    console.log(`[Router] 尝试连接到路径: ${url}`);
+  
+    uni.navigateTo({
+      url: url,
+      fail: (err) => {
+        // 错误审计：如果是 tabbar 页面报错，则执行协议升级
+        if (err.errMsg.includes("can not navigateTo a tabbar page")) {
+          console.warn(`[Router] 检测到目标为 Tabbar 节点，切换至 switchTab 模式`);
+          uni.switchTab({
+            url: url,
+            success: () => {
+               console.log(`[Router] Tabbar 握手成功`);
+            },
+            fail: (switchErr) => {
+               console.error(`[Router] 物理链路断开: 路径不存在或配置错误`, switchErr);
+            }
+          });
+        } else {
+          console.error(`[Router] 系统性跳转失败:`, err);
+        }
+      }
+    });
+  };
+
+</script>
+
+
+<style>
+  /* 全局容器 */
+  .page-container {
+    flex: 1;
+    /* 去掉原来的红色背景 */
+    /* background-color: #d93025; */ 
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    position: relative; /* 确保子元素绝对定位相对于此 */
+  }
+
+  /* --- 新增：背景轮播样式 --- */
+  .bg-swiper {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0; /* 在最底层 */
+  }
+  .bg-image {
+    width: 100%;
+    height: 100%;
+  }
+  /* 可选：遮罩层，防止背景图太花影响文字阅读 */
+  .bg-mask {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(255, 255, 255, 0.2); /* 20%白色遮罩，可自行调整颜色 */
+    z-index: 1;
+    pointer-events: none; /* 让点击穿透遮罩 */
+  }
+
+  .status-bar-placeholder {
+    height: 44px;
+    /* 背景设为透明，让轮播图透出来 */
+    background-color: transparent; 
+    z-index: 2;
+  }
+
+  .main-scroll {
+    flex: 1;
+    z-index: 2; /* 内容层级高于背景 */
+  }
+
+  /* --- 顶部 Hero 区域 --- */
+  .hero-section {
+    height: 380px;
+    /* 移除原来的渐变色背景 */
+    background-color: transparent; 
+    padding: 10px 20px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* (保持原有的 hero 内部文字样式不变...) */
+  .hero-text-group { margin-top: 10px; }
+  .hero-title-row { flex-direction: row; align-items: flex-end; }
+  .hero-big-num { font-size: 60px; font-weight: 900; color: #4a3b2a; line-height: 60px; }
+  .hero-small-unit { font-size: 20px; color: #4a3b2a; margin-bottom: 10px; font-weight: bold; }
+  .hero-sub-title { font-size: 24px; font-weight: bold; color: #4a3b2a; margin-top: -5px; }
+  .hero-tag { background-color: #fff; border-radius: 4px; align-self: flex-start; padding: 2px 6px; margin-top: 5px; border-width: 1px; border-color: #4a3b2a; }
+  .hero-tag-text { font-size: 10px; color: #4a3b2a; }
+  .rotate-tag { position: absolute; top: 65px; left: 110px; background-color: #fff; border-width: 1px; border-color: #d4a770; padding: 2px 5px; transform: rotate(15deg); }
+  .rotate-tag-text { font-size: 12px; color: #4a3b2a; font-weight: bold; }
+  
+  .center-slogan { position: absolute; top: 150px; left: 0; right: 0; align-items: center; transform: rotate(-10deg); }
+  .slogan-text { font-size: 30px; font-weight: 900; color: #8c6a46; opacity: 0.2; }
+
+  .float-packet { position: absolute; right: 10px; top: 180px; width: 70px; height: 70px; background-color: #f7d6a8; border-radius: 35px; justify-content: center; align-items: center; border-width: 2px; border-color: #fff; z-index: 5; }
+  .packet-text { color: #d93025; font-weight: bold; font-size: 12px; }
+  .packet-sub { color: #d93025; font-size: 10px; }
+
+  /* --- 白色核心卡片 --- */
+  .core-card {
+    margin: -80px 15px 0 15px;
+    background-color: #ffffff; /* 保持白色背景，使其在复杂的图片背景上可见 */
+    border-radius: 12px;
+    padding: 15px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    z-index: 10;
+  }
+
+  /* (保持原有的 core-card 内部样式不变...) */
+  .user-row { flex-direction: row; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+  .user-left { flex-direction: row; align-items: center; }
+  .avatar-circle { width: 30px; height: 30px; background-color: #eee; border-radius: 15px; justify-content: center; align-items: center; margin-right: 8px; }
+  .user-name { font-size: 14px; font-weight: bold; color: #046b5a; }
+  .user-right { flex-direction: row; align-items: center; }
+  .user-stat { font-size: 11px; color: #046b5a; margin-left: 8px; }
+  .user-stat.vip-badge { 
+    background: linear-gradient(135deg, #f0c080, #d4a770);
+    color: #fff;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-weight: bold;
+  }
+  .qr-mini-icon { font-size: 16px; margin-left: 8px; color: #046b5a; }
+  .big-actions { flex-direction: row; justify-content: space-between; margin-bottom: 20px; }
+  .action-box { flex: 1; background-color: #fdf6e6; border-radius: 8px; padding: 10px; margin: 0 5px; height: 80px; justify-content: space-between; position: relative; }
+  .action-sub { font-size: 11px; color: #997f5d; }
+  .action-main { flex-direction: row; justify-content: space-between; align-items: flex-end; }
+  .action-title { font-size: 24px; font-weight: bold; color: #333; font-family: serif; }
+  .action-icon { font-size: 30px; }
+  .badge-tag { position: absolute; top: 0; right: 0; background-color: #ff6b00; padding: 2px 4px; border-top-right-radius: 8px; border-bottom-left-radius: 8px; }
+  .badge-text { color: #fff; font-size: 10px; }
+  .sub-actions { flex-direction: row; justify-content: space-around; padding-top: 10px; }
+  .sub-item { align-items: center; }
+  .sub-icon-cloud { font-size: 24px; color: #e0e0e0; margin-bottom: 5px; }
+  .sub-title { font-size: 14px; font-weight: bold; color: #333; }
+  .sub-desc { font-size: 10px; color: #999; margin-top: 2px; }
+
+  /* --- 红色区域 (修改为透明) --- */
+  .red-section {
+    /* 移除背景颜色，改为透明 */
+    background-color: transparent; 
+    padding: 15px;
+    padding-top: 20px;
+  }
+
+  /* (保持原有的 red-section 内部样式不变...) */
+  .banner-row { flex-direction: row; justify-content: space-between; margin-bottom: 15px; }
+  .banner-item { flex: 1; height: 70px; border-radius: 8px; margin: 0 4px; padding: 10px; justify-content: center; overflow: hidden; }
+  .black-gold { background-color: #2b2b2b; }
+  .red-gold { background-color: #e64a45; border-width: 1px; border-color: #ffcccc; }
+  .vip-text { color: #f0c080; font-size: 20px; font-style: italic; font-weight: bold; }
+  .vip-sub { color: #f0c080; font-size: 10px; }
+  .member-title { color: #fff; font-size: 16px; font-weight: bold; }
+  .packet-text-sm { color: #d93025; font-size: 10px; font-weight: bold; }
+  .packet-img-placeholder { align-self: flex-end; background-color: #fff; padding: 2px 5px; border-radius: 10px; margin-top: 5px; }
+  .info-card { background-color: #ad8356; height: 100px; border-radius: 8px; margin-bottom: 10px; flex-direction: row; overflow: hidden; }
+  .info-text-area { flex: 1; padding: 15px; justify-content: center; }
+  .info-title { font-size: 20px; color: #fff; font-weight: bold; margin-bottom: 5px; text-shadow: 0 2px 2px rgba(0,0,0,0.2); }
+  .info-sub { font-size: 12px; color: #eee; margin-bottom: 8px; }
+  .info-btn { background-color: rgba(255,255,255,0.2); align-self: flex-start; padding: 2px 10px; border-radius: 12px; border-width: 1px; border-color: rgba(255,255,255,0.5); }
+  .info-btn-text { color: #fff; font-size: 10px; }
+  .info-img-area { width: 120px; justify-content: center; align-items: center; }
+  .food-emoji { font-size: 60px; }
+</style>
