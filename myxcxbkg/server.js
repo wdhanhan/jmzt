@@ -3,6 +3,7 @@ const bodyParser = require('body-parser');
 const mysql = require('mysql2');
 const cors = require('cors');
 const axios = require('axios');
+const QRCode = require('qrcode');
 
 const app = express();
 
@@ -1844,6 +1845,121 @@ app.post('/api/pay/wechat/notify/manual', (req, res) => {
 });
 
 /**
+ * 🧩 帮助函数：发放 VIP 权益优惠券
+ * - 根据 VIP 订单里的 vip_type / vip_level / vip_days，给用户插入 user_coupons
+ * - 月卡：6 张「VIP月卡 3元券」，立即可用
+ * - 年卡：12 张「VIP年卡 5元券」，其中一半立即可用，一半从 30 天后才可用（满足“有些券一个月后才能用”）
+ */
+function grantVipCoupons(connection, openid, vipInfo, callback) {
+  if (!openid || !vipInfo) {
+    return callback && callback(null);
+  }
+
+  const vipType = vipInfo.vip_type || '';
+  const vipLevel = Number(vipInfo.vip_level) || 1;
+  const vipDays = Number(vipInfo.vip_days) || 30;
+
+  // 根据天数粗略区分月卡 / 年卡
+  const isMonthVip = vipDays <= 60;
+  const couponName = isMonthVip ? 'VIP月卡 3元券' : 'VIP年卡 5元券';
+  const couponCount = isMonthVip ? 6 : 12;
+
+  // 查出对应券模板ID
+  const sqlFindCoupon = 'SELECT id, name FROM coupons WHERE name = ? LIMIT 1';
+  connection.query(sqlFindCoupon, [couponName], (err, rows) => {
+    if (err) {
+      console.error('查询券模板失败:', err);
+      // 不阻断整体流程，只记录日志
+      return callback && callback(null);
+    }
+    if (!rows || rows.length === 0) {
+      console.warn('未找到对应的券模板:', couponName);
+      return callback && callback(null);
+    }
+
+    const couponId = rows[0].id;
+    const now = new Date();
+    const nowMs = now.getTime();
+    const dayMs = 24 * 60 * 60 * 1000;
+    const vipExpire = new Date(nowMs + vipDays * dayMs);
+    const oneMonthLater = new Date(nowMs + 30 * dayMs);
+
+    const formatTime = (d) => {
+      const pad = (n) => (n < 10 ? '0' + n : '' + n);
+      const y = d.getFullYear();
+      const m = pad(d.getMonth() + 1);
+      const dd = pad(d.getDate());
+      const hh = pad(d.getHours());
+      const mi = pad(d.getMinutes());
+      const ss = pad(d.getSeconds());
+      return `${y}-${m}-${dd} ${hh}:${mi}:${ss}`;
+    };
+
+    const activeNow = formatTime(now);
+    const activeLater = formatTime(oneMonthLater);
+    const expireTime = formatTime(vipExpire);
+
+    const values = [];
+
+    if (isMonthVip) {
+      // 月卡：6 张券全部立即可用，有效期跟 VIP 保持一致
+      for (let i = 0; i < couponCount; i++) {
+        values.push([
+          openid,
+          couponId,
+          activeNow,
+          expireTime,
+          0, // status=0 未使用
+          null, // used_time
+          null, // order_no
+          vipType || (vipLevel === 1 ? 'vip_month' : 'vip_year'),
+          'VIP权益自动发放'
+        ]);
+      }
+    } else {
+      // 年卡：12 张券，一半现在生效，一半 30 天后生效
+      const half = Math.floor(couponCount / 2);
+      for (let i = 0; i < couponCount; i++) {
+        const useFrom = i < half ? activeNow : activeLater;
+        values.push([
+          openid,
+          couponId,
+          useFrom,
+          expireTime,
+          0,
+          null,
+          null,
+          vipType || (vipLevel === 2 ? 'vip_year' : 'vip'),
+          'VIP年卡权益自动发放'
+        ]);
+      }
+    }
+
+    const insertSql = `
+      INSERT INTO user_coupons
+        (openid, coupon_id, active_time, expire_time, status, used_time, order_no, source, remark)
+      VALUES ?
+    `;
+
+    connection.query(insertSql, [values], (insertErr) => {
+      if (insertErr) {
+        console.error('发放 VIP 优惠券失败:', insertErr);
+      } else {
+        console.log(
+          '✅ 已为 VIP 用户发放优惠券:',
+          openid,
+          '券模板ID:',
+          couponId,
+          '数量:',
+          couponCount
+        );
+      }
+      return callback && callback(null);
+    });
+  });
+}
+
+/**
  * ✅ 微信支付结果回调（由 Go 支付服务转发过来）
  * POST /api/pay/wechat/notify
  *
@@ -2007,7 +2123,7 @@ function handlePaymentNotify(req, res) {
 
             // 处理VIP订单或充值订单
             if (isVipOrder && vipInfo) {
-              // VIP订单：更新VIP状态和到期时间，可能还要增加余额
+              // VIP订单：更新VIP状态和到期时间，可能还要增加余额，并发放优惠券
               const vipLevel = Number(vipInfo.vip_level) || 1;
               const vipDays = Number(vipInfo.vip_days) || 30;
               const balanceAmount = Number(vipInfo.balance) || 0;
@@ -2035,27 +2151,29 @@ function handlePaymentNotify(req, res) {
                   console.log('✅ VIP状态已更新:', order.user_id, '等级:', vipLevel, '天数:', vipDays, '余额:', balanceAmount);
                 }
 
-                // 无论VIP更新成功与否，都提交事务
-                connection.commit((errCommit) => {
-                  if (errCommit) {
-                    console.error('提交事务失败:', errCommit);
-                    return connection.rollback(() => {
-                      connection.release();
-                      res.status(500).json({ code: 500, message: '提交事务失败' });
-                    });
-                  }
+                // 在同一个事务里为 VIP 用户发放权益券（失败不影响主流程）
+                grantVipCoupons(connection, order.user_id, vipInfo, () => {
+                  connection.commit((errCommit) => {
+                    if (errCommit) {
+                      console.error('提交事务失败:', errCommit);
+                      return connection.rollback(() => {
+                        connection.release();
+                        res.status(500).json({ code: 500, message: '提交事务失败' });
+                      });
+                    }
 
-                  console.log('✅ VIP订单支付成功已处理完成:', orderNo);
-                  connection.release();
-                  
-                  res.status(200).json({
-                    code: 200,
-                    message: 'SUCCESS',
-                    data: {
-                      orderId: order.id,
-                      orderNo,
-                      transaction_id,
-                    },
+                    console.log('✅ VIP订单支付成功已处理完成并尝试发放优惠券:', orderNo);
+                    connection.release();
+                    
+                    res.status(200).json({
+                      code: 200,
+                      message: 'SUCCESS',
+                      data: {
+                        orderId: order.id,
+                        orderNo,
+                        transaction_id,
+                      },
+                    });
                   });
                 });
               });
@@ -2241,6 +2359,8 @@ app.get('/api/order/detail', (req, res) => {
       pay_amount,
       status,
       order_type,
+      verify_status,
+      order_type,
       refund_status,
       refund_amount,
       refund_time,
@@ -2275,6 +2395,32 @@ app.get('/api/order/detail', (req, res) => {
 
     return res.json({ code: 200, data: info });
   });
+});
+
+// 生成订单核验二维码（内容为订单号）
+app.get('/api/order/qr', async (req, res) => {
+  const { order_no } = req.query;
+
+  if (!order_no) {
+    return res.status(400).send('order_no required');
+  }
+
+  try {
+    const text = String(order_no);
+    const buffer = await QRCode.toBuffer(text, {
+      type: 'png',
+      margin: 1,
+      width: 480
+    });
+
+    res.setHeader('Content-Type', 'image/png');
+    // 可选：简单缓存
+    res.setHeader('Cache-Control', 'public, max-age=300');
+    res.send(buffer);
+  } catch (e) {
+    console.error('生成订单二维码失败:', e);
+    res.status(500).send('fail');
+  }
 });
 
 // 查询当前用户退款相关订单
@@ -2547,6 +2693,8 @@ app.get('/api/order/list', (req, res) => {
       total_amount,
       pay_amount,
       status,
+      order_type,
+      verify_status,
       refund_status,
       refund_amount,
       refund_time,
@@ -3181,6 +3329,72 @@ app.get('/api/user/vip', (req, res) => {
           points: 0  // 积分暂时返回0，如果后续有积分系统再添加字段
         }
       });
+    });
+  });
+});
+
+/**
+ * ✅ 获取用户可用优惠券列表
+ * GET /api/user/coupons?openid=xxx[&min_amount=100]
+ */
+app.get('/api/user/coupons', (req, res) => {
+  const { openid, min_amount } = req.query;
+
+  if (!openid) {
+    return res.json({ code: 400, msg: 'openid 必传' });
+  }
+
+  const minAmountNum = typeof min_amount !== 'undefined' ? Number(min_amount) : null;
+
+  let sql = `
+    SELECT 
+      uc.id,
+      uc.coupon_id,
+      uc.active_time,
+      uc.expire_time,
+      uc.status,
+      c.name,
+      c.description,
+      c.threshold_amount,
+      c.discount_amount
+    FROM user_coupons uc
+    JOIN coupons c ON uc.coupon_id = c.id
+    WHERE uc.openid = ?
+      AND uc.status = 0
+      AND uc.active_time <= NOW()
+      AND uc.expire_time >= NOW()
+  `;
+
+  const params = [openid];
+
+  if (!isNaN(minAmountNum) && minAmountNum !== null) {
+    sql += ' AND c.threshold_amount <= ?';
+    params.push(minAmountNum);
+  }
+
+  sql += ' ORDER BY uc.expire_time ASC, c.discount_amount DESC';
+
+  db.query(sql, params, (err, rows) => {
+    if (err) {
+      console.error('查询用户优惠券失败:', err);
+      return res.json({ code: 500, msg: '查询用户优惠券失败' });
+    }
+
+    const list = (rows || []).map((r) => ({
+      id: r.id,
+      coupon_id: r.coupon_id,
+      name: r.name,
+      description: r.description,
+      active_time: r.active_time,
+      expire_time: r.expire_time,
+      status: r.status,
+      threshold_amount: Number(r.threshold_amount || 0),
+      discount_amount: Number(r.discount_amount || 0),
+    }));
+
+    return res.json({
+      code: 200,
+      data: list,
     });
   });
 });

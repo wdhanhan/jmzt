@@ -1,0 +1,628 @@
+<template>
+  <!-- 整页滚动 -->
+  <scroll-view
+    class="page"
+    scroll-y="true"
+    :style="{ paddingTop: statusBarHeight + 'px' }"
+  >
+    <!-- 顶部头部栏 -->
+    <view class="header">
+      <view class="back" @click="onBack">
+        <image class="back-icon" src="/static/images/icon/back_icon.png"></image>
+      </view>
+      <text class="title">订单详情</text>
+    </view>
+
+    <!-- 如果没有订单（比如 id 不存在） -->
+    <view v-if="!order || !order.id" class="empty">
+      <text class="empty-text">未找到相关订单，请返回重试</text>
+    </view>
+
+    <!-- 有订单时显示内容 -->
+    <view v-else class="content">
+
+      <!-- 状态 & 金额卡片 -->
+      <view class="card status-card">
+        <view class="status-line">
+          <text class="status-tag" :class="'status-' + Number(order.status || 0)">
+            {{ statusText }}
+          </text>
+        </view>
+        <view class="amount-line">
+          <text class="label">实付金额</text>
+          <view class="amount">
+            <text class="amount-min">￥</text>
+            <text class="amount-max">{{ formatAmount(order.pay_amount) }}</text>
+          </view>
+        </view>
+        <view class="time-line">
+          <text class="time-text">
+            下单时间：{{ formatTimePlus8(order.created_at) }}
+          </text>
+        </view>
+        <view class="time-line">
+          <text class="time-text">
+            支付时间：{{ formatTimePlus8(order.pay_time) }}
+          </text>
+        </view>
+      </view>
+
+      <!-- 核验二维码（仅订单类型为普通订单、已支付且未核验时展示） -->
+      <view class="card section-card" v-if="shouldShowQr">
+        <view class="section-title">
+          <text class="section-title-text">核验二维码</text>
+        </view>
+        <view class="verify-qr-box">
+          <image
+            v-if="qrUrl"
+            :src="qrUrl"
+            class="verify-qr-image"
+            mode="aspectFit"
+          ></image>
+          <view v-else class="verify-qr-placeholder">
+            <text class="verify-qr-placeholder-text">正在生成二维码...</text>
+          </view>
+          <text class="verify-qr-tip">
+            请出示此码给工作人员核验，二维码内容为订单号 {{ order.order_no || order.id }}
+          </text>
+        </view>
+      </view>
+
+      <!-- 课程信息（来自 items_snapshot） -->
+      <view class="card section-card">
+        <view class="section-title">
+          <text class="section-title-text">课程信息</text>
+        </view>
+
+        <block v-if="items && items.length">
+          <view
+            v-for="(it, idx) in items"
+            :key="idx"
+            class="course-item"
+          >
+            <view class="course-pic">
+              <image
+                v-if="it.image"
+                :src="it.image"
+                class="course-image"
+                mode="aspectFill"
+              ></image>
+              <view v-else class="course-noimg">
+                <text class="course-noimg-text">无图</text>
+              </view>
+            </view>
+
+            <view class="course-info">
+              <view class="course-name">
+                <text class="course-name-main">
+                  {{ it.name }}
+                </text>
+              </view>
+
+              <view v-if="it.sku_name" class="course-subline">
+                <text class="course-sub-text">{{ it.sku_name }}</text>
+              </view>
+
+              <view v-if="it.attr1 || it.attr2 || it.attr3" class="course-attrs">
+                <text v-if="it.attr1" class="course-attr-text">{{ it.attr1 }}</text>
+                <text v-if="it.attr2" class="course-attr-text">{{ it.attr2 }}</text>
+                <text v-if="it.attr3" class="course-attr-text">{{ it.attr3 }}</text>
+              </view>
+
+              <view class="course-bottom">
+                <view class="course-price">
+                  <text class="course-price-min">￥</text>
+                  <text class="course-price-max">{{ formatAmount(it.price) }}</text>
+                  <text class="course-num">x{{ it.quantity || 1 }}</text>
+                </view>
+              </view>
+            </view>
+          </view>
+        </block>
+
+        <view v-else class="no-items">
+          <text class="no-items-text">暂无课程信息</text>
+        </view>
+      </view>
+
+      <!-- 订单信息 -->
+      <view class="card section-card">
+        <view class="section-title">
+          <text class="section-title-text">订单信息</text>
+        </view>
+        <view class="row">
+          <text class="row-label">订单号</text>
+          <text class="row-value">{{ order.order_no || order.id }}</text>
+        </view>
+        <view class="row">
+          <text class="row-label">下单时间</text>
+          <text class="row-value">{{ formatTimePlus8(order.created_at) }}</text>
+        </view>
+        <view class="row">
+          <text class="row-label">支付时间</text>
+          <text class="row-value">{{ formatTimePlus8(order.pay_time) }}</text>
+        </view>
+        <view class="row">
+          <text class="row-label">订单状态</text>
+          <text class="row-value">{{ statusText }}</text>
+        </view>
+        <view class="row">
+          <text class="row-label">支付方式</text>
+          <text class="row-value">微信支付</text>
+        </view>
+      </view>
+
+      <!-- 页底空隙 -->
+      <view style="height: 60rpx;"></view>
+    </view>
+  </scroll-view>
+</template>
+
+<script>
+const API_BASE = 'https://jmzt.cxxyonline.cn';
+
+export default {
+  data() {
+    return {
+      statusBarHeight: 0,
+
+      orderId: 0,    // 路由传入的订单 id
+      order: {},     // 当前订单
+      items: [],     // items_snapshot 解析后的课程数组
+      qrUrl: '',     // 核验二维码图片地址
+    };
+  },
+
+  computed: {
+    // 订单状态文案
+    statusText() {
+      const s = Number(this.order.status || 0);
+      switch (s) {
+        case 0: return '待支付';
+        case 1: return '已支付';
+        case 2: return '退款中';
+        case 3: return '已退款';
+        default: return '未知状态';
+      }
+    },
+
+    // 是否展示核验二维码：
+    // 仅当订单类型为 0（普通订单）、状态为已支付且未核验时展示
+    shouldShowQr() {
+      const s = Number(this.order.status || 0);
+      const ot = Number(this.order.order_type || 0);
+      const vsRaw = this.order.verify_status;
+      const vs = vsRaw === null || vsRaw === undefined ? 0 : Number(vsRaw);
+      return s === 1 && ot === 0 && vs === 0;
+    }
+  },
+
+  onLoad(options) {
+    const win = uni.getWindowInfo();
+    this.statusBarHeight = win.statusBarHeight || 0;
+
+    const idStr = (options && (options.orderId || options.id)) || '';
+    this.orderId = Number(idStr) || 0;
+
+    this.loadOrder();
+  },
+
+  methods: {
+    // 返回上一页
+    onBack() {
+      uni.navigateBack();
+    },
+
+    // 加载订单：通过 openid 拉取列表，再按 id 找到当前订单
+    loadOrder() {
+      const openid = uni.getStorageSync('openid');
+      if (!openid) {
+        uni.showToast({
+          title: '未找到用户信息，请先登录',
+          icon: 'none'
+        });
+        return;
+      }
+
+      uni.request({
+        url: `${API_BASE}/api/order/list`,
+        method: 'GET',
+        data: { openid },
+        success: (res) => {
+          const body = res.data || {};
+          if (body.code !== 200) {
+            uni.showToast({
+              title: body.msg || '订单加载失败',
+              icon: 'none'
+            });
+            return;
+          }
+
+          const list = body.data || [];
+          const found = list.find(o => Number(o.id) === this.orderId);
+
+          if (!found) {
+            uni.showToast({
+              title: '未找到该订单',
+              icon: 'none'
+            });
+            return;
+          }
+
+          this.order = found;
+          this.parseItems(found.items_snapshot);
+          this.buildQr();
+        },
+        fail: () => {
+          uni.showToast({
+            title: '网络异常，请稍后重试',
+            icon: 'none'
+          });
+        }
+      });
+    },
+
+    // 解析 items_snapshot 里的课程信息
+    parseItems(snapshot) {
+      this.items = [];
+
+      if (!snapshot) return;
+
+      try {
+        const arr = JSON.parse(snapshot);
+        if (!Array.isArray(arr)) return;
+
+        this.items = arr.map(it => ({
+          product_id: it.product_id,
+          sku_id: it.sku_id,
+          name: it.name || it.product_name || '课程',
+          sku_name: it.sku_name || '',
+          price: Number(it.price || 0),
+          quantity: Number(it.quantity || 1),
+          image: it.image || '',
+          attr1: it.attr1 || '',
+          attr2: it.attr2 || '',
+          attr3: it.attr3 || '',
+        }));
+      } catch (e) {
+        console.error('解析 items_snapshot 出错：', e);
+      }
+    },
+
+    // 构建核验二维码 URL（内容为订单号）
+    buildQr() {
+      const no = this.order.order_no || this.order.id;
+      if (!no) {
+        this.qrUrl = '';
+        return;
+      }
+      const text = String(no);
+      this.qrUrl = `${API_BASE}/api/order/qr?order_no=${encodeURIComponent(text)}`;
+    },
+
+    // 金额格式化：保留两位小数
+    formatAmount(v) {
+      const n = Number(v || 0);
+      return n.toFixed(2);
+    },
+
+    // 时间 +8 小时后展示
+    formatTimePlus8(t) {
+      if (!t) return '—';
+      const d = new Date(t);
+      if (isNaN(d.getTime())) return String(t);
+
+      const ts = d.getTime() + 8 * 60 * 60 * 1000;
+      const dd = new Date(ts);
+
+      const y = dd.getFullYear();
+      const m = (dd.getMonth() + 1).toString().padStart(2, '0');
+      const day = dd.getDate().toString().padStart(2, '0');
+      const hh = dd.getHours().toString().padStart(2, '0');
+      const mm = dd.getMinutes().toString().padStart(2, '0');
+      const ss = dd.getSeconds().toString().padStart(2, '0');
+      return `${y}-${m}-${day} ${hh}:${mm}:${ss}`;
+    }
+  }
+};
+</script>
+
+<style lang="scss">
+.page {
+  background-color: #f5f5f5;
+  min-height: 100vh;
+  box-sizing: border-box;
+}
+
+/* 头部 */
+.header {
+  height: 88rpx;
+  background-color: #ffffff;
+  padding: 0 24rpx;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.05);
+  margin-bottom: 20rpx;
+}
+
+.back {
+  width: 80rpx;
+  height: 88rpx;
+  display: flex;
+  align-items: center;
+}
+
+.back-icon {
+  width: 40rpx;
+  height: 40rpx;
+}
+
+.title {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #111827;
+}
+
+/* 内容容器 */
+.content {
+  padding: 0 24rpx 24rpx 24rpx;
+}
+
+/* 卡片通用样式 */
+.card {
+  background-color: #ffffff;
+  border-radius: 16rpx;
+  padding: 20rpx 24rpx;
+  margin-bottom: 20rpx;
+}
+
+/* 状态 / 金额卡片 */
+.status-card .status-line {
+  margin-bottom: 12rpx;
+}
+
+.status-tag {
+  padding: 4rpx 16rpx;
+  border-radius: 999rpx;
+  font-size: 24rpx;
+}
+
+/* 不同状态颜色 */
+.status-0 {
+  background-color: #fef3c7;
+  color: #92400e;
+}
+.status-1 {
+  background-color: #dcfce7;
+  color: #166534;
+}
+.status-2 {
+  background-color: #e0f2fe;
+  color: #075985;
+}
+.status-3 {
+  background-color: #fee2e2;
+  color: #991b1b;
+}
+
+.amount-line {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-end;
+  margin-top: 4rpx;
+  margin-bottom: 12rpx;
+}
+
+.amount-line .label {
+  font-size: 26rpx;
+  color: #6b7280;
+  margin-right: 12rpx;
+}
+
+.amount {
+  flex-direction: row;
+  align-items: flex-end;
+}
+
+.amount-min {
+  font-size: 24rpx;
+  color: #111827;
+}
+
+.amount-max {
+  font-size: 40rpx;
+  font-weight: 600;
+  color: #111827;
+}
+
+.time-line {
+  margin-top: 4rpx;
+}
+
+.time-text {
+  font-size: 24rpx;
+  color: #6b7280;
+}
+
+/* 通用分块卡片 */
+.section-card .section-title {
+  margin-bottom: 12rpx;
+}
+
+.section-title-text {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #111827;
+}
+
+/* 核验二维码 */
+.verify-qr-box {
+  align-items: center;
+  justify-content: center;
+}
+
+.verify-qr-image {
+  width: 320rpx;
+  height: 320rpx;
+  margin: 12rpx 0;
+  border-radius: 16rpx;
+  background-color: #f3f4f6;
+}
+
+.verify-qr-placeholder {
+  width: 320rpx;
+  height: 320rpx;
+  margin: 12rpx 0;
+  border-radius: 16rpx;
+  background-color: #f3f4f6;
+  align-items: center;
+  justify-content: center;
+  display: flex;
+}
+
+.verify-qr-placeholder-text {
+  font-size: 24rpx;
+  color: #9ca3af;
+}
+
+.verify-qr-tip {
+  margin-top: 4rpx;
+  font-size: 22rpx;
+  color: #6b7280;
+  text-align: center;
+}
+
+/* 行 */
+.row {
+  display: flex;
+  flex-direction: row;
+  padding: 8rpx 0;
+}
+
+.row-label {
+  width: 160rpx;
+  font-size: 26rpx;
+  color: #6b7280;
+}
+
+.row-value {
+  flex: 1;
+  font-size: 26rpx;
+  color: #111827;
+}
+
+/* 课程项 */
+.course-item {
+  display: flex;
+  flex-direction: row;
+  padding: 14rpx 0;
+  border-top-width: 1rpx;
+  border-top-style: solid;
+  border-top-color: #f1f5f9;
+}
+
+.course-item:first-of-type {
+  border-top-width: 0;
+}
+
+.course-pic {
+  width: 160rpx;
+  height: 160rpx;
+  margin-right: 16rpx;
+}
+
+.course-image {
+  width: 100%;
+  height: 100%;
+  border-radius: 12rpx;
+}
+
+.course-noimg {
+  width: 100%;
+  height: 100%;
+  border-radius: 12rpx;
+  background-color: #f3f4f6;
+  align-items: center;
+  justify-content: center;
+  display: flex;
+}
+
+.course-noimg-text {
+  font-size: 24rpx;
+  color: #9ca3af;
+}
+
+.course-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.course-name-main {
+  font-size: 28rpx;
+  font-weight: 500;
+  color: #111827;
+}
+
+.course-subline {
+  margin-top: 4rpx;
+}
+
+.course-sub-text {
+  font-size: 24rpx;
+  color: #6b7280;
+}
+
+.course-attrs {
+  margin-top: 4rpx;
+}
+
+.course-attr-text {
+  font-size: 22rpx;
+  color: #6b7280;
+  margin-right: 8rpx;
+}
+
+.course-bottom {
+  margin-top: 10rpx;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: flex-end;
+}
+
+.course-price {
+  flex-direction: row;
+  align-items: flex-end;
+}
+
+.course-price-min {
+  font-size: 24rpx;
+  color: #ef4444;
+}
+
+.course-price-max {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #ef4444;
+}
+
+.course-num {
+  font-size: 24rpx;
+  color: #6b7280;
+  margin-left: 8rpx;
+}
+
+/* 空状态 */
+.empty {
+  padding: 120rpx 40rpx;
+  align-items: center;
+  justify-content: center;
+}
+
+.empty-text {
+  font-size: 28rpx;
+  color: #9ca3af;
+}
+</style>

@@ -417,12 +417,7 @@ const getProductImage = (p) => {
   return null;
 };
 
-const getShowPrice = (p) => {
-  if (p.skus && p.skus.length > 0) return parseFloat(p.skus[0].price);
-  return 0;
-};
-
-// 根据原价和 VIP 等级计算会员价
+// 根据原价和 VIP 等级计算会员价（兜底规则）
 const calcVipPrice = (basePrice, level) => {
   const p = Number(basePrice) || 0;
   if (!p) return 0;
@@ -436,28 +431,84 @@ const calcVipPrice = (basePrice, level) => {
   return Math.round(result * 100) / 100;
 };
 
+// 从 sku_name 文本中解析 V1 / V2 价格
+// 约定：sku_name 中形如 "/18.8/28.8/26.8"，后两段为 V1/V2 价格
+// 原价始终以 sku.price 为准，而不是第一个片段
+// 仅解析带小数点的片段，避免把「3件装」里的 3 识别成价格
+const getSkuPriceInfo = (sku) => {
+  const skuName = String(sku.sku_name || '').trim();
+  const parts = skuName.split('/').map((p) => p.trim()).filter((p) => p);
+  const nums = parts
+    .filter((p) => p.indexOf('.') >= 0)
+    .map((p) => Number(p))
+    .filter((v) => !Number.isNaN(v));
+
+  const v1FromSku = nums.length > 1 ? nums[1] : null;
+  const v2FromSku = nums.length > 2 ? nums[2] : null;
+
+  const base = Number(sku.price) || 0;
+
+  return {
+    origin: base,
+    v1: v1FromSku,
+    v2: v2FromSku
+  };
+};
+
+const getProductDefaultSku = (product) => {
+  if (!product || !product.skus || !product.skus.length) return null;
+  return product.skus[0];
+};
+
+const getProductPriceInfo = (product) => {
+  const sku = getProductDefaultSku(product);
+  if (!sku) {
+    return { origin: 0, v1: null, v2: null };
+  }
+  return getSkuPriceInfo(sku);
+};
+
+// 商品原价（卡片上的“原价”）
+const getShowPrice = (product) => {
+  const info = getProductPriceInfo(product);
+  return info.origin || 0;
+};
+
+// 根据会员等级拿到商品卡片上的 V1 / V2 会员价
+const getProductVipPriceByLevel = (product, level) => {
+  const info = getProductPriceInfo(product);
+  const base = info.origin || 0;
+  if (!base) return 0;
+
+  if (level === 1) {
+    if (info.v1 != null) return info.v1;
+    return calcVipPrice(base, 1);
+  }
+  if (level === 2) {
+    if (info.v2 != null) return info.v2;
+    return calcVipPrice(base, 2);
+  }
+  return base;
+};
+
 // 月卡会员价
 const getMonthVipPrice = (product) => {
-  const base = getShowPrice(product);
-  return calcVipPrice(base, 1);
+  return getProductVipPriceByLevel(product, 1);
 };
 
 // 年卡会员价
 const getYearVipPrice = (product) => {
-  const base = getShowPrice(product);
-  return calcVipPrice(base, 2);
+  return getProductVipPriceByLevel(product, 2);
 };
 
 // 当前用户实际支付单价（根据 VIP 等级）
 const getUserPayPrice = (product) => {
-  const base = getShowPrice(product);
-  if (effectiveVipLevel.value === 1) {
-    return getMonthVipPrice(product);
-  }
-  if (effectiveVipLevel.value === 2) {
-    return getYearVipPrice(product);
-  }
-  return base;
+  const level = effectiveVipLevel.value;
+  const info = getProductPriceInfo(product);
+  const base = info.origin || 0;
+  if (!base) return 0;
+  if (!level) return base;
+  return getProductVipPriceByLevel(product, level);
 };
 
 const formatSkuName = (sku) => {
@@ -518,9 +569,34 @@ const cartDisplayList = computed(() => {
   return Array.from(map.values());
 });
 
-// 单个购物车行的单价（根据当前 VIP 等级折扣）
+// 单个购物车行的单价（根据当前 VIP 等级 / V1 / V2）
 const getCartLineUnitPrice = (line) => {
-  return calcVipPrice(line.price, effectiveVipLevel.value);
+  const level = effectiveVipLevel.value;
+  const base = Number(line.price) || 0;
+  if (!base) return 0;
+
+  const skuName = String(line.skuName || '').trim();
+  const parts = skuName.split('/').map((p) => p.trim()).filter((p) => p);
+  const nums = parts
+    .filter((p) => p.indexOf('.') >= 0)
+    .map((p) => Number(p))
+    .filter((v) => !Number.isNaN(v));
+
+  const v1FromSku = nums.length > 1 ? nums[1] : null;
+  const v2FromSku = nums.length > 2 ? nums[2] : null;
+
+  if (!level) return base;
+
+  if (level === 1) {
+    if (v1FromSku != null) return v1FromSku;
+    return calcVipPrice(base, 1);
+  }
+  if (level === 2) {
+    if (v2FromSku != null) return v2FromSku;
+    return calcVipPrice(base, 2);
+  }
+
+  return base;
 };
 
 // 单个购物车行的总价（单价 * 数量）
@@ -625,21 +701,31 @@ const goCheckout = () => {
     return;
   }
 
-  // 将购物车明细整理成确认页需要的结构
-  const items = cartDisplayList.value.map((line) => ({
-    product_id: line.productId,
-    product_name: line.name,
-    sku_id: line.skuId,
-    sku_name: line.skuName,
-    quantity: line.count,
-    price: getCartLineUnitPrice(line),
-    image: '' // 如有图片字段可在此补充
-  }));
+  // 将购物车明细整理成确认页需要的结构，并带上商品主图（第一张图片）
+  const items = cartDisplayList.value.map((line) => {
+    const product = products.value.find(p => p.id === line.productId);
+    const cover = product ? getProductImage(product) : '';
+    return {
+      product_id: line.productId,
+      product_name: line.name,
+      sku_id: line.skuId,
+      sku_name: line.skuName,
+      quantity: line.count,
+      // 价格字段传商品原价，确认页会根据用户 VIP 等级重新计算会员价
+      price: parseFloat(line.price),
+      image: cover || ''
+    };
+  });
+
+  const rawAmount = cartTotalPrice.value;
+  const vipAmount = cartTotalVipPrice.value;
 
   // 写入本地缓存，确认页从这里读取
   uni.setStorageSync('checkoutPayload', {
     items,
-    originAmount: cartTotalVipPrice.value
+    rawAmount,
+    originAmount: rawAmount,
+    vipAmount
   });
 
   // 跳转到确认页，路径按你的 pages.json 实际配置调整
